@@ -1,0 +1,95 @@
+.form-section { background: var(--gray50); padding: 64px 0; }
+.form-section-header { text-align: center; margin-bottom: 40px; }
+.form-section-header h2 { font-family: 'Fraunces', serif; font-size: 36px; font-weight: 900; color: var(--navy); margin-bottom: 10px; }
+.form-section-header p { color: var(--gray600); font-size: 16px; }
+
+/* STEP TABS */
+.step-tabs {
+  display: flex; gap: 0; margin-bottom: 24px;
+  background: white; border-radius: var(--radius); padding: 6px;
+  border: 1px solid var(--gray200); box-shadow: var(--shadow);
+}
+.step-tab {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 8px; border-radius: var(--radius-sm); cursor: default;
+  transition: all 0.2s; font-size: 13px; font-weight: 600; color: var(--gray400);
+}
+.step-tab.done { color: var(--green); cursor: pointer; }
+.step-tab.active { background: var(--blue); color: white; }
+.step-tab-num {
+  width: 22px; height: 22px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; font-size: 11px; font-weight: 800;
+  background: rgba(255,255,255,0.2); flex-shrink: 0;
+}
+.step-tab.done .step-tab-num { background: var(--green-light); color: var(--green); }
+.step-tab.active .step-tab-num { background: rgba(255,255,255,0.25); }
+
+/* FORM CARD */
+.form-card { background: white; border-radius: var(--radius); border: 1px solid var(--gray200); overflow: hidden; box-shadow: var(--shadow); }
+.form-card-header {
+  padding: 20px 28px; background: var(--blue-light); border-bottom: 1px solid #dde8ff;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.form-card-header h3 { font-size: 17px; font-weight: 700; color: var(--navy); }
+.step-indicator { font-size: 13px; color: var(--gray600); font-weight: 600; }
+
+/* STEP CONTENT */
+.step-content { padding: 28px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 24px; }
+
+/* GENDER */
+.gender-options { display: flex; gap: 10px; }
+.gender-opt {
+  flex: 1; display: flex; align-items: center; gap: 7px;
+  padding: 10px 12px; border: 1.5px solid var(--gray200); border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 14px; color: var(--gray600); font-weight: 600; transition: all 0.2s;
+}
+.gender-opt input { accent-color: var(--blue); }
+.gender-opt.selected { border-color: var(--blue); background: var(--blue-light); color: var(--blue); }
+
+/* FORM ACTIONS */
+.form-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 28px; border-top: 1px solid var(--gray100); background: var(--gray50);
+  margin: 0 -28px -28px;
+}
+.secure-note { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gray400); }
+
+/* SUCCESS BANNER */
+.success-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--green-light); border: 1px solid #bbf7d0;
+  border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 24px;
+}
+
+/* SUMMARY TABLE */
+.summary-table { border: 1px solid var(--gray200); border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 24px; }
+.summary-row { display: flex; justify-content: space-between; align-items: center; padding: 13px 18px; border-bottom: 1px solid var(--gray100); font-size: 14px; }
+.summary-row:last-child { border-bottom: none; }
+.summary-total { background: var(--gray50); }
+.summary-label { color: var(--gray600); }
+.summary-value { font-weight: 600; color: var(--gray800); }
+
+/* PAY METHODS */
+.pay-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.pay-opt {
+  display: flex; align-items: center; gap: 10px; padding: 13px 16px;
+  border: 1.5px solid var(--gray200); border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 14px; font-weight: 600; color: var(--navy); transition: all 0.2s;
+}
+.pay-opt.selected { border-color: var(--blue); background: var(--blue-light); }
+.pay-opt input { accent-color: var(--blue); }
+
+@media (max-width: 768px) {
+  .form-section { padding: 32px 0; }
+  .form-section-header h2 { font-size: 26px; }
+  .step-tab-label { display: none; }
+  .step-tab { padding: 10px 6px; }
+  .step-content { padding: 18px 16px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .form-group[style*="span 2"] { grid-column: span 1 !important; }
+  .gender-options { gap: 6px; }
+  .form-actions { flex-direction: column-reverse; gap: 10px; padding: 16px; margin: 0 -16px -18px; }
+  .form-actions .btn-primary { width: 100%; }
+  .pay-methods { grid-template-columns: 1fr; }
+}

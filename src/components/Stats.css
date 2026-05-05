@@ -1,0 +1,9 @@
+.stats { background: white; padding: 48px 0; border-bottom: 1px solid var(--gray100); }
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; text-align: center; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 40px; font-weight: 900; color: var(--blue); line-height: 1; }
+.stat-label { font-size: 14px; color: var(--gray600); margin-top: 6px; font-weight: 500; }
+
+@media (max-width: 768px) {
+  .stats-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+  .stat-num { font-size: 30px; }
+}

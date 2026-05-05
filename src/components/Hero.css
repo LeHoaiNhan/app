@@ -1,0 +1,56 @@
+.hero {
+  background: linear-gradient(135deg, var(--navy) 0%, #1a3060 60%, #0d2451 100%);
+  padding: 72px 0 56px; position: relative; overflow: hidden;
+}
+.hero-bg-glow {
+  position: absolute; top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(27,79,216,0.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-content { margin-bottom: 40px; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(245,166,35,0.15); border: 1px solid rgba(245,166,35,0.3);
+  color: var(--gold); padding: 6px 14px; border-radius: 50px;
+  font-size: 13px; font-weight: 600; margin-bottom: 20px;
+}
+.badge-dot {
+  width: 8px; height: 8px; background: var(--gold);
+  border-radius: 50%; display: inline-block;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+.hero-title {
+  font-family: 'Fraunces', serif; font-size: 52px; font-weight: 900;
+  color: white; line-height: 1.1; margin-bottom: 16px;
+}
+.hero-title-accent { color: var(--gold); }
+.hero-sub { color: rgba(255,255,255,0.7); font-size: 17px; line-height: 1.7; }
+
+/* SEARCH CARD */
+.search-card {
+  background: white; border-radius: var(--radius); padding: 28px 32px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.3); max-width: 700px;
+}
+.search-card-title { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
+.search-row {
+  display: grid; grid-template-columns: 1fr 1fr auto; gap: 14px;
+  align-items: flex-end; margin-bottom: 18px;
+}
+.search-btn { white-space: nowrap; padding: 11px 20px; }
+
+/* TRUST */
+.trust-row { display: flex; gap: 24px; padding-top: 16px; border-top: 1px solid var(--gray100); flex-wrap: wrap; }
+.trust-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray600); font-weight: 500; }
+
+@media (max-width: 768px) {
+  .hero { padding: 40px 0 36px; }
+  .hero-title { font-size: 30px; }
+  .hero-sub { font-size: 14px; }
+  .search-card { padding: 20px 18px; }
+  .search-row { grid-template-columns: 1fr; }
+  .trust-row { gap: 12px; }
+}

@@ -1,0 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:wght@700;900&display=swap');
+@import "tailwindcss";
+
+:root {
+  --navy: #0B1D3A;
+  --blue: #1B4FD8;
+  --blue-mid: #3B6BF0;
+  --blue-light: #EEF3FF;
+  --gold: #F5A623;
+  --green: #16A34A;
+  --green-light: #F0FDF4;
+  --red: #E24B4A;
+  --gray50: #F9FAFB;
+  --gray100: #F3F4F6;
+  --gray200: #E5E7EB;
+  --gray400: #9CA3AF;
+  --gray600: #4B5563;
+  --gray800: #1F2937;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--gray50);
+  color: var(--gray800);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Form elements */
+.field-label {
+  @apply block text-xs font-bold uppercase tracking-wide text-gray-500 mb-1.5;
+}
+.field-input {
+  @apply w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-800 outline-none transition-all bg-white;
+  font-family: inherit;
+}
+.field-input:focus {
+  @apply border-blue-500 ring-2 ring-blue-100;
+}
+.field-hint { @apply text-xs text-gray-400 mt-1; }
+.req { @apply text-red-500 ml-0.5; }
+
+/* Upload zone */
+.upload-zone {
+  @apply border-2 border-dashed border-gray-200 rounded-lg p-6 text-center cursor-pointer transition-all bg-gray-50;
+}
+.upload-zone:hover { @apply border-blue-400 bg-blue-50; }
+.upload-zone.has-file { @apply border-green-400 bg-green-50; }
+
+/* Section title bar */
+.section-bar {
+  @apply flex items-center gap-2 text-sm font-bold mb-4;
+  color: var(--navy);
+}
+.section-bar::before {
+  content: '';
+  @apply block w-1 h-5 rounded-full flex-shrink-0;
+  background: var(--blue);
+}
+
+/* Card */
+.card { @apply bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm; }
+.card-header { @apply flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-blue-50; }
