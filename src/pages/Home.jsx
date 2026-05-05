@@ -4,17 +4,17 @@ import ApplicationForm from '../components/ApplicationForm'
 import Footer from '../components/Footer'
 
 const STATS = [
-  { num:'99%',  label:'Tỷ lệ chấp thuận' },
-  { num:'10+',  label:'Năm kinh nghiệm' },
-  { num:'24/7', label:'Hỗ trợ tiếng Việt' },
-  { num:'150+', label:'Quốc gia phục vụ' },
+  { num:'99%',  label:'Approval rate' },
+  { num:'10+',  label:'Years experience' },
+  { num:'24/7', label:'English support' },
+  { num:'150+', label:'Countries served' },
 ]
 const FEATURES = [
-  { icon:'⚡', bg:'#EEF3FF', title:'Nhanh chóng', desc:'Hoàn tất đơn trong 10 phút. Nhận visa trong 24h với gói ưu tiên.' },
-  { icon:'🔒', bg:'#F0FDF4', title:'An toàn tuyệt đối', desc:'Mã hóa SSL 256-bit. Dữ liệu bảo vệ theo tiêu chuẩn quốc tế.' },
-  { icon:'🏆', bg:'#FFF7ED', title:'99% chấp thuận', desc:'Chuyên gia kiểm tra hồ sơ kỹ lưỡng trước khi nộp.' },
+  { icon:'⚡', bg:'#EEF3FF', title:'Lightning fast', desc:'Complete your application in 10 minutes. Get your visa within 24h on priority plans.' },
+  { icon:'🔒', bg:'#F0FDF4', title:'Bank-grade security', desc:'SSL 256-bit encryption. Your data is protected to international standards.' },
+  { icon:'🏆', bg:'#FFF7ED', title:'99% approval', desc:'Expert reviewers check your file thoroughly before submission.' },
 ]
-const DESTINATIONS = ['🇹🇭 Thái Lan','🇯🇵 Nhật Bản','🇸🇬 Singapore','🇰🇷 Hàn Quốc','🇺🇸 Mỹ','🇬🇧 Anh','🇦🇺 Úc','🇦🇪 Dubai']
+const DESTINATIONS = ['🇹🇭 Thailand','🇯🇵 Japan','🇸🇬 Singapore','🇰🇷 South Korea','🇺🇸 USA','🇬🇧 UK','🇦🇺 Australia','🇦🇪 Dubai']
 
 export default function Home() {
   const formRef = useRef()
@@ -35,42 +35,42 @@ export default function Home() {
           <div style={{ flex:1, minWidth:280 }}>
             <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(245,166,35,0.15)', border:'1px solid rgba(245,166,35,0.3)', color:'var(--gold)', padding:'6px 14px', borderRadius:50, fontSize:13, fontWeight:600, marginBottom:20 }}>
               <span className="pulse" style={{ width:8, height:8, background:'var(--gold)', borderRadius:'50%', display:'inline-block' }} />
-              Được tin dùng bởi 2 triệu+ người dùng
+              Trusted by 2M+ travelers worldwide
             </div>
             <h1 style={{ fontFamily:'Fraunces,serif', fontSize:'clamp(36px,6vw,56px)', fontWeight:900, color:'white', lineHeight:1.1, marginBottom:16 }}>
-              Visa du lịch<br/>
-              <span style={{ color:'var(--gold)' }}>nhanh & dễ dàng</span>
+              Travel visas<br/>
+              <span style={{ color:'var(--gold)' }}>fast & simple</span>
             </h1>
             <p style={{ color:'rgba(255,255,255,0.68)', fontSize:17, lineHeight:1.7, marginBottom:28 }}>
-              Nộp đơn visa trực tuyến chỉ trong 10 phút.<br/>
-              Chuyên gia hỗ trợ 24/7 từng bước.
+              Apply online in just 10 minutes.<br/>
+              Expert support 24/7, every step of the way.
             </p>
             <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
               <button onClick={scroll} className="btn-primary" style={{ fontSize:15, padding:'13px 28px' }}>
-                Đăng ký visa ngay →
+                Apply for visa →
               </button>
               <a href="#how" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', border:'1.5px solid rgba(255,255,255,0.25)', borderRadius:8, color:'rgba(255,255,255,0.8)', fontSize:15, fontWeight:600, textDecoration:'none', transition:'all .15s' }}
                 onMouseEnter={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.5)'}
                 onMouseLeave={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.25)'}
-              >Xem hướng dẫn</a>
+              >See how it works</a>
             </div>
           </div>
 
           {/* Right: search card */}
           <div style={{ flex:'0 0 auto', width:'100%', maxWidth:420 }}>
             <div style={{ background:'white', borderRadius:16, padding:'24px', boxShadow:'0 24px 64px rgba(0,0,0,0.3)' }}>
-              <p style={{ fontSize:15, fontWeight:700, color:'var(--navy)', marginBottom:16 }}>🔍 Kiểm tra visa bạn cần</p>
+              <p style={{ fontSize:15, fontWeight:700, color:'var(--navy)', marginBottom:16 }}>🔍 Check your visa</p>
               <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
                 <div>
-                  <label className="field-label">Quốc tịch</label>
+                  <label className="field-label">Nationality</label>
                   <select className="field-input">
-                    {['Việt Nam','Mỹ','Nhật Bản','Hàn Quốc','Anh','Pháp'].map(n => <option key={n}>{n}</option>)}
+                    {['United States','United Kingdom','Australia','Canada','Germany','France'].map(n => <option key={n}>{n}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="field-label">Điểm đến</label>
+                  <label className="field-label">Destination</label>
                   <select className="field-input">
-                    {['Thái Lan','Nhật Bản','Singapore','Mỹ','Anh','Úc'].map(d => <option key={d}>{d}</option>)}
+                    {['Thailand','Japan','Singapore','Vietnam','Indonesia','Turkey'].map(d => <option key={d}>{d}</option>)}
                   </select>
                 </div>
               </div>
@@ -78,10 +78,10 @@ export default function Home() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
-                Kiểm tra ngay
+                Check now
               </button>
               <div style={{ display:'flex', justifyContent:'space-between', marginTop:14, paddingTop:14, borderTop:'1px solid #F3F4F6' }}>
-                {[['🔒','SSL 256-bit'],['⏱','Duyệt 24h'],['💰','Hoàn tiền']].map(([i,l]) => (
+                {[['🔒','SSL 256-bit'],['⏱','24h approval'],['💰','Money-back']].map(([i,l]) => (
                   <span key={l} style={{ fontSize:12, color:'#6B7280', fontWeight:500 }}>{i} {l}</span>
                 ))}
               </div>
@@ -107,15 +107,15 @@ export default function Home() {
       <section id="how" style={{ background:'#F9FAFB', padding:'64px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Quy trình 4 bước đơn giản</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Từ đăng ký đến nhận visa chỉ trong vài ngày</p>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>4 simple steps</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>From application to approved visa in just days</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:16 }}>
             {[
-              ['01','Chọn điểm đến','Kiểm tra yêu cầu visa và chọn loại phù hợp','var(--blue-light)','var(--blue)'],
-              ['02','Điền thông tin','Hoàn tất form 4 bước trong 10 phút','#F0FDF4','var(--green)'],
-              ['03','Thanh toán','Thanh toán an toàn qua thẻ hoặc ví điện tử','#FFF7ED','#F59E0B'],
-              ['04','Nhận visa','Email visa điện tử trong thời gian đã chọn','#FDF4FF','#9333EA'],
+              ['01','Pick destination','Check visa requirements and choose the right type','var(--blue-light)','var(--blue)'],
+              ['02','Fill in details','Complete the 4-step form in 10 minutes','#F0FDF4','var(--green)'],
+              ['03','Pay securely','Pay by card or digital wallet, safely','#FFF7ED','#F59E0B'],
+              ['04','Get visa','Receive your e-visa by email within your chosen window','#FDF4FF','#9333EA'],
             ].map(([n,t,d,bg,col]) => (
               <div key={n} style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:20, textAlign:'center' }}>
                 <div style={{ width:52, height:52, background:bg, borderRadius:14, display:'flex', alignItems:'center', justifyContent:'center', margin:'0 auto 14px', fontFamily:'Fraunces,serif', fontSize:22, fontWeight:900, color:col }}>{n}</div>
@@ -134,8 +134,8 @@ export default function Home() {
       <section style={{ background:'white', padding:'64px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Tại sao chọn eVisa?</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Chúng tôi đơn giản hóa quy trình để bạn tập trung vào chuyến đi</p>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Why eVisa?</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>We simplify the process so you can focus on your trip</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:18 }}>
             {FEATURES.map(f => (
@@ -155,7 +155,7 @@ export default function Home() {
       {/* ── POPULAR DESTINATIONS ── */}
       <section style={{ background:'#F9FAFB', padding:'48px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
-          <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:20, textAlign:'center' }}>Điểm đến phổ biến</h2>
+          <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:20, textAlign:'center' }}>Popular destinations</h2>
           <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center' }}>
             {DESTINATIONS.map(d => (
               <button key={d} onClick={scroll}
@@ -170,12 +170,12 @@ export default function Home() {
 
       {/* ── CTA ── */}
       <section style={{ background:'var(--navy)', padding:'56px 20px', textAlign:'center' }}>
-        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Sẵn sàng cho chuyến đi?</h2>
-        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Hơn 2 triệu người đã tin tưởng eVisa</p>
+        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Ready for your trip?</h2>
+        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Over 2 million travelers trust eVisa</p>
         <button onClick={scroll} style={{ background:'var(--gold)', color:'var(--navy)', border:'none', borderRadius:10, padding:'14px 32px', fontSize:16, fontWeight:800, cursor:'pointer', fontFamily:'inherit', transition:'opacity .15s' }}
           onMouseEnter={e => e.target.style.opacity='.88'}
           onMouseLeave={e => e.target.style.opacity='1'}
-        >Đăng ký visa ngay →</button>
+        >Apply for visa now →</button>
       </section>
 
       <Footer />

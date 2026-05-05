@@ -4,77 +4,77 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 const DESTINATIONS = [
-  { name:'Thái Lan',     flag:'🇹🇭', iso:'th', region:'Đông Nam Á', time:'3-5 ngày',  price:'$29',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Thiên đường du lịch với chi phí hợp lý, ẩm thực đa dạng và bãi biển tuyệt đẹp.', city:'Bangkok' },
-  { name:'Singapore',    flag:'🇸🇬', iso:'sg', region:'Đông Nam Á', time:'2-3 ngày',  price:'$39',  popular:false, trending:true,  tag:'E-Visa',          stay:'30 ngày',    entry:'Multiple', validity:'2 năm',    desc:'Đảo quốc hiện đại với hệ thống giao thông và dịch vụ đẳng cấp thế giới.', city:'Marina Bay' },
-  { name:'Indonesia',    flag:'🇮🇩', iso:'id', region:'Đông Nam Á', time:'3-5 ngày',  price:'$35',  popular:false, trending:false, tag:'Visa on Arrival', stay:'30 ngày',    entry:'Single',   validity:'30 ngày',  desc:'Bali, Jakarta và hàng ngàn hòn đảo nhiệt đới đang chờ bạn khám phá.', city:'Bali' },
-  { name:'Malaysia',     flag:'🇲🇾', iso:'my', region:'Đông Nam Á', time:'Tức thì',   price:'Miễn phí', popular:false, trending:false, tag:'Miễn visa',   stay:'30 ngày',    entry:'Multiple', validity:'—',        desc:'Miễn visa 30 ngày cho công dân Việt Nam, chỉ cần hộ chiếu còn hạn 6 tháng.', city:'Kuala Lumpur' },
-  { name:'Philippines',  flag:'🇵🇭', iso:'ph', region:'Đông Nam Á', time:'5-7 ngày',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Hơn 7000 hòn đảo nhiệt đới, biển xanh và văn hóa thân thiện.', city:'Manila' },
-  { name:'Campuchia',    flag:'🇰🇭', iso:'kh', region:'Đông Nam Á', time:'3-5 ngày',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Angkor Wat huyền bí và nền văn hóa Khmer độc đáo.', city:'Siem Reap' },
-  { name:'Myanmar',      flag:'🇲🇲', iso:'mm', region:'Đông Nam Á', time:'3-5 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'28 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Bagan với hàng ngàn ngôi chùa cổ và văn hóa Phật giáo độc đáo.', city:'Bagan' },
-  { name:'Nhật Bản',     flag:'🇯🇵', iso:'jp', region:'Đông Á',     time:'5-7 ngày',  price:'$49',  popular:true,  trending:true,  tag:'E-Visa',          stay:'15-90 ngày', entry:'Single',   validity:'3 tháng',  desc:'Đất nước mặt trời mọc với văn hóa độc đáo và cảnh quan bốn mùa tuyệt đẹp.', city:'Tokyo' },
-  { name:'Hàn Quốc',     flag:'🇰🇷', iso:'kr', region:'Đông Á',     time:'5-7 ngày',  price:'$55',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30-90 ngày', entry:'Single',   validity:'3 tháng',  desc:'Xứ sở kim chi với K-pop, ẩm thực và mua sắm đẳng cấp.', city:'Seoul' },
-  { name:'Đài Loan',     flag:'🇹🇼', iso:'tw', region:'Đông Á',     time:'5-7 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Đảo ngọc với ẩm thực đường phố nổi tiếng và cảnh quan đa dạng.', city:'Đài Bắc' },
-  { name:'Hong Kong',    flag:'🇭🇰', iso:'hk', region:'Đông Á',     time:'Tức thì',   price:'Miễn phí', popular:false, trending:false, tag:'Miễn visa',   stay:'14 ngày',    entry:'Multiple', validity:'—',        desc:'Miễn visa 14 ngày cho công dân Việt Nam, thiên đường mua sắm châu Á.', city:'Hong Kong' },
-  { name:'Ấn Độ',        flag:'🇮🇳', iso:'in', region:'Đông Á',     time:'3-5 ngày',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30-60 ngày', entry:'Multiple', validity:'1 năm',    desc:'Taj Mahal, sông Hằng và sự đa dạng văn hóa rực rỡ.', city:'Delhi' },
-  { name:'Sri Lanka',    flag:'🇱🇰', iso:'lk', region:'Đông Á',     time:'3-5 ngày',  price:'$35',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Multiple', validity:'6 tháng',  desc:'Đảo ngọc Ấn Độ Dương với rừng nhiệt đới, đền cổ và bãi biển hoang sơ.', city:'Colombo' },
-  { name:'Dubai (UAE)',  flag:'🇦🇪', iso:'ae', region:'Trung Đông', time:'3-5 ngày',  price:'$45',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'2 tháng',  desc:'Thành phố tương lai với Burj Khalifa, sa mạc và mua sắm xa xỉ.', city:'Dubai' },
-  { name:'Qatar',        flag:'🇶🇦', iso:'qa', region:'Trung Đông', time:'3-5 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'30 ngày',  desc:'Doha hiện đại bên bờ vịnh Ba Tư, kiến trúc đỉnh cao.', city:'Doha' },
-  { name:'Thổ Nhĩ Kỳ',   flag:'🇹🇷', iso:'tr', region:'Trung Đông', time:'3-5 ngày',  price:'$50',  popular:false, trending:true,  tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'180 ngày', desc:'Istanbul giao thoa Á-Âu, Cappadocia với khinh khí cầu nổi tiếng.', city:'Istanbul' },
-  { name:'Saudi Arabia', flag:'🇸🇦', iso:'sa', region:'Trung Đông', time:'5-7 ngày',  price:'$120', popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'1 năm',    desc:'Mecca, Riyadh và sa mạc Ả Rập với di sản văn hóa Hồi giáo phong phú.', city:'Riyadh' },
-  { name:'Oman',         flag:'🇴🇲', iso:'om', region:'Trung Đông', time:'3-5 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'30 ngày',  desc:'Pháo đài cổ, sa mạc Wahiba và bờ biển Ấn Độ Dương yên bình.', city:'Muscat' },
-  { name:'Bahrain',      flag:'🇧🇭', iso:'bh', region:'Trung Đông', time:'2-3 ngày',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'14 ngày',    entry:'Multiple', validity:'90 ngày',  desc:'Đảo quốc vịnh Ba Tư với di sản văn hóa Bahrain phong phú.', city:'Manama' },
-  { name:'Canada',       flag:'🇨🇦', iso:'ca', region:'Châu Mỹ',    time:'3-5 ngày',  price:'$80',  popular:false, trending:false, tag:'eTA',             stay:'180 ngày',   entry:'Multiple', validity:'5 năm',    desc:'Niagara, Rocky Mountains và Toronto — eTA online cấp nhanh trong vài giờ.', city:'Toronto' },
-  { name:'Mexico',       flag:'🇲🇽', iso:'mx', region:'Châu Mỹ',    time:'5-7 ngày',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'180 ngày',   entry:'Multiple', validity:'30 ngày',  desc:'Văn hóa Maya, bãi biển Cancun và ẩm thực đặc sắc.', city:'Cancún' },
-  { name:'Brazil',       flag:'🇧🇷', iso:'br', region:'Châu Mỹ',    time:'7-10 ngày', price:'$85',  popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'2 năm',    desc:'Rio de Janeiro, rừng Amazon và lễ hội carnival sôi động.', city:'Rio' },
-  { name:'Úc',           flag:'🇦🇺', iso:'au', region:'Châu Đại Dương', time:'5-10 ngày', price:'$95',  popular:true,  trending:false, tag:'E-Visa',     stay:'90 ngày',    entry:'Multiple', validity:'1 năm',    desc:'Sydney Opera House, Great Barrier Reef và outback hoang dã.', city:'Sydney' },
-  { name:'New Zealand',  flag:'🇳🇿', iso:'nz', region:'Châu Đại Dương', time:'3-5 ngày',  price:'$110', popular:false, trending:false, tag:'eTA',        stay:'90 ngày',    entry:'Multiple', validity:'2 năm',    desc:'Đất nước của Chúa Tể Của Những Chiếc Nhẫn với cảnh quan tuyệt mỹ.', city:'Auckland' },
-  { name:'Nga',          flag:'🇷🇺', iso:'ru', region:'Châu Âu',    time:'5-7 ngày',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'16 ngày',    entry:'Single',   validity:'60 ngày',  desc:'Moscow, St. Petersburg và bề dày lịch sử nước Nga.', city:'Moscow' },
-  { name:'Albania',      flag:'🇦🇱', iso:'al', region:'Châu Âu',    time:'3-5 ngày',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'180 ngày', desc:'Bờ biển Adriatic xinh đẹp và văn hóa Balkan độc đáo.', city:'Tirana' },
-  { name:'Ai Cập',       flag:'🇪🇬', iso:'eg', region:'Châu Phi',   time:'5-7 ngày',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Kim tự tháp Giza, sông Nile và nền văn minh cổ đại Ai Cập.', city:'Cairo' },
-  { name:'Kenya',        flag:'🇰🇪', iso:'ke', region:'Châu Phi',   time:'3-5 ngày',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Safari Maasai Mara và đại di cư của thú rừng nổi tiếng.', city:'Nairobi' },
+  { name:'Thailand',     flag:'🇹🇭', iso:'th', region:'Southeast Asia', time:'3-5 days',  price:'$29',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Tropical paradise with affordable costs, diverse cuisine, and stunning beaches.', city:'Bangkok' },
+  { name:'Singapore',    flag:'🇸🇬', iso:'sg', region:'Southeast Asia', time:'2-3 days',  price:'$39',  popular:false, trending:true,  tag:'E-Visa',          stay:'30 days',    entry:'Multiple', validity:'2 years',   desc:'Modern city-state with world-class transport and services.', city:'Marina Bay' },
+  { name:'Indonesia',    flag:'🇮🇩', iso:'id', region:'Southeast Asia', time:'3-5 days',  price:'$35',  popular:false, trending:false, tag:'Visa on Arrival', stay:'30 days',    entry:'Single',   validity:'30 days',   desc:'Bali, Jakarta, and thousands of tropical islands waiting to be explored.', city:'Bali' },
+  { name:'Malaysia',     flag:'🇲🇾', iso:'my', region:'Southeast Asia', time:'Instant',   price:'Free', popular:false, trending:false, tag:'Visa-free',       stay:'30 days',    entry:'Multiple', validity:'—',         desc:'Visa-free for many nationalities — passport must be valid for 6+ months.', city:'Kuala Lumpur' },
+  { name:'Philippines',  flag:'🇵🇭', iso:'ph', region:'Southeast Asia', time:'5-7 days',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'7,000+ tropical islands, blue seas, and warm hospitality.', city:'Manila' },
+  { name:'Cambodia',     flag:'🇰🇭', iso:'kh', region:'Southeast Asia', time:'3-5 days',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Mystical Angkor Wat and the unique Khmer culture.', city:'Siem Reap' },
+  { name:'Myanmar',      flag:'🇲🇲', iso:'mm', region:'Southeast Asia', time:'3-5 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'28 days',    entry:'Single',   validity:'3 months',  desc:'Bagan with thousands of ancient temples and rich Buddhist culture.', city:'Bagan' },
+  { name:'Japan',        flag:'🇯🇵', iso:'jp', region:'East Asia',      time:'5-7 days',  price:'$49',  popular:true,  trending:true,  tag:'E-Visa',          stay:'15-90 days', entry:'Single',   validity:'3 months',  desc:'The land of the rising sun — unique culture and beautiful four-season scenery.', city:'Tokyo' },
+  { name:'South Korea',  flag:'🇰🇷', iso:'kr', region:'East Asia',      time:'5-7 days',  price:'$55',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30-90 days', entry:'Single',   validity:'3 months',  desc:'Land of K-pop, world-class food, and premier shopping.', city:'Seoul' },
+  { name:'Taiwan',       flag:'🇹🇼', iso:'tw', region:'East Asia',      time:'5-7 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Beautiful island known for street food and diverse landscapes.', city:'Taipei' },
+  { name:'Hong Kong',    flag:'🇭🇰', iso:'hk', region:'East Asia',      time:'Instant',   price:'Free', popular:false, trending:false, tag:'Visa-free',       stay:'14 days',    entry:'Multiple', validity:'—',         desc:'Visa-free for 14 days — Asia’s shopping paradise.', city:'Hong Kong' },
+  { name:'India',        flag:'🇮🇳', iso:'in', region:'East Asia',      time:'3-5 days',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30-60 days', entry:'Multiple', validity:'1 year',    desc:'Taj Mahal, the Ganges, and dazzling cultural diversity.', city:'Delhi' },
+  { name:'Sri Lanka',    flag:'🇱🇰', iso:'lk', region:'East Asia',      time:'3-5 days',  price:'$35',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Multiple', validity:'6 months',  desc:'Indian Ocean gem with rainforests, ancient temples, and pristine beaches.', city:'Colombo' },
+  { name:'Dubai (UAE)',  flag:'🇦🇪', iso:'ae', region:'Middle East',    time:'3-5 days',  price:'$45',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'2 months',  desc:'Futuristic city with the Burj Khalifa, deserts, and luxury shopping.', city:'Dubai' },
+  { name:'Qatar',        flag:'🇶🇦', iso:'qa', region:'Middle East',    time:'3-5 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'30 days',   desc:'Modern Doha on the Persian Gulf with breathtaking architecture.', city:'Doha' },
+  { name:'Turkey',       flag:'🇹🇷', iso:'tr', region:'Middle East',    time:'3-5 days',  price:'$50',  popular:false, trending:true,  tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'180 days',  desc:'Istanbul where Asia meets Europe, and Cappadocia’s famous balloons.', city:'Istanbul' },
+  { name:'Saudi Arabia', flag:'🇸🇦', iso:'sa', region:'Middle East',    time:'5-7 days',  price:'$120', popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'1 year',    desc:'Mecca, Riyadh, and the rich Islamic heritage of the Arabian Peninsula.', city:'Riyadh' },
+  { name:'Oman',         flag:'🇴🇲', iso:'om', region:'Middle East',    time:'3-5 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'30 days',   desc:'Ancient forts, the Wahiba sands, and a peaceful Indian Ocean coast.', city:'Muscat' },
+  { name:'Bahrain',      flag:'🇧🇭', iso:'bh', region:'Middle East',    time:'2-3 days',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'14 days',    entry:'Multiple', validity:'90 days',   desc:'Persian Gulf island nation with rich Bahraini cultural heritage.', city:'Manama' },
+  { name:'Canada',       flag:'🇨🇦', iso:'ca', region:'Americas',       time:'3-5 days',  price:'$80',  popular:false, trending:false, tag:'eTA',             stay:'180 days',   entry:'Multiple', validity:'5 years',   desc:'Niagara Falls, Rockies, and Toronto — eTA issued online in hours.', city:'Toronto' },
+  { name:'Mexico',       flag:'🇲🇽', iso:'mx', region:'Americas',       time:'5-7 days',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'180 days',   entry:'Multiple', validity:'30 days',   desc:'Mayan culture, Cancun beaches, and incredible cuisine.', city:'Cancún' },
+  { name:'Brazil',       flag:'🇧🇷', iso:'br', region:'Americas',       time:'7-10 days', price:'$85',  popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'2 years',   desc:'Rio de Janeiro, the Amazon rainforest, and vibrant carnival.', city:'Rio' },
+  { name:'Australia',    flag:'🇦🇺', iso:'au', region:'Oceania',        time:'5-10 days', price:'$95',  popular:true,  trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'1 year',    desc:'Sydney Opera House, the Great Barrier Reef, and the wild outback.', city:'Sydney' },
+  { name:'New Zealand',  flag:'🇳🇿', iso:'nz', region:'Oceania',        time:'3-5 days',  price:'$110', popular:false, trending:false, tag:'eTA',             stay:'90 days',    entry:'Multiple', validity:'2 years',   desc:'Land of the Lord of the Rings, with stunning landscapes everywhere.', city:'Auckland' },
+  { name:'Russia',       flag:'🇷🇺', iso:'ru', region:'Europe',         time:'5-7 days',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'16 days',    entry:'Single',   validity:'60 days',   desc:'Moscow, St. Petersburg, and the deep history of Russia.', city:'Moscow' },
+  { name:'Albania',      flag:'🇦🇱', iso:'al', region:'Europe',         time:'3-5 days',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'180 days',  desc:'Beautiful Adriatic coast and unique Balkan culture.', city:'Tirana' },
+  { name:'Egypt',        flag:'🇪🇬', iso:'eg', region:'Africa',         time:'5-7 days',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Pyramids of Giza, the Nile, and ancient Egyptian civilization.', city:'Cairo' },
+  { name:'Kenya',        flag:'🇰🇪', iso:'ke', region:'Africa',         time:'3-5 days',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Single',   validity:'3 months',  desc:'Maasai Mara safari and the famous great wildebeest migration.', city:'Nairobi' },
 ]
 
 const REGIONS = [
-  { name:'Tất cả',          icon:'🌍' },
-  { name:'Đông Nam Á',      icon:'🏝️' },
-  { name:'Đông Á',          icon:'🏯' },
-  { name:'Châu Âu',         icon:'🗼' },
-  { name:'Châu Mỹ',         icon:'🗽' },
-  { name:'Trung Đông',      icon:'🕌' },
-  { name:'Châu Đại Dương',  icon:'🦘' },
-  { name:'Châu Phi',        icon:'🦁' },
+  { name:'All',            icon:'🌍' },
+  { name:'Southeast Asia', icon:'🏝️' },
+  { name:'East Asia',      icon:'🏯' },
+  { name:'Europe',         icon:'🗼' },
+  { name:'Americas',       icon:'🗽' },
+  { name:'Middle East',    icon:'🕌' },
+  { name:'Oceania',        icon:'🦘' },
+  { name:'Africa',         icon:'🦁' },
 ]
 
 const TAG_COLORS = {
   'E-Visa':          { bg:'#EEF3FF', text:'#1B4FD8' },
   'Visa on Arrival': { bg:'#FFF7ED', text:'#D97706' },
   'eTA':             { bg:'#FDF4FF', text:'#9333EA' },
-  'Miễn visa':       { bg:'#ECFDF5', text:'#059669' },
+  'Visa-free':       { bg:'#ECFDF5', text:'#059669' },
 }
 
 const REQUIREMENTS = [
-  'Hộ chiếu còn hạn ít nhất 6 tháng',
-  'Ảnh chân dung 4×6 nền trắng (chụp trong 6 tháng)',
-  'Vé máy bay khứ hồi (nếu yêu cầu)',
-  'Đặt phòng khách sạn / địa chỉ lưu trú',
-  'Sao kê ngân hàng 3 tháng gần nhất',
-  'Bảo hiểm du lịch (tùy quốc gia)',
+  'Passport valid for at least 6 months',
+  'Passport-style photo, white background (taken in last 6 months)',
+  'Round-trip flight ticket (if required)',
+  'Hotel booking or local address',
+  'Bank statement from the last 3 months',
+  'Travel insurance (depending on country)',
 ]
 
-const QUICK_PICKS = ['Thái Lan', 'Nhật Bản', 'Hàn Quốc', 'Dubai (UAE)', 'Singapore']
+const QUICK_PICKS = ['Thailand', 'Japan', 'South Korea', 'Dubai (UAE)', 'Singapore']
 
 const flagUrl = (iso, w = 640) => `https://flagcdn.com/w${w}/${iso}.png`
 
 const STATS = [
-  { num:`${DESTINATIONS.length}+`, label:'Quốc gia hỗ trợ' },
-  { num:'99%',                     label:'Tỷ lệ duyệt' },
-  { num:'24h',                     label:'Xử lý nhanh' },
-  { num:'24/7',                    label:'Hỗ trợ tiếng Việt' },
+  { num:`${DESTINATIONS.length}+`, label:'Countries supported' },
+  { num:'99%',                     label:'Approval rate' },
+  { num:'24h',                     label:'Fast processing' },
+  { num:'24/7',                    label:'English support' },
 ]
 
 export default function Destinations() {
   const [search, setSearch]     = useState('')
-  const [region, setRegion]     = useState('Tất cả')
+  const [region, setRegion]     = useState('All')
   const [selected, setSelected] = useState(null)
 
   const term = search.trim().toLowerCase()
@@ -84,11 +84,11 @@ export default function Destinations() {
       d.region.toLowerCase().includes(term) ||
       d.tag.toLowerCase().includes(term) ||
       d.city.toLowerCase().includes(term)
-    const matchRegion = region === 'Tất cả' || d.region === region
+    const matchRegion = region === 'All' || d.region === region
     return matchSearch && matchRegion
   })
 
-  const showFeatured = !term && region === 'Tất cả'
+  const showFeatured = !term && region === 'All'
   const trending = DESTINATIONS.filter(d => d.trending)
   const popular  = DESTINATIONS.filter(d => d.popular)
 
@@ -109,14 +109,14 @@ export default function Destinations() {
         <div style={{ maxWidth:1024, margin:'0 auto', position:'relative', textAlign:'center' }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(245,166,35,0.15)', border:'1px solid rgba(245,166,35,0.3)', color:'var(--gold)', padding:'6px 14px', borderRadius:50, fontSize:13, fontWeight:600, marginBottom:20 }}>
             <span className="pulse" style={{ width:8, height:8, background:'var(--gold)', borderRadius:'50%', display:'inline-block' }} />
-            {DESTINATIONS.length} quốc gia eVisa hỗ trợ
+            {DESTINATIONS.length} eVisa countries supported
           </div>
           <h1 style={{ fontFamily:'Fraunces,serif', fontSize:'clamp(36px,6vw,56px)', fontWeight:900, color:'white', lineHeight:1.1, marginBottom:16 }}>
-            Khám phá <span style={{ color:'var(--gold)' }}>thế giới</span><br/>
-            không giới hạn
+            Explore the <span style={{ color:'var(--gold)' }}>world</span><br/>
+            without limits
           </h1>
           <p style={{ color:'rgba(255,255,255,0.68)', fontSize:17, lineHeight:1.7, marginBottom:28, maxWidth:560, marginLeft:'auto', marginRight:'auto' }}>
-            Tìm visa cho mọi quốc gia bạn muốn — chuyên gia hỗ trợ từ A-Z
+            Find a visa for any country you want — our experts handle everything from A to Z
           </p>
 
           <div style={{ maxWidth:560, margin:'0 auto 18px', position:'relative' }}>
@@ -125,7 +125,7 @@ export default function Destinations() {
             </svg>
             <input
               style={{ width:'100%', padding:'16px 48px 16px 48px', borderRadius:14, fontSize:15, border:'none', outline:'none', boxShadow:'0 24px 64px rgba(0,0,0,0.3)', fontFamily:'inherit' }}
-              placeholder="Tìm quốc gia, thành phố, khu vực..."
+              placeholder="Search by country, city or region..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
@@ -138,7 +138,7 @@ export default function Destinations() {
           </div>
 
           <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'center', alignItems:'center', marginBottom:28 }}>
-            <span style={{ color:'rgba(255,255,255,0.5)', fontSize:12, marginRight:4 }}>Phổ biến:</span>
+            <span style={{ color:'rgba(255,255,255,0.5)', fontSize:12, marginRight:4 }}>Popular:</span>
             {QUICK_PICKS.map(name => {
               const d = DESTINATIONS.find(x => x.name === name)
               return d ? (
@@ -176,12 +176,12 @@ export default function Destinations() {
       <section style={{ background:'#F9FAFB', padding:'48px 20px 24px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:24 }}>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:6 }}>Chọn theo khu vực</h2>
-            <p style={{ color:'#6B7280', fontSize:14 }}>Lọc nhanh theo châu lục bạn muốn đi</p>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:6 }}>Browse by region</h2>
+            <p style={{ color:'#6B7280', fontSize:14 }}>Quickly filter by the continent you want to visit</p>
           </div>
           <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center' }}>
             {REGIONS.map(r => {
-              const count = r.name === 'Tất cả' ? DESTINATIONS.length : DESTINATIONS.filter(d => d.region === r.name).length
+              const count = r.name === 'All' ? DESTINATIONS.length : DESTINATIONS.filter(d => d.region === r.name).length
               const active = region === r.name
               return (
                 <button
@@ -218,7 +218,7 @@ export default function Destinations() {
       {showFeatured && trending.length >= 5 && (
         <section style={{ background:'#F9FAFB', padding:'40px 20px 64px' }}>
           <div style={{ maxWidth:1024, margin:'0 auto' }}>
-            <SectionHeader icon="🔥" title="Đang xu hướng" subtitle="Những điểm đến được tìm kiếm nhiều nhất tuần này" right="Cập nhật mỗi tuần" />
+            <SectionHeader icon="🔥" title="Trending now" subtitle="Most searched destinations this week" right="Updated weekly" />
             <div style={{ display:'grid', gap:16, marginBottom:16 }}>
               <FeaturedDestBanner d={trending[0]} onClick={() => setSelected(trending[0])} />
             </div>
@@ -235,7 +235,7 @@ export default function Destinations() {
       {showFeatured && popular.length > 0 && (
         <section style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6', borderBottom:'1px solid #F3F4F6' }}>
           <div style={{ maxWidth:1024, margin:'0 auto' }}>
-            <SectionHeader icon="⭐" title="Phổ biến nhất" subtitle="Top quốc gia khách Việt thường chọn" />
+            <SectionHeader icon="⭐" title="Most popular" subtitle="Top countries our travelers choose" />
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:16 }}>
               {popular.map(d => <DestCard key={d.name} d={d} onClick={() => setSelected(d)} />)}
             </div>
@@ -248,9 +248,9 @@ export default function Destinations() {
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <SectionHeader
             icon="🌍"
-            title={region === 'Tất cả' ? 'Tất cả điểm đến' : region}
-            subtitle={term ? `Kết quả tìm kiếm cho "${search}"` : `Tổng cộng ${filtered.length} quốc gia`}
-            right={`${filtered.length} kết quả`}
+            title={region === 'All' ? 'All destinations' : region}
+            subtitle={term ? `Search results for "${search}"` : `${filtered.length} countries in total`}
+            right={`${filtered.length} results`}
           />
           {filtered.length > 0 ? (
             <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:16 }}>
@@ -259,9 +259,9 @@ export default function Destinations() {
           ) : (
             <div style={{ background:'white', borderRadius:14, border:'1px solid #E5E7EB', padding:'56px 20px', textAlign:'center' }}>
               <div style={{ fontSize:48, marginBottom:14, opacity:0.6 }}>🔍</div>
-              <p style={{ fontWeight:700, fontSize:16, color:'var(--navy)', marginBottom:6 }}>Không tìm thấy quốc gia phù hợp</p>
-              <p style={{ fontSize:14, color:'#6B7280', marginBottom:20 }}>Thử từ khóa khác hoặc bỏ bộ lọc khu vực</p>
-              <button onClick={() => { setSearch(''); setRegion('Tất cả') }} className="btn-primary">Xem tất cả điểm đến</button>
+              <p style={{ fontWeight:700, fontSize:16, color:'var(--navy)', marginBottom:6 }}>No matching countries found</p>
+              <p style={{ fontSize:14, color:'#6B7280', marginBottom:20 }}>Try a different search term or clear the region filter</p>
+              <button onClick={() => { setSearch(''); setRegion('All') }} className="btn-primary">View all destinations</button>
             </div>
           )}
         </div>
@@ -269,14 +269,14 @@ export default function Destinations() {
 
       {/* ── CTA ── */}
       <section style={{ background:'var(--navy)', padding:'56px 20px', textAlign:'center' }}>
-        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Không thấy nước bạn cần?</h2>
-        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Liên hệ chuyên gia — chúng tôi hỗ trợ visa cho 150+ quốc gia</p>
+        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Can’t find your country?</h2>
+        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Contact our experts — we support visas for 150+ countries</p>
         <Link
           to="/support"
           style={{ display:'inline-block', background:'var(--gold)', color:'var(--navy)', borderRadius:10, padding:'14px 32px', fontSize:16, fontWeight:800, textDecoration:'none', fontFamily:'inherit', transition:'opacity .15s' }}
           onMouseEnter={e => e.currentTarget.style.opacity='.88'}
           onMouseLeave={e => e.currentTarget.style.opacity='1'}
-        >Hỗ trợ ngay →</Link>
+        >Get help now →</Link>
       </section>
 
       {selected && <DestModal d={selected} onClose={() => setSelected(null)} />}
@@ -307,7 +307,7 @@ function CardCover({ d, big = false, hires = false }) {
     <div style={{ position:'relative', height: big ? '100%' : 132, minHeight: big ? 260 : 132, overflow:'hidden', background:'#F3F4F6' }}>
       <img
         src={flagUrl(d.iso, w)}
-        alt={`Cờ ${d.name}`}
+        alt={`${d.name} flag`}
         loading="lazy"
         style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform .6s' }}
         className="card-flag-img"
@@ -363,7 +363,7 @@ function FeaturedDestBanner({ d, onClick }) {
       onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.borderColor='#E5E7EB' }}
     >
       <span style={{ position:'absolute', top:16, left:16, zIndex:10, fontSize:12, fontWeight:700, padding:'6px 12px', borderRadius:50, background:'var(--gold)', color:'var(--navy)', boxShadow:'0 4px 12px rgba(0,0,0,0.2)', display:'inline-flex', alignItems:'center', gap:6 }}>
-        🔥 HOT NHẤT
+        🔥 HOTTEST
       </span>
       <div style={{ position:'relative', minHeight:280 }}>
         <CardCover d={d} big hires />
@@ -375,14 +375,14 @@ function FeaturedDestBanner({ d, onClick }) {
         </div>
         <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.6, marginBottom:16 }}>{d.desc}</p>
         <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:16 }}>
-          {[['⏱', d.time], ['📅', `Lưu trú ${d.stay}`], ['🔁', d.entry]].map(([i,l]) => (
+          {[['⏱', d.time], ['📅', `Stay ${d.stay}`], ['🔁', d.entry]].map(([i,l]) => (
             <span key={l} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'5px 11px', borderRadius:50, background:'#F9FAFB', fontSize:12, color:'#374151', fontWeight:500 }}>
               {i} {l}
             </span>
           ))}
         </div>
         <div style={{ paddingTop:16, borderTop:'1px solid #F3F4F6', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
-          <span style={{ fontSize:13, fontWeight:600, color:'#6B7280' }}>Xem chi tiết & đăng ký</span>
+          <span style={{ fontSize:13, fontWeight:600, color:'#6B7280' }}>View details & apply</span>
           <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:32, height:32, borderRadius:'50%', background:'var(--blue)', color:'white' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -403,9 +403,9 @@ function DestModal({ d, onClose }) {
       <div onClick={e => e.stopPropagation()} className="fade-up"
         style={{ position:'relative', background:'white', borderRadius:20, width:'100%', maxWidth:640, maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 80px rgba(0,0,0,0.4)' }}>
         <div style={{ position:'relative', height:200, overflow:'hidden', background:'#F3F4F6' }}>
-          <img src={flagUrl(d.iso, 1280)} alt={`Cờ ${d.name}`} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
+          <img src={flagUrl(d.iso, 1280)} alt={`${d.name} flag`} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
           <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,rgba(0,0,0,0.20) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0.65) 100%)' }} />
-          <button onClick={onClose}
+          <button onClick={onClose} aria-label="Close"
             style={{ position:'absolute', top:16, right:16, width:38, height:38, borderRadius:'50%', background:'rgba(0,0,0,0.4)', color:'white', border:'none', cursor:'pointer', backdropFilter:'blur(8px)', fontSize:14, zIndex:10 }}
           >✕</button>
           <div style={{ position:'absolute', bottom:16, left:20, right:20, display:'flex', alignItems:'flex-end', justifyContent:'space-between', gap:12 }}>
@@ -420,12 +420,12 @@ function DestModal({ d, onClose }) {
           <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.7, marginBottom:22 }}>{d.desc}</p>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:10, marginBottom:22 }}>
             {[
-              ['⏱','Thời gian xử lý',  d.time],
-              ['📅','Lưu trú tối đa',   d.stay],
-              ['🔁','Số lần nhập cảnh', d.entry],
-              ['📆','Hiệu lực visa',    d.validity],
-              ['💰','Phí dịch vụ',      d.price],
-              ['📋','Loại visa',        d.tag],
+              ['⏱','Processing time', d.time],
+              ['📅','Max stay',       d.stay],
+              ['🔁','Entries',        d.entry],
+              ['📆','Visa validity',  d.validity],
+              ['💰','Service fee',    d.price],
+              ['📋','Visa type',      d.tag],
             ].map(([icon,label,val]) => (
               <div key={label} style={{ background:'#F9FAFB', borderRadius:12, padding:'12px 14px' }}>
                 <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:5 }}>
@@ -438,7 +438,7 @@ function DestModal({ d, onClose }) {
           </div>
           <div style={{ borderRadius:12, padding:16, marginBottom:22, background:'#FFFBEB', border:'1px solid #FDE68A' }}>
             <h4 style={{ fontWeight:700, fontSize:13, color:'#92400E', marginBottom:10, display:'flex', alignItems:'center', gap:6 }}>
-              📋 Giấy tờ cần chuẩn bị
+              📋 What you’ll need
             </h4>
             <ul style={{ fontSize:12, color:'#78350F', lineHeight:1.7, listStyle:'none', padding:0, margin:0 }}>
               {REQUIREMENTS.map(r => (
@@ -449,9 +449,9 @@ function DestModal({ d, onClose }) {
             </ul>
           </div>
           <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-            <button onClick={onClose} className="btn-secondary" style={{ flex:'0 0 auto', padding:'12px 24px' }}>Để sau</button>
+            <button onClick={onClose} className="btn-secondary" style={{ flex:'0 0 auto', padding:'12px 24px' }}>Maybe later</button>
             <Link to="/" onClick={onClose} className="btn-primary" style={{ flex:1, justifyContent:'center', minWidth:200 }}>
-              Đăng ký visa ngay
+              Apply for visa
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>

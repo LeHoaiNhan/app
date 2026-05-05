@@ -3,11 +3,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 const LINKS = [
-  { to: '/destinations', label: 'Điểm đến' },
-  { to: '/visa-types',   label: 'Loại visa' },
-  { to: '/pricing',      label: 'Bảng giá' },
-  { to: '/guide',        label: 'Hướng dẫn' },
-  { to: '/support',      label: 'Hỗ trợ' },
+  { to: '/destinations', label: 'Destinations' },
+  { to: '/visa-types',   label: 'Visa Types' },
+  { to: '/pricing',      label: 'Pricing' },
+  { to: '/guide',        label: 'Guide' },
+  { to: '/support',      label: 'Support' },
 ]
 
 export default function Navbar({ onApplyClick }) {
@@ -94,7 +94,7 @@ export default function Navbar({ onApplyClick }) {
                       style={{ display:'block', padding:'10px 16px', textDecoration:'none', fontSize:14, color:'#374151', fontFamily:'inherit' }}
                       onMouseEnter={e => e.currentTarget.style.background='#F9FAFB'}
                       onMouseLeave={e => e.currentTarget.style.background='transparent'}
-                    >📋 Đơn của tôi</Link>
+                    >📋 My Orders</Link>
                   )}
                   <Link
                     to="/support"
@@ -102,12 +102,12 @@ export default function Navbar({ onApplyClick }) {
                     style={{ display:'block', padding:'10px 16px', textDecoration:'none', fontSize:14, color:'#374151', fontFamily:'inherit' }}
                     onMouseEnter={e => e.currentTarget.style.background='#F9FAFB'}
                     onMouseLeave={e => e.currentTarget.style.background='transparent'}
-                  >💬 Hỗ trợ</Link>
+                  >💬 Support</Link>
 
                   <button
                     onClick={() => { logout(); setUserMenu(false) }}
                     style={{ width:'100%', textAlign:'left', padding:'10px 16px', border:'none', borderTop:'1px solid #FEE2E2', background:'none', fontSize:14, color:'#DC2626', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
-                  >🚪 Đăng xuất</button>
+                  >🚪 Sign out</button>
                 </div>
               )}
             </div>
@@ -118,14 +118,14 @@ export default function Navbar({ onApplyClick }) {
               style={{ fontSize:14, fontWeight:600, color:'#374151', background:'none', border:'1.5px solid #E5E7EB', borderRadius:8, padding:'8px 16px', cursor:'pointer', fontFamily:'inherit', transition:'all .15s' }}
               onMouseEnter={e => { e.target.style.borderColor='var(--blue)'; e.target.style.color='var(--blue)' }}
               onMouseLeave={e => { e.target.style.borderColor='#E5E7EB'; e.target.style.color='#374151' }}
-            >Đăng nhập</button>
+            >Sign in</button>
           )}
 
           <button
             onClick={handleApply}
             className="btn-primary"
             style={{ fontSize:13, padding:'9px 18px' }}
-          >Đăng ký visa</button>
+          >Apply now</button>
 
           {/* Hamburger */}
           <button
@@ -167,7 +167,7 @@ export default function Navbar({ onApplyClick }) {
                 background: pathname==='/my-orders' ? 'var(--blue-light)' : 'transparent',
                 color: pathname==='/my-orders' ? 'var(--blue)' : '#374151',
               }}
-            >📋 Đơn của tôi</Link>
+            >📋 My Orders</Link>
           )}
 
           {user && user.role === 'admin' && (
@@ -187,7 +187,7 @@ export default function Navbar({ onApplyClick }) {
             <button
               onClick={() => { setShowLoginModal(true); setMenuOpen(false) }}
               style={{ width:'100%', textAlign:'left', padding:'11px 12px', borderRadius:8, fontSize:14, fontWeight:600, color:'#374151', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', marginTop:2 }}
-            >Đăng nhập</button>
+            >Sign in</button>
           )}
         </div>
       )}

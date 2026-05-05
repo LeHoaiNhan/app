@@ -4,79 +4,79 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 const STEPS = [
-  { num:'01', icon:'🌍', title:'Chọn điểm đến & loại visa', time:'1 phút', desc:'Kiểm tra yêu cầu visa cho quốc gia bạn muốn đến và chọn loại eVisa phù hợp với mục đích chuyến đi.' },
-  { num:'02', icon:'📝', title:'Điền thông tin cá nhân',     time:'5 phút', desc:'Nhập họ tên, ngày sinh, thông tin liên hệ. Hệ thống tự động kiểm tra tính hợp lệ ngay khi gõ.' },
-  { num:'03', icon:'📘', title:'Tải hộ chiếu & ảnh',         time:'2 phút', desc:'Tải ảnh trang thông tin hộ chiếu và ảnh chân dung nền trắng. Hệ thống AI kiểm tra chất lượng ảnh.' },
-  { num:'04', icon:'💳', title:'Thanh toán an toàn',         time:'1 phút', desc:'Thanh toán qua thẻ tín dụng hoặc ví điện tử với mã hóa SSL 256-bit. Có hóa đơn điện tử ngay.' },
-  { num:'05', icon:'✈️', title:'Nhận visa qua email',         time:'3-7 ngày', desc:'Đội ngũ chuyên gia kiểm tra hồ sơ và gửi visa điện tử về email. Bạn chỉ cần in hoặc xuất trình.' },
+  { num:'01', icon:'🌍', title:'Pick destination & visa type', time:'1 min',   desc:'Check the visa requirements for your destination and choose the eVisa type that fits your trip.' },
+  { num:'02', icon:'📝', title:'Fill in your details',          time:'5 min',   desc:'Enter your name, date of birth, and contact info. The system validates each field as you type.' },
+  { num:'03', icon:'📘', title:'Upload passport & photo',       time:'2 min',   desc:'Upload a passport scan and a portrait photo with white background. AI checks photo quality automatically.' },
+  { num:'04', icon:'💳', title:'Pay securely',                  time:'1 min',   desc:'Pay by card or digital wallet with SSL 256-bit encryption. You get an instant e-receipt.' },
+  { num:'05', icon:'✈️', title:'Receive visa by email',          time:'3-7 days', desc:'Our experts review your file and send the e-visa to your inbox. Just print or show it on your phone.' },
 ]
 
 const DOCS = [
-  { id:'passport',     required:true,  label:'Hộ chiếu còn hạn ít nhất 6 tháng',          hint:'Tính từ ngày dự kiến nhập cảnh' },
-  { id:'photo',        required:true,  label:'Ảnh chân dung 4×6 nền trắng',               hint:'Chụp trong vòng 6 tháng, không đội mũ, không kính' },
-  { id:'passport-img', required:true,  label:'Ảnh trang thông tin hộ chiếu',              hint:'Rõ nét, đủ 4 góc, không bị che' },
-  { id:'flight',       required:false, label:'Vé máy bay khứ hồi',                        hint:'Một số nước yêu cầu (Thái Lan, Nhật, Hàn)' },
-  { id:'hotel',        required:false, label:'Đặt phòng khách sạn / địa chỉ lưu trú',     hint:'Giúp tăng tỷ lệ chấp thuận' },
-  { id:'bank',         required:false, label:'Sao kê ngân hàng 3 tháng gần nhất',         hint:'Khuyến nghị cho visa du lịch dài ngày' },
-  { id:'insurance',    required:false, label:'Bảo hiểm du lịch',                          hint:'Bắt buộc với một số nước châu Âu' },
-  { id:'invitation',   required:false, label:'Thư mời (nếu có)',                          hint:'Cho mục đích thăm thân, công tác' },
+  { id:'passport',     required:true,  label:'Passport valid for at least 6 months',         hint:'Counted from your planned entry date' },
+  { id:'photo',        required:true,  label:'Passport-style photo, white background',       hint:'Taken in the last 6 months, no hat, no glasses' },
+  { id:'passport-img', required:true,  label:'Photo of passport info page',                  hint:'Sharp, all 4 corners visible, nothing covered' },
+  { id:'flight',       required:false, label:'Round-trip flight ticket',                     hint:'Required by some countries (Thailand, Japan, Korea)' },
+  { id:'hotel',        required:false, label:'Hotel booking or accommodation address',       hint:'Improves approval chances' },
+  { id:'bank',         required:false, label:'Bank statement from the last 3 months',        hint:'Recommended for longer tourist visas' },
+  { id:'insurance',    required:false, label:'Travel insurance',                             hint:'Mandatory for some European countries' },
+  { id:'invitation',   required:false, label:'Invitation letter (if applicable)',            hint:'For visiting family or business trips' },
 ]
 
-const PHOTO_DOS = ['Nền trắng đồng nhất','Mặt thẳng, nhìn vào camera','Ánh sáng đều, không đổ bóng','Tóc gọn, không che mặt','Tối thiểu 400 × 400 px']
-const PHOTO_DONTS = ['Đội mũ, đeo kính (kể cả kính cận)','Cười hở răng, biểu cảm khác lạ','Nền có hoa văn, vật thể','Ảnh selfie, ảnh chụp với nhóm','Ảnh mờ, có filter, chỉnh sửa quá mức']
+const PHOTO_DOS = ['Plain white background','Face the camera straight on','Even lighting, no shadows','Hair tidy, face uncovered','At least 400 × 400 px']
+const PHOTO_DONTS = ['Wearing a hat or glasses (even prescription)','Smiling with teeth, unusual expressions','Patterned background or objects','Selfies or group photos','Blurry, filtered, or heavily edited photos']
 
 const MISTAKES = [
-  { icon:'📅', title:'Hộ chiếu sắp hết hạn',     desc:'Hộ chiếu phải còn hạn ít nhất 6 tháng. Nhiều người bị từ chối vì hạn còn 5 tháng 28 ngày.' },
-  { icon:'📸', title:'Ảnh không đúng chuẩn',    desc:'Ảnh selfie, ảnh có filter, ảnh nền không trắng là lý do từ chối phổ biến nhất.' },
-  { icon:'✍️', title:'Sai chính tả họ tên',     desc:'Tên trên đơn phải khớp 100% với hộ chiếu. Sai một chữ cái cũng bị từ chối.' },
-  { icon:'⏰', title:'Đăng ký quá sát ngày đi', desc:'Nên nộp đơn trước ít nhất 14 ngày. Gói thường mất 5-7 ngày, thêm thời gian dự phòng.' },
-  { icon:'💰', title:'Tài chính không đủ chứng minh', desc:'Visa du lịch dài ngày cần sao kê đủ chi phí. Tài khoản dưới $2000 dễ bị nghi ngờ.' },
-  { icon:'🎯', title:'Khai sai mục đích chuyến đi', desc:'Khai du lịch nhưng đi công tác (hoặc ngược lại) có thể bị từ chối khi nhập cảnh.' },
+  { icon:'📅', title:'Passport too close to expiry',  desc:'Your passport must be valid for at least 6 months. Many get rejected with 5 months 28 days left.' },
+  { icon:'📸', title:'Photo doesn’t meet standards',  desc:'Selfies, filtered photos, or non-white backgrounds are the most common reason for rejection.' },
+  { icon:'✍️', title:'Misspelled name',                desc:'The name on your application must match your passport exactly. Even one wrong letter triggers rejection.' },
+  { icon:'⏰', title:'Applying too close to travel',  desc:'Submit at least 14 days early. Standard plan takes 5-7 days, leave a buffer.' },
+  { icon:'💰', title:'Insufficient financial proof',   desc:'Long tourist visas need bank statements that cover your trip. Accounts under $2,000 raise questions.' },
+  { icon:'🎯', title:'Wrong trip purpose',             desc:'Declaring tourism but actually traveling for business (or vice versa) can lead to denial at the border.' },
 ]
 
 const TIPS = [
-  { icon:'🚀', title:'Nộp sớm 2-3 tuần',     desc:'Tránh sát ngày đi để có thời gian xử lý sự cố nếu hồ sơ thiếu.' },
-  { icon:'✅', title:'Kiểm tra kỹ trước khi nộp', desc:'Đọc lại 2 lần — đặc biệt là số hộ chiếu, ngày tháng, email.' },
-  { icon:'📞', title:'Lưu mã đơn',            desc:'Mã EV-XXXXXX dùng để tra cứu trạng thái và liên hệ hỗ trợ.' },
-  { icon:'💾', title:'Lưu visa offline',      desc:'Tải visa PDF về máy + in ra giấy. Đề phòng mất kết nối tại sân bay.' },
+  { icon:'🚀', title:'Apply 2-3 weeks early', desc:'Don’t wait until the last minute — leave buffer for any issues with your file.' },
+  { icon:'✅', title:'Double-check before submitting', desc:'Read everything twice — passport number, dates, and email matter most.' },
+  { icon:'📞', title:'Save your order code', desc:'Your EV-XXXXXX code is used to track status and contact support.' },
+  { icon:'💾', title:'Save your visa offline', desc:'Download the PDF and print a copy. Just in case you have no signal at the airport.' },
 ]
 
-const FAQ_CATS = ['Tất cả','Hồ sơ','Thanh toán','Xử lý','Tài khoản','Sau khi nhận visa']
+const FAQ_CATS = ['All','Documents','Payment','Processing','Account','After visa']
 
 const FAQS = [
-  { cat:'Hồ sơ',     q:'Tôi cần chuẩn bị những giấy tờ gì?',                           a:'Bắt buộc: hộ chiếu còn hạn 6 tháng, ảnh chân dung nền trắng, ảnh trang thông tin hộ chiếu. Khuyến nghị thêm: vé máy bay, đặt phòng khách sạn, sao kê ngân hàng. Tùy quốc gia có thể yêu cầu bảo hiểm du lịch.' },
-  { cat:'Hồ sơ',     q:'Hộ chiếu hết hạn còn 5 tháng có nộp được không?',              a:'Không. Hầu hết quốc gia yêu cầu hộ chiếu còn hạn tối thiểu 6 tháng tính từ ngày dự kiến nhập cảnh. Bạn cần làm mới hộ chiếu trước khi nộp đơn xin visa.' },
-  { cat:'Hồ sơ',     q:'Có thể dùng ảnh selfie không?',                                a:'Không. Ảnh phải có nền trắng đồng nhất, mặt thẳng, không cười hở răng, không đội mũ kính. Nếu không có ảnh đúng chuẩn, bạn có thể chụp tại các tiệm ảnh thẻ với giá ~50.000đ.' },
-  { cat:'Thanh toán',q:'Có những hình thức thanh toán nào?',                           a:'Hỗ trợ thẻ tín dụng/ghi nợ (Visa, Mastercard, JCB), ví điện tử (MoMo, ZaloPay, VNPay, ShopeePay) và chuyển khoản ngân hàng cho đơn doanh nghiệp.' },
-  { cat:'Thanh toán',q:'Phí dịch vụ có được hoàn lại nếu visa bị từ chối?',            a:'Có. Chúng tôi hoàn 100% phí dịch vụ eVisa nếu đơn bị từ chối bởi cơ quan cấp visa. Phí visa chính phủ không được hoàn lại theo quy định của từng nước.' },
-  { cat:'Xử lý',     q:'Thời gian xử lý bao lâu?',                                     a:'E-Visa thường 3-7 ngày làm việc. Gói nhanh 2-3 ngày (+$20). Gói siêu nhanh 24 giờ (+$50). Thời gian có thể thay đổi tùy quốc gia và mùa cao điểm.' },
-  { cat:'Xử lý',     q:'Tôi có thể theo dõi trạng thái đơn không?',                    a:'Có. Sau khi đăng ký, bạn nhận mã đơn EV-XXXXXX. Theo dõi realtime tại trang Hỗ trợ → Tra cứu đơn, hoặc trong mục "Đơn của tôi" sau khi đăng nhập. Email cập nhật ở mỗi bước.' },
-  { cat:'Xử lý',     q:'Đơn của tôi đã 7 ngày chưa có kết quả, có sao không?',         a:'Một số nước (Saudi Arabia, Brazil) thường mất 7-10 ngày. Bạn có thể liên hệ chuyên gia qua Live Chat hoặc Hotline 1900 1234 để kiểm tra cụ thể trạng thái với cơ quan cấp visa.' },
-  { cat:'Tài khoản', q:'Tôi có thể chỉnh sửa thông tin sau khi nộp không?',            a:'Bạn có thể chỉnh sửa trong 2 giờ đầu sau khi nộp đơn (trước khi chuyên gia bắt đầu review). Sau đó cần liên hệ bộ phận hỗ trợ — có thể tốn phí xử lý.' },
-  { cat:'Tài khoản', q:'Tôi quên mật khẩu, làm sao đăng nhập?',                        a:'Click "Quên mật khẩu?" ở màn đăng nhập, nhập email, hệ thống gửi link reset trong vòng 1 phút. Hoặc dùng đăng nhập Google nếu tài khoản đã liên kết.' },
-  { cat:'Sau khi nhận visa', q:'Visa điện tử có an toàn không?',                       a:'Hoàn toàn an toàn. eVisa được cấp bởi chính phủ và có giá trị pháp lý như visa dán. Khi nhập cảnh, bạn chỉ cần in PDF hoặc xuất trình trên điện thoại — biên phòng quét mã để xác thực.' },
-  { cat:'Sau khi nhận visa', q:'Nếu tôi mất visa thì sao?',                            a:'Visa điện tử lưu trong email và trong hệ thống chính phủ — bạn không bao giờ "mất" được. Chỉ cần đăng nhập email tải lại, hoặc liên hệ chuyên gia gửi lại bản PDF.' },
-  { cat:'Sau khi nhận visa', q:'Có thể gia hạn visa không?',                           a:'Tùy quốc gia. Một số nước (Thái Lan, Indonesia) cho phép gia hạn 30 ngày tại địa phương. Đa số phải xuất cảnh và xin visa mới. Liên hệ chuyên gia để được tư vấn cụ thể.' },
+  { cat:'Documents', q:'What documents do I need to prepare?',                       a:'Required: passport valid for 6 months, portrait photo with white background, passport info-page scan. Recommended: flight ticket, hotel booking, bank statement. Some countries also require travel insurance.' },
+  { cat:'Documents', q:'Can I apply if my passport expires in 5 months?',            a:'No. Most countries require at least 6 months passport validity from your intended entry date. Renew your passport before applying.' },
+  { cat:'Documents', q:'Can I use a selfie?',                                        a:'No. The photo must have a plain white background, face the camera straight on, no smile with teeth, no hat or glasses. Most photo studios can take a compliant photo for a few dollars.' },
+  { cat:'Payment',   q:'What payment methods do you accept?',                        a:'We accept VISA, Mastercard, American Express, JCB, Apple Pay, Google Pay, and bank transfer for business orders.' },
+  { cat:'Payment',   q:'Is the service fee refundable if my visa is rejected?',     a:'Yes. We refund 100% of the eVisa service fee if your application is rejected by the issuing authority. Government fees are non-refundable per each country’s rules.' },
+  { cat:'Processing',q:'How long does processing take?',                             a:'E-Visa typically takes 3-7 business days. Fast plan: 2-3 days (+$20). Express: 24 hours (+$50). Times vary by country and peak season.' },
+  { cat:'Processing',q:'Can I track my application status?',                         a:'Yes. After submitting, you receive an order code EV-XXXXXX. Track in real time at Support → Track order, or in “My Orders” after signing in. Email updates at every step.' },
+  { cat:'Processing',q:'It’s been 7 days with no result — is something wrong?',     a:'Some countries (Saudi Arabia, Brazil) usually take 7-10 days. Contact us via Live Chat or Hotline +1 (415) 555-0123 to check the status with the issuing authority.' },
+  { cat:'Account',   q:'Can I edit info after submitting?',                          a:'You can edit within the first 2 hours after submission (before our experts start the review). After that, contact support — extra fees may apply.' },
+  { cat:'Account',   q:'I forgot my password, what should I do?',                    a:'Click “Forgot password?” on the sign-in screen, enter your email, and we’ll send a reset link within a minute. Or sign in with Google if your account is linked.' },
+  { cat:'After visa',q:'Is an electronic visa safe?',                                a:'Yes — issued by the government and legally equivalent to a sticker visa. At the border, just print the PDF or show it on your phone — officers scan the code to verify.' },
+  { cat:'After visa',q:'What if I lose my visa?',                                    a:'Your e-visa is stored in your email and in the government system — you can’t really lose it. Just check your email for the PDF, or contact us to resend it.' },
+  { cat:'After visa',q:'Can I extend my visa?',                                      a:'Depends on the country. Some (Thailand, Indonesia) allow a 30-day extension locally. Most require leaving and re-applying. Contact our experts for case-specific advice.' },
 ]
 
 const QUICK_LINKS = [
-  ['#process','📋 Quy trình'],
-  ['#docs','📦 Hồ sơ'],
-  ['#photo','📸 Ảnh chuẩn'],
-  ['#mistakes','⚠️ Sai lầm'],
+  ['#process','📋 Process'],
+  ['#docs','📦 Documents'],
+  ['#photo','📸 Photo guide'],
+  ['#mistakes','⚠️ Mistakes'],
   ['#faq','❓ FAQ'],
 ]
 
 export default function Guide() {
   const [open, setOpen]       = useState(null)
   const [checked, setChecked] = useState(new Set(['passport','photo','passport-img']))
-  const [cat, setCat]         = useState('Tất cả')
+  const [cat, setCat]         = useState('All')
   const [search, setSearch]   = useState('')
 
   const filteredFaqs = useMemo(() => {
     const term = search.trim().toLowerCase()
     return FAQS.filter(f => {
-      const matchCat = cat === 'Tất cả' || f.cat === cat
+      const matchCat = cat === 'All' || f.cat === cat
       const matchSearch = !term || f.q.toLowerCase().includes(term) || f.a.toLowerCase().includes(term)
       return matchCat && matchSearch
     })
@@ -106,13 +106,13 @@ export default function Guide() {
         <div style={{ maxWidth:1024, margin:'0 auto', position:'relative', textAlign:'center' }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(245,166,35,0.15)', border:'1px solid rgba(245,166,35,0.3)', color:'var(--gold)', padding:'6px 14px', borderRadius:50, fontSize:13, fontWeight:600, marginBottom:20 }}>
             <span className="pulse" style={{ width:8, height:8, background:'var(--gold)', borderRadius:'50%', display:'inline-block' }} />
-            Hướng dẫn từ A-Z trong 10 phút
+            A-to-Z guide in 10 minutes
           </div>
           <h1 style={{ fontFamily:'Fraunces,serif', fontSize:'clamp(36px,6vw,56px)', fontWeight:900, color:'white', lineHeight:1.1, marginBottom:16 }}>
-            Hướng dẫn xin <span style={{ color:'var(--gold)' }}>eVisa</span>
+            How to apply for an <span style={{ color:'var(--gold)' }}>eVisa</span>
           </h1>
           <p style={{ color:'rgba(255,255,255,0.68)', fontSize:17, lineHeight:1.7, maxWidth:560, margin:'0 auto 28px' }}>
-            Mọi thứ bạn cần biết để xin visa thành công — từ chuẩn bị hồ sơ đến nhận visa qua email
+            Everything you need to know to get your visa — from preparing documents to receiving it by email
           </p>
 
           <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'center' }}>
@@ -131,9 +131,9 @@ export default function Guide() {
       <section id="process" style={{ background:'#F9FAFB', padding:'64px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Quy trình</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>5 bước đơn giản, hoàn tất trong 10 phút</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Từ đăng ký đến nhận visa — quy trình hoàn toàn online</p>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Process</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>5 simple steps, done in 10 minutes</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>From application to approved visa — fully online</p>
           </div>
 
           <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
@@ -164,17 +164,17 @@ export default function Guide() {
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
             <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Checklist</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Giấy tờ cần chuẩn bị</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Tick từng mục để theo dõi tiến độ chuẩn bị hồ sơ</p>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Documents you’ll need</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Tick items off as you prepare each document</p>
           </div>
 
           <div style={{ background:'white', borderRadius:14, border:'1px solid #E5E7EB', overflow:'hidden' }}>
             <div style={{ padding:'16px 22px', background:'#F9FAFB', borderBottom:'1px solid #F3F4F6' }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8, flexWrap:'wrap', gap:6 }}>
                 <span style={{ fontWeight:700, fontSize:14, color:'var(--navy)' }}>
-                  {requiredDone === requiredCount ? '✅ Đã đủ giấy tờ bắt buộc' : `📋 Bắt buộc: ${requiredDone}/${requiredCount}`}
+                  {requiredDone === requiredCount ? '✅ All required documents ready' : `📋 Required: ${requiredDone}/${requiredCount}`}
                 </span>
-                <span style={{ fontSize:12, color:'#6B7280' }}>{allDone}/{DOCS.length} mục</span>
+                <span style={{ fontSize:12, color:'#6B7280' }}>{allDone}/{DOCS.length} items</span>
               </div>
               <div style={{ height:8, borderRadius:50, overflow:'hidden', background:'#E5E7EB' }}>
                 <div style={{ height:'100%', width:`${(allDone / DOCS.length) * 100}%`, background:'var(--blue)', transition:'width .3s' }} />
@@ -202,7 +202,7 @@ export default function Guide() {
                       <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
                         <span style={{ fontWeight:700, fontSize:14, color: isChecked ? '#9CA3AF' : 'var(--navy)', textDecoration: isChecked ? 'line-through' : 'none' }}>{d.label}</span>
                         {d.required && (
-                          <span style={{ fontSize:10, fontWeight:700, padding:'2px 6px', borderRadius:4, background:'#FEE2E2', color:'#DC2626' }}>BẮT BUỘC</span>
+                          <span style={{ fontSize:10, fontWeight:700, padding:'2px 6px', borderRadius:4, background:'#FEE2E2', color:'#DC2626' }}>REQUIRED</span>
                         )}
                       </div>
                       <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>{d.hint}</p>
@@ -219,9 +219,9 @@ export default function Guide() {
       <section id="photo" style={{ background:'#F9FAFB', padding:'64px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Ảnh chân dung</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Yêu cầu ảnh chuẩn quốc tế</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Ảnh sai chuẩn là lý do từ chối phổ biến nhất</p>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Portrait photo</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>International photo standards</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Bad photos are the #1 reason for rejection</p>
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:16 }}>
@@ -229,8 +229,8 @@ export default function Guide() {
               <div style={{ padding:'14px 20px', display:'flex', alignItems:'center', gap:10, background:'#F0FDF4' }}>
                 <div style={{ width:36, height:36, borderRadius:'50%', background:'var(--green)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>✓</div>
                 <div>
-                  <div style={{ fontSize:11, fontWeight:700, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.06em' }}>NÊN</div>
-                  <div style={{ fontSize:15, fontWeight:900, color:'var(--navy)' }}>Ảnh chuẩn</div>
+                  <div style={{ fontSize:11, fontWeight:700, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.06em' }}>DO</div>
+                  <div style={{ fontSize:15, fontWeight:900, color:'var(--navy)' }}>Compliant photo</div>
                 </div>
               </div>
               <ul style={{ listStyle:'none', padding:'14px 20px', margin:0 }}>
@@ -246,8 +246,8 @@ export default function Guide() {
               <div style={{ padding:'14px 20px', display:'flex', alignItems:'center', gap:10, background:'#FEF2F2' }}>
                 <div style={{ width:36, height:36, borderRadius:'50%', background:'#DC2626', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>✕</div>
                 <div>
-                  <div style={{ fontSize:11, fontWeight:700, color:'#DC2626', textTransform:'uppercase', letterSpacing:'.06em' }}>KHÔNG NÊN</div>
-                  <div style={{ fontSize:15, fontWeight:900, color:'var(--navy)' }}>Lỗi thường gặp</div>
+                  <div style={{ fontSize:11, fontWeight:700, color:'#DC2626', textTransform:'uppercase', letterSpacing:'.06em' }}>DON’T</div>
+                  <div style={{ fontSize:15, fontWeight:900, color:'var(--navy)' }}>Common mistakes</div>
                 </div>
               </div>
               <ul style={{ listStyle:'none', padding:'14px 20px', margin:0 }}>
@@ -263,7 +263,7 @@ export default function Guide() {
           <div style={{ marginTop:18, borderRadius:12, padding:14, display:'flex', gap:10, alignItems:'flex-start', background:'#FFFBEB', border:'1px solid #FDE68A' }}>
             <span style={{ fontSize:22 }}>💡</span>
             <div style={{ flex:1, fontSize:14, color:'#78350F' }}>
-              <span style={{ fontWeight:700 }}>Mẹo:</span> Hệ thống AI của eVisa tự động kiểm tra ảnh ngay khi tải lên — nếu sai chuẩn, bạn sẽ được thông báo trước khi nộp đơn.
+              <span style={{ fontWeight:700 }}>Tip:</span> Our AI checks your photo as soon as you upload it — if anything is off, you’ll know before submitting.
             </div>
           </div>
         </div>
@@ -273,9 +273,9 @@ export default function Guide() {
       <section id="mistakes" style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6', borderBottom:'1px solid #F3F4F6' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'#DC2626', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Cảnh báo</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>6 sai lầm khiến đơn bị từ chối</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Tránh các lỗi này để tăng tỷ lệ chấp thuận lên 99%</p>
+            <div style={{ fontSize:11, fontWeight:700, color:'#DC2626', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Warning</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>6 mistakes that get applications rejected</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Avoid these to push your approval rate up to 99%</p>
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:16 }}>
@@ -300,7 +300,7 @@ export default function Guide() {
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:40 }}>
             <div style={{ fontSize:11, fontWeight:700, color:'#F59E0B', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Pro tips</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)' }}>Mẹo từ chuyên gia eVisa</h2>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)' }}>Tips from our experts</h2>
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:16 }}>
@@ -323,8 +323,8 @@ export default function Guide() {
         <div style={{ maxWidth:920, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
             <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>FAQ</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Câu hỏi thường gặp</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>{FAQS.length} câu hỏi phổ biến — tìm câu trả lời trong vài giây</p>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Frequently asked questions</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>{FAQS.length} common questions — find your answer in seconds</p>
           </div>
 
           <div style={{ position:'relative', marginBottom:14 }}>
@@ -333,7 +333,7 @@ export default function Guide() {
             </svg>
             <input
               style={{ width:'100%', padding:'12px 14px 12px 42px', borderRadius:12, fontSize:14, border:'1px solid #E5E7EB', outline:'none', background:'white', fontFamily:'inherit' }}
-              placeholder="Tìm câu hỏi..."
+              placeholder="Search questions..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
@@ -342,7 +342,7 @@ export default function Guide() {
           <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:24 }}>
             {FAQ_CATS.map(c => {
               const active = cat === c
-              const count = c === 'Tất cả' ? FAQS.length : FAQS.filter(f => f.cat === c).length
+              const count = c === 'All' ? FAQS.length : FAQS.filter(f => f.cat === c).length
               return (
                 <button key={c} onClick={() => setCat(c)}
                   style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'7px 14px', borderRadius:50, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'all .15s', background: active ? 'var(--blue)' : 'white', color: active ? 'white' : '#6B7280', border: active ? '1px solid var(--blue)' : '1px solid #E5E7EB', boxShadow: active ? '0 4px 12px rgba(27,79,216,0.2)' : 'none' }}
@@ -386,9 +386,9 @@ export default function Guide() {
           ) : (
             <div style={{ background:'white', borderRadius:14, border:'1px solid #E5E7EB', padding:'48px 20px', textAlign:'center' }}>
               <div style={{ fontSize:38, opacity:0.6, marginBottom:10 }}>🔍</div>
-              <p style={{ fontSize:16, fontWeight:700, color:'var(--navy)' }}>Không tìm thấy câu hỏi phù hợp</p>
-              <p style={{ fontSize:14, color:'#6B7280', marginTop:4, marginBottom:18 }}>Thử từ khóa khác hoặc liên hệ chuyên gia</p>
-              <Link to="/support" className="btn-primary">Liên hệ hỗ trợ →</Link>
+              <p style={{ fontSize:16, fontWeight:700, color:'var(--navy)' }}>No matching questions found</p>
+              <p style={{ fontSize:14, color:'#6B7280', marginTop:4, marginBottom:18 }}>Try a different search term or contact our experts</p>
+              <Link to="/support" className="btn-primary">Contact support →</Link>
             </div>
           )}
         </div>
@@ -396,17 +396,17 @@ export default function Guide() {
 
       {/* ── CTA ── */}
       <section style={{ background:'var(--navy)', padding:'56px 20px', textAlign:'center' }}>
-        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Còn thắc mắc khác?</h2>
-        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Chuyên gia eVisa sẵn sàng tư vấn miễn phí 24/7</p>
+        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Still have questions?</h2>
+        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Our experts are ready to help — free, 24/7</p>
         <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap' }}>
           <Link to="/support" style={{ display:'inline-block', background:'rgba(255,255,255,0.1)', color:'white', borderRadius:10, padding:'14px 28px', fontSize:15, fontWeight:700, textDecoration:'none', border:'1px solid rgba(255,255,255,0.2)', fontFamily:'inherit', transition:'background .15s' }}
             onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
             onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
-          >Liên hệ hỗ trợ</Link>
+          >Contact support</Link>
           <Link to="/" style={{ display:'inline-block', background:'var(--gold)', color:'var(--navy)', borderRadius:10, padding:'14px 28px', fontSize:15, fontWeight:800, textDecoration:'none', fontFamily:'inherit', transition:'opacity .15s' }}
             onMouseEnter={e => e.currentTarget.style.opacity='.88'}
             onMouseLeave={e => e.currentTarget.style.opacity='1'}
-          >Đăng ký visa ngay →</Link>
+          >Apply for visa →</Link>
         </div>
       </section>
 

@@ -8,58 +8,58 @@ const SERVICE_FEES = { normal: 19, fast: 39, express: 69 }
 const TIERS = [
   {
     key:'normal', label:'Standard', icon:'⏱',
-    desc:'Đủ thời gian, chi phí tốt nhất',
+    desc:'Plenty of time, best price',
     fee: SERVICE_FEES.normal,
-    time:'5-7 ngày làm việc',
-    features:['Chuyên gia review hồ sơ','AI kiểm tra ảnh chân dung','Mã hóa SSL 256-bit','Hỗ trợ tiếng Việt 24/7','Email cập nhật trạng thái'],
+    time:'5-7 business days',
+    features:['Expert file review','AI photo check','SSL 256-bit encryption','24/7 English support','Email status updates'],
     accent:'#6B7280', bg:'#F9FAFB',
   },
   {
     key:'fast', label:'Fast', icon:'⚡',
-    desc:'Lựa chọn phổ biến nhất',
+    desc:'Our most popular plan',
     fee: SERVICE_FEES.fast,
-    time:'2-3 ngày làm việc',
-    features:['Tất cả tính năng Standard','Ưu tiên xử lý hồ sơ','Hoàn 100% phí dịch vụ nếu từ chối','Live Chat ưu tiên','SMS thông báo'],
+    time:'2-3 business days',
+    features:['Everything in Standard','Priority processing','100% service fee refund if rejected','Priority live chat','SMS notifications'],
     accent:'#1B4FD8', bg:'#EEF3FF', popular:true,
   },
   {
     key:'express', label:'Express', icon:'🚀',
-    desc:'Nhanh nhất có thể',
+    desc:'As fast as it gets',
     fee: SERVICE_FEES.express,
-    time:'24 giờ',
-    features:['Tất cả tính năng Fast','SLA 24h cam kết','Hotline trực tiếp chuyên gia','Ưu tiên đầu tiên trong queue','Hoàn 200% nếu trễ deadline'],
+    time:'24 hours',
+    features:['Everything in Fast','24h SLA guarantee','Direct expert hotline','First in the queue','200% refund if we miss the deadline'],
     accent:'#F59E0B', bg:'#FFF7ED',
   },
 ]
 
 const PRICING = [
-  { country:'Thái Lan',     flag:'🇹🇭', tag:'E-Visa',          gov:0,  popular:true },
+  { country:'Thailand',     flag:'🇹🇭', tag:'E-Visa',          gov:0,  popular:true },
   { country:'Singapore',    flag:'🇸🇬', tag:'E-Visa',          gov:15, popular:false },
   { country:'Indonesia',    flag:'🇮🇩', tag:'Visa on Arrival', gov:35, popular:false },
-  { country:'Malaysia',     flag:'🇲🇾', tag:'Miễn visa',       gov:null, popular:false },
+  { country:'Malaysia',     flag:'🇲🇾', tag:'Visa-free',       gov:null, popular:false },
   { country:'Philippines',  flag:'🇵🇭', tag:'E-Visa',          gov:25, popular:false },
-  { country:'Campuchia',    flag:'🇰🇭', tag:'E-Visa',          gov:30, popular:false },
+  { country:'Cambodia',     flag:'🇰🇭', tag:'E-Visa',          gov:30, popular:false },
   { country:'Myanmar',      flag:'🇲🇲', tag:'E-Visa',          gov:50, popular:false },
-  { country:'Nhật Bản',     flag:'🇯🇵', tag:'E-Visa',          gov:30, popular:true },
-  { country:'Hàn Quốc',     flag:'🇰🇷', tag:'E-Visa',          gov:35, popular:true },
-  { country:'Đài Loan',     flag:'🇹🇼', tag:'E-Visa',          gov:30, popular:false },
-  { country:'Hong Kong',    flag:'🇭🇰', tag:'Miễn visa',       gov:null, popular:false },
-  { country:'Ấn Độ',        flag:'🇮🇳', tag:'E-Visa',          gov:25, popular:false },
+  { country:'Japan',        flag:'🇯🇵', tag:'E-Visa',          gov:30, popular:true },
+  { country:'South Korea',  flag:'🇰🇷', tag:'E-Visa',          gov:35, popular:true },
+  { country:'Taiwan',       flag:'🇹🇼', tag:'E-Visa',          gov:30, popular:false },
+  { country:'Hong Kong',    flag:'🇭🇰', tag:'Visa-free',       gov:null, popular:false },
+  { country:'India',        flag:'🇮🇳', tag:'E-Visa',          gov:25, popular:false },
   { country:'Sri Lanka',    flag:'🇱🇰', tag:'E-Visa',          gov:20, popular:false },
   { country:'Dubai (UAE)',  flag:'🇦🇪', tag:'E-Visa',          gov:30, popular:true },
   { country:'Qatar',        flag:'🇶🇦', tag:'E-Visa',          gov:35, popular:false },
-  { country:'Thổ Nhĩ Kỳ',   flag:'🇹🇷', tag:'E-Visa',          gov:30, popular:false },
+  { country:'Turkey',       flag:'🇹🇷', tag:'E-Visa',          gov:30, popular:false },
   { country:'Saudi Arabia', flag:'🇸🇦', tag:'E-Visa',          gov:80, popular:false },
   { country:'Oman',         flag:'🇴🇲', tag:'E-Visa',          gov:35, popular:false },
   { country:'Bahrain',      flag:'🇧🇭', tag:'E-Visa',          gov:40, popular:false },
   { country:'Canada',       flag:'🇨🇦', tag:'eTA',             gov:50, popular:false },
   { country:'Mexico',       flag:'🇲🇽', tag:'E-Visa',          gov:40, popular:false },
   { country:'Brazil',       flag:'🇧🇷', tag:'E-Visa',          gov:60, popular:false },
-  { country:'Úc',           flag:'🇦🇺', tag:'E-Visa',          gov:95, popular:true },
+  { country:'Australia',    flag:'🇦🇺', tag:'E-Visa',          gov:95, popular:true },
   { country:'New Zealand',  flag:'🇳🇿', tag:'eTA',             gov:80, popular:false },
-  { country:'Nga',          flag:'🇷🇺', tag:'E-Visa',          gov:40, popular:false },
+  { country:'Russia',       flag:'🇷🇺', tag:'E-Visa',          gov:40, popular:false },
   { country:'Albania',      flag:'🇦🇱', tag:'E-Visa',          gov:30, popular:false },
-  { country:'Ai Cập',       flag:'🇪🇬', tag:'E-Visa',          gov:40, popular:false },
+  { country:'Egypt',        flag:'🇪🇬', tag:'E-Visa',          gov:40, popular:false },
   { country:'Kenya',        flag:'🇰🇪', tag:'E-Visa',          gov:40, popular:false },
 ]
 
@@ -71,19 +71,19 @@ const TAG_COLORS = {
 }
 
 const FAQS = [
-  { q:'Tại sao mỗi quốc gia có giá khác nhau?',          a:'Phí chính phủ (gov fee) do mỗi nước quy định riêng — eVisa thu hộ nguyên giá rồi chuyển 100% đến cơ quan cấp visa. Phí dịch vụ thì cố định theo gói tốc độ bạn chọn (Standard/Fast/Express).' },
-  { q:'Phí có hoàn lại nếu visa bị từ chối không?',      a:'Có. Phí dịch vụ eVisa hoàn 100% nếu đơn bị từ chối bởi cơ quan cấp visa. Phí chính phủ không được hoàn lại theo quy định mỗi nước. Chúng tôi sẽ hỗ trợ giải thích lý do và tư vấn nộp lại miễn phí.' },
-  { q:'Có phí ẩn nào không?',                            a:'Không. Tổng phí hiển thị bao gồm gov fee + service fee. Không có phí xử lý thêm, phí transaction hay phí hủy. Bạn chỉ thanh toán đúng số tiền này, không hơn.' },
-  { q:'Thanh toán bằng VND được không?',                 a:'Có. Hệ thống tự động quy đổi USD → VND theo tỷ giá ngân hàng tại thời điểm thanh toán. Hỗ trợ thẻ VISA/Mastercard, MoMo, ZaloPay, VNPay, ShopeePay, chuyển khoản.' },
-  { q:'Có giảm giá cho gia đình / nhóm không?',          a:'Có. Đơn từ 3 người trở lên được giảm 10% phí dịch vụ. Đơn doanh nghiệp 5+ người liên hệ chuyên gia để nhận báo giá riêng.' },
-  { q:'Gói Express trễ deadline thì sao?',               a:'Cam kết SLA 24 giờ với gói Express. Nếu trễ vì lỗi của eVisa, chúng tôi hoàn 200% phí dịch vụ. Trễ vì cơ quan cấp visa thì hoàn 100% — chi tiết trong điều khoản.' },
+  { q:'Why does the price differ by country?',           a:'Government fees are set by each country — eVisa collects them at face value and forwards 100% to the issuing authority. Service fees are fixed by the speed plan you pick (Standard/Fast/Express).' },
+  { q:'Are fees refundable if my visa is rejected?',     a:'Yes. We refund 100% of the eVisa service fee if your application is rejected by the issuing authority. Government fees are non-refundable per each country’s rules. We help explain the reason and re-apply for free.' },
+  { q:'Are there any hidden fees?',                      a:'No. The total shown includes the government fee + service fee. No extra processing, transaction, or cancellation fees. You pay exactly what we display, never more.' },
+  { q:'Which payment methods are accepted?',             a:'We accept VISA / Mastercard, American Express, JCB, Apple Pay, Google Pay, and bank transfer for business accounts. Currency is USD; your bank converts automatically.' },
+  { q:'Are there family or group discounts?',            a:'Yes. Orders of 3+ people get 10% off the service fee. Business orders for 5+ people, contact our experts for a custom quote.' },
+  { q:'What if Express misses the deadline?',            a:'We commit to a 24-hour SLA on Express. If we miss it because of our processing, you get a 200% service-fee refund. If the issuing authority is delayed, you get a 100% refund — details in the terms.' },
 ]
 
 const STATS = [
-  { num:'100%',     label:'Minh bạch' },
-  { num:'24h',      label:'Gói nhanh nhất' },
-  { num:'$0',       label:'Phí ẩn' },
-  { num:'Hoàn tiền',label:'Nếu từ chối' },
+  { num:'100%',       label:'Transparent' },
+  { num:'24h',        label:'Fastest plan' },
+  { num:'$0',         label:'Hidden fees' },
+  { num:'Refundable', label:'If rejected' },
 ]
 
 export default function Pricing() {
@@ -119,13 +119,13 @@ export default function Pricing() {
         <div style={{ maxWidth:1024, margin:'0 auto', position:'relative', textAlign:'center' }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(245,166,35,0.15)', border:'1px solid rgba(245,166,35,0.3)', color:'var(--gold)', padding:'6px 14px', borderRadius:50, fontSize:13, fontWeight:600, marginBottom:20 }}>
             <span className="pulse" style={{ width:8, height:8, background:'var(--gold)', borderRadius:'50%', display:'inline-block' }} />
-            Giá minh bạch — không phí ẩn
+            Transparent pricing — no hidden fees
           </div>
           <h1 style={{ fontFamily:'Fraunces,serif', fontSize:'clamp(36px,6vw,56px)', fontWeight:900, color:'white', lineHeight:1.1, marginBottom:16 }}>
-            Bảng <span style={{ color:'var(--gold)' }}>giá</span><br/>dịch vụ
+            Service <span style={{ color:'var(--gold)' }}>pricing</span><br/>made simple
           </h1>
           <p style={{ color:'rgba(255,255,255,0.68)', fontSize:17, lineHeight:1.7, maxWidth:560, marginLeft:'auto', marginRight:'auto' }}>
-            Phí dịch vụ + phí chính phủ — bạn chỉ trả đúng số tiền hiển thị
+            Service fee + government fee — you pay exactly what we show, nothing more
           </p>
         </div>
       </section>
@@ -146,9 +146,9 @@ export default function Pricing() {
       <section style={{ background:'#F9FAFB', padding:'64px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:36 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Phí dịch vụ</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Chọn tốc độ phù hợp</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>3 gói dịch vụ — chọn theo nhu cầu thời gian của bạn</p>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Service fee</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Pick your speed</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>3 plans — choose based on how soon you need your visa</p>
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 }}>
@@ -164,7 +164,7 @@ export default function Pricing() {
                 >
                   {t.popular && (
                     <span style={{ position:'absolute', top:-12, left:'50%', transform:'translateX(-50%)', fontSize:10, fontWeight:700, padding:'4px 12px', borderRadius:50, background:'var(--gold)', color:'var(--navy)', boxShadow:'0 4px 12px rgba(0,0,0,0.15)' }}>
-                      🔥 PHỔ BIẾN NHẤT
+                      🔥 MOST POPULAR
                     </span>
                   )}
                   <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:6 }}>
@@ -178,7 +178,7 @@ export default function Pricing() {
                   <div style={{ margin:'18px 0' }}>
                     <div style={{ display:'flex', alignItems:'baseline', gap:6 }}>
                       <span style={{ fontSize:36, fontWeight:900, color:t.accent }}>${t.fee}</span>
-                      <span style={{ fontSize:13, color:'#6B7280' }}>+ phí chính phủ</span>
+                      <span style={{ fontSize:13, color:'#6B7280' }}>+ government fee</span>
                     </div>
                     <div style={{ fontSize:12, fontWeight:600, color:t.accent, marginTop:4 }}>⏱ {t.time}</div>
                   </div>
@@ -193,7 +193,7 @@ export default function Pricing() {
                   </ul>
 
                   <div style={{ textAlign:'center', fontSize:13, fontWeight:700, padding:'10px 14px', borderRadius:8, background: isSelected ? t.accent : 'transparent', color: isSelected ? 'white' : '#374151', border: isSelected ? 'none' : '1px solid #D1D5DB' }}>
-                    {isSelected ? '✓ Đang xem giá theo gói này' : 'Xem giá theo gói này'}
+                    {isSelected ? '✓ Viewing prices on this plan' : 'View prices on this plan'}
                   </div>
                 </button>
               )
@@ -206,10 +206,10 @@ export default function Pricing() {
       <section style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6', borderBottom:'1px solid #F3F4F6' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Theo quốc gia</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Giá visa cho từng nước</h2>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>By country</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Pricing by country</h2>
             <p style={{ fontSize:14, color:'#6B7280' }}>
-              Đang xem theo gói <span style={{ fontWeight:700, color:'var(--blue)' }}>{TIERS.find(t => t.key === selectedTier)?.label}</span> — đổi gói ở trên để cập nhật giá
+              Viewing the <span style={{ fontWeight:700, color:'var(--blue)' }}>{TIERS.find(t => t.key === selectedTier)?.label}</span> plan — switch above to update pricing
             </p>
           </div>
 
@@ -221,7 +221,7 @@ export default function Pricing() {
                 </svg>
                 <input
                   style={{ width:'100%', padding:'10px 12px 10px 36px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, outline:'none', fontFamily:'inherit' }}
-                  placeholder="Tìm quốc gia..."
+                  placeholder="Search country..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
@@ -231,10 +231,10 @@ export default function Pricing() {
                 value={sort}
                 onChange={e => setSort(e.target.value)}
               >
-                <option value="popular">Phổ biến trước</option>
-                <option value="name">Tên A-Z</option>
-                <option value="price-asc">Giá thấp → cao</option>
-                <option value="price-desc">Giá cao → thấp</option>
+                <option value="popular">Popular first</option>
+                <option value="name">Name A-Z</option>
+                <option value="price-asc">Price low → high</option>
+                <option value="price-desc">Price high → low</option>
               </select>
             </div>
 
@@ -242,7 +242,7 @@ export default function Pricing() {
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
                 <thead>
                   <tr style={{ background:'#F9FAFB', borderBottom:'1px solid #E5E7EB' }}>
-                    {['Quốc gia','Loại','Phí chính phủ','Phí dịch vụ','Tổng',''].map((h, i) => (
+                    {['Country','Type','Gov fee','Service fee','Total',''].map((h, i) => (
                       <th key={i} style={{ padding:'12px 16px', fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em', textAlign: i >= 2 ? 'right' : 'left' }}>{h}</th>
                     ))}
                   </tr>
@@ -270,16 +270,16 @@ export default function Pricing() {
                         <td style={{ padding:'14px 16px', textAlign:'right', color:'#6B7280' }}>{isFree ? '—' : `$${SERVICE_FEES[selectedTier]}`}</td>
                         <td style={{ padding:'14px 16px', textAlign:'right' }}>
                           {isFree ? (
-                            <span style={{ fontSize:11, fontWeight:700, padding:'4px 10px', borderRadius:50, background:'#ECFDF5', color:'#059669' }}>Miễn phí</span>
+                            <span style={{ fontSize:11, fontWeight:700, padding:'4px 10px', borderRadius:50, background:'#ECFDF5', color:'#059669' }}>Free</span>
                           ) : (
                             <span style={{ fontSize:16, fontWeight:900, color:'var(--blue)' }}>${total}</span>
                           )}
                         </td>
                         <td style={{ padding:'14px 16px', textAlign:'right' }}>
                           {isFree ? (
-                            <span style={{ fontSize:12, color:'#9CA3AF' }}>Không cần</span>
+                            <span style={{ fontSize:12, color:'#9CA3AF' }}>Not needed</span>
                           ) : (
-                            <Link to="/" style={{ fontSize:12, fontWeight:700, color:'var(--blue)', textDecoration:'none', whiteSpace:'nowrap' }}>Đăng ký →</Link>
+                            <Link to="/" style={{ fontSize:12, fontWeight:700, color:'var(--blue)', textDecoration:'none', whiteSpace:'nowrap' }}>Apply →</Link>
                           )}
                         </td>
                       </tr>
@@ -292,7 +292,7 @@ export default function Pricing() {
             {rows.length === 0 && (
               <div style={{ textAlign:'center', padding:'40px 20px' }}>
                 <div style={{ fontSize:38, opacity:0.5, marginBottom:6 }}>🔍</div>
-                <p style={{ fontSize:14, color:'#6B7280' }}>Không tìm thấy quốc gia phù hợp</p>
+                <p style={{ fontSize:14, color:'#6B7280' }}>No matching countries found</p>
               </div>
             )}
           </div>
@@ -303,9 +303,9 @@ export default function Pricing() {
       <section style={{ background:'#F9FAFB', padding:'64px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
-            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Phí gồm những gì?</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Phân tích chi tiết phí</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Bạn biết rõ tiền đi đâu — không một xu phụ phí ẩn</p>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>What you pay for</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Fee breakdown</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Know exactly where your money goes — never a hidden cent</p>
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:16 }}>
@@ -313,18 +313,18 @@ export default function Pricing() {
               <div style={{ padding:'18px 22px', display:'flex', alignItems:'center', gap:12, background:'#FFF7ED' }}>
                 <div style={{ width:46, height:46, borderRadius:12, background:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22 }}>🏛️</div>
                 <div>
-                  <div style={{ fontSize:11, fontWeight:700, color:'#D97706', textTransform:'uppercase', letterSpacing:'.06em' }}>Phí chính phủ</div>
+                  <div style={{ fontSize:11, fontWeight:700, color:'#D97706', textTransform:'uppercase', letterSpacing:'.06em' }}>Government fee</div>
                   <div style={{ fontSize:18, fontWeight:900, color:'var(--navy)' }}>Gov Fee</div>
                 </div>
               </div>
               <div style={{ padding:'18px 22px' }}>
                 <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.65, marginBottom:14 }}>
-                  Phí do cơ quan cấp visa của mỗi nước thu. eVisa thu hộ và <strong style={{ color:'var(--navy)' }}>chuyển 100%</strong> đến cơ quan, không giữ lại bất kỳ phần nào.
+                  Set by each country’s visa-issuing authority. eVisa collects this and <strong style={{ color:'var(--navy)' }}>forwards 100%</strong> to the government, keeping none of it.
                 </p>
                 <ul style={{ listStyle:'none', padding:0, margin:0, fontSize:12, color:'#6B7280', lineHeight:1.8 }}>
-                  <li>• Mỗi nước có biểu phí riêng</li>
-                  <li>• Có thể thay đổi khi nước đó cập nhật chính sách</li>
-                  <li>• Không hoàn lại theo quy định mỗi nước</li>
+                  <li>• Each country sets its own rate</li>
+                  <li>• May change when policies are updated</li>
+                  <li>• Non-refundable per each country’s rules</li>
                 </ul>
               </div>
             </div>
@@ -333,19 +333,19 @@ export default function Pricing() {
               <div style={{ padding:'18px 22px', display:'flex', alignItems:'center', gap:12, background:'#EEF3FF' }}>
                 <div style={{ width:46, height:46, borderRadius:12, background:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22 }}>⚡</div>
                 <div>
-                  <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.06em' }}>Phí dịch vụ eVisa</div>
+                  <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.06em' }}>eVisa service fee</div>
                   <div style={{ fontSize:18, fontWeight:900, color:'var(--navy)' }}>Service Fee</div>
                 </div>
               </div>
               <div style={{ padding:'18px 22px' }}>
                 <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.65, marginBottom:14 }}>
-                  Chi phí cho công việc của đội ngũ chuyên gia eVisa — bao gồm review, AI kiểm ảnh, hỗ trợ và bảo hiểm hồ sơ.
+                  Covers the work our experts do for you — review, AI photo check, support, and file insurance.
                 </p>
                 <ul style={{ listStyle:'none', padding:0, margin:0, fontSize:12, color:'#6B7280', lineHeight:1.8 }}>
-                  <li>• Chuyên gia review từng hồ sơ</li>
-                  <li>• AI kiểm tra tự động ảnh & giấy tờ</li>
-                  <li>• Hỗ trợ 24/7 tiếng Việt</li>
-                  <li>• <strong style={{ color:'var(--green)' }}>Hoàn 100% nếu từ chối</strong></li>
+                  <li>• Expert review of each application</li>
+                  <li>• Automatic AI checks for photos & docs</li>
+                  <li>• 24/7 English support</li>
+                  <li>• <strong style={{ color:'var(--green)' }}>100% refund if rejected</strong></li>
                 </ul>
               </div>
             </div>
@@ -354,7 +354,7 @@ export default function Pricing() {
           <div style={{ marginTop:18, borderRadius:12, padding:14, display:'flex', alignItems:'flex-start', gap:10, background:'#F0FDF4', border:'1px solid #BBF7D0' }}>
             <span style={{ fontSize:22 }}>💡</span>
             <div style={{ flex:1, fontSize:14, color:'#15803D' }}>
-              <span style={{ fontWeight:700 }}>Tổng phí bạn trả</span> = Phí chính phủ + Phí dịch vụ. Bảng giá phía trên đã bao gồm cả 2.
+              <span style={{ fontWeight:700 }}>Total you pay</span> = Government fee + Service fee. The table above already includes both.
             </div>
           </div>
         </div>
@@ -365,7 +365,7 @@ export default function Pricing() {
         <div style={{ maxWidth:820, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:32 }}>
             <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>FAQ</div>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)' }}>Câu hỏi về giá</h2>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)' }}>Pricing questions</h2>
           </div>
 
           <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
@@ -396,12 +396,12 @@ export default function Pricing() {
 
       {/* ── CTA ── */}
       <section style={{ background:'var(--navy)', padding:'56px 20px', textAlign:'center' }}>
-        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Sẵn sàng đăng ký?</h2>
-        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Hoàn 100% phí dịch vụ nếu visa bị từ chối — không rủi ro</p>
+        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Ready to apply?</h2>
+        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>100% service fee refund if your visa is rejected — zero risk</p>
         <Link to="/" style={{ display:'inline-block', background:'var(--gold)', color:'var(--navy)', borderRadius:10, padding:'14px 32px', fontSize:16, fontWeight:800, textDecoration:'none', fontFamily:'inherit', transition:'opacity .15s' }}
           onMouseEnter={e => e.currentTarget.style.opacity='.88'}
           onMouseLeave={e => e.currentTarget.style.opacity='1'}
-        >Đăng ký visa ngay →</Link>
+        >Apply for visa →</Link>
       </section>
 
       <Footer />
