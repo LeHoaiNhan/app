@@ -4,48 +4,70 @@ import { useAuth } from '../contexts/AuthContext'
 export default function LoginModal() {
   const { loginWithGoogle, setShowLoginModal } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [tab, setTab] = useState('login') // 'login' | 'register'
+  const [form, setForm] = useState({ email:'', password:'', name:'' })
 
   const handleGoogle = () => {
     setLoading(true)
     loginWithGoogle()
   }
 
+  const overlay = { position:'fixed', inset:0, zIndex:100, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }
+  const backdrop = { position:'absolute', inset:0, background:'rgba(0,0,0,0.55)', backdropFilter:'blur(4px)' }
+  const modal = { position:'relative', background:'white', borderRadius:20, width:'100%', maxWidth:400, padding:32, boxShadow:'0 24px 64px rgba(0,0,0,0.2)', zIndex:10 }
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setShowLoginModal(false)}>
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
-      <div
-        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm p-8 z-10"
-        onClick={e => e.stopPropagation()}
-      >
+    <div style={overlay} onClick={() => setShowLoginModal(false)}>
+      <div style={backdrop} />
+      <div style={modal} onClick={e => e.stopPropagation()} className="fade-up">
+
         {/* Close */}
-        <button
-          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400"
-          onClick={() => setShowLoginModal(false)}
-        >✕</button>
+        <button onClick={() => setShowLoginModal(false)}
+          style={{ position:'absolute', top:16, right:16, width:32, height:32, borderRadius:'50%', border:'none', background:'#F3F4F6', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16, color:'#6B7280' }}>✕</button>
 
         {/* Logo */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{background:'var(--blue)'}}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+        <div style={{ textAlign:'center', marginBottom:24 }}>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:8, marginBottom:12 }}>
+            <div style={{ width:36, height:36, background:'var(--blue)', borderRadius:10, display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
                 <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
               </svg>
             </div>
-            <span className="font-black text-xl" style={{fontFamily:'Fraunces,serif',color:'var(--navy)'}}>eVisa</span>
+            <span style={{ fontFamily:'Fraunces,serif', fontWeight:900, fontSize:22, color:'var(--navy)' }}>eVisa</span>
           </div>
-          <h2 className="text-xl font-bold mb-1" style={{color:'var(--navy)'}}>Chào mừng trở lại!</h2>
-          <p className="text-sm text-gray-500">Đăng nhập để theo dõi đơn visa của bạn</p>
+          <h2 style={{ fontSize:20, fontWeight:800, color:'var(--navy)', marginBottom:4 }}>
+            {tab==='login' ? 'Chào mừng trở lại!' : 'Tạo tài khoản mới'}
+          </h2>
+          <p style={{ fontSize:13, color:'#6B7280' }}>
+            {tab==='login' ? 'Đăng nhập để theo dõi đơn visa' : 'Miễn phí, chỉ mất 30 giây'}
+          </p>
         </div>
 
-        {/* Google Button */}
-        <button
-          onClick={handleGoogle}
-          disabled={loading}
-          className="w-full flex items-center justify-center gap-3 py-3 px-4 border-2 border-gray-200 rounded-xl font-semibold text-gray-700 hover:border-gray-300 hover:bg-gray-50 transition-all disabled:opacity-60"
+        {/* Tab switch */}
+        <div style={{ display:'flex', background:'#F3F4F6', borderRadius:10, padding:4, marginBottom:20 }}>
+          {[['login','Đăng nhập'],['register','Đăng ký']].map(([t,l]) => (
+            <button key={t} onClick={() => setTab(t)}
+              style={{ flex:1, padding:'8px 0', borderRadius:8, border:'none', cursor:'pointer', fontFamily:'inherit',
+                fontSize:14, fontWeight:600, transition:'all .15s',
+                background: tab===t ? 'white' : 'transparent',
+                color: tab===t ? 'var(--navy)' : '#6B7280',
+                boxShadow: tab===t ? '0 1px 4px rgba(0,0,0,0.1)' : 'none'
+              }}>{l}</button>
+          ))}
+        </div>
+
+        {/* Google button */}
+        <button onClick={handleGoogle} disabled={loading}
+          style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'center', gap:12,
+            padding:'12px 16px', border:'1.5px solid #E5E7EB', borderRadius:10, background:'white',
+            fontSize:14, fontWeight:600, color:'#374151', cursor:'pointer', fontFamily:'inherit',
+            transition:'all .15s', marginBottom:16 }}
+          onMouseEnter={e => e.currentTarget.style.borderColor='#9CA3AF'}
+          onMouseLeave={e => e.currentTarget.style.borderColor='#E5E7EB'}
         >
           {loading ? (
-            <svg className="animate-spin w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="none">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeDasharray="31" strokeDashoffset="12"/>
+            <svg className="spin" width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" stroke="var(--blue)" strokeWidth="3" strokeDasharray="31" strokeDashoffset="10"/>
             </svg>
           ) : (
             <svg width="20" height="20" viewBox="0 0 48 48">
@@ -55,37 +77,52 @@ export default function LoginModal() {
               <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             </svg>
           )}
-          {loading ? 'Đang đăng nhập...' : 'Tiếp tục với Google'}
+          {loading ? 'Đang đăng nhập...' : `${tab==='login'?'Đăng nhập':'Đăng ký'} với Google`}
         </button>
 
-        <div className="flex items-center gap-3 my-5">
-          <div className="flex-1 h-px bg-gray-100"/>
-          <span className="text-xs text-gray-400">hoặc</span>
-          <div className="flex-1 h-px bg-gray-100"/>
+        {/* Divider */}
+        <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
+          <div style={{ flex:1, height:1, background:'#E5E7EB' }} />
+          <span style={{ fontSize:12, color:'#9CA3AF' }}>hoặc</span>
+          <div style={{ flex:1, height:1, background:'#E5E7EB' }} />
         </div>
 
-        {/* Email login */}
-        <div className="space-y-3">
+        {/* Form fields */}
+        <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+          {tab==='register' && (
+            <div>
+              <label className="field-label">Họ và tên <span className="req">*</span></label>
+              <input className="field-input" type="text" placeholder="Nguyễn Văn An"
+                value={form.name} onChange={e => setForm({...form, name:e.target.value})} />
+            </div>
+          )}
           <div>
-            <label className="field-label">Email</label>
-            <input className="field-input" type="email" placeholder="email@example.com" />
+            <label className="field-label">Email <span className="req">*</span></label>
+            <input className="field-input" type="email" placeholder="email@example.com"
+              value={form.email} onChange={e => setForm({...form, email:e.target.value})} />
           </div>
           <div>
-            <label className="field-label">Mật khẩu</label>
-            <input className="field-input" type="password" placeholder="••••••••" />
+            <label className="field-label">Mật khẩu <span className="req">*</span></label>
+            <input className="field-input" type="password" placeholder="••••••••"
+              value={form.password} onChange={e => setForm({...form, password:e.target.value})} />
           </div>
-          <button
-            className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all hover:opacity-90"
-            style={{background:'var(--blue)'}}
-            onClick={handleGoogle}
-          >
-            Đăng nhập
-          </button>
+          {tab==='login' && (
+            <div style={{ textAlign:'right' }}>
+              <span style={{ fontSize:13, color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Quên mật khẩu?</span>
+            </div>
+          )}
+          <button onClick={handleGoogle}
+            style={{ width:'100%', padding:'12px', background:'var(--blue)', color:'white', border:'none',
+              borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit', transition:'opacity .15s' }}
+            onMouseEnter={e => e.target.style.opacity='.88'}
+            onMouseLeave={e => e.target.style.opacity='1'}
+          >{tab==='login' ? 'Đăng nhập' : 'Tạo tài khoản'}</button>
         </div>
 
-        <p className="text-center text-xs text-gray-400 mt-5">
-          Chưa có tài khoản?{' '}
-          <span className="font-semibold cursor-pointer" style={{color:'var(--blue)'}}>Đăng ký miễn phí</span>
+        <p style={{ textAlign:'center', fontSize:12, color:'#9CA3AF', marginTop:20, lineHeight:1.6 }}>
+          Bằng cách tiếp tục, bạn đồng ý với{' '}
+          <span style={{ color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Điều khoản</span> và{' '}
+          <span style={{ color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Chính sách bảo mật</span>
         </p>
       </div>
     </div>

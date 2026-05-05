@@ -1,128 +1,201 @@
 import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
-const NAV_LINKS = [
+const LINKS = [
   { to: '/destinations', label: 'Điểm đến' },
-  { to: '/visa-types', label: 'Loại visa' },
-  { to: '/guide', label: 'Hướng dẫn' },
-  { to: '/support', label: 'Hỗ trợ' },
+  { to: '/visa-types',   label: 'Loại visa' },
+  { to: '/pricing',      label: 'Bảng giá' },
+  { to: '/guide',        label: 'Hướng dẫn' },
+  { to: '/support',      label: 'Hỗ trợ' },
 ]
 
 export default function Navbar({ onApplyClick }) {
   const [menuOpen, setMenuOpen] = useState(false)
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [userMenu, setUserMenu] = useState(false)
   const { user, logout, setShowLoginModal } = useAuth()
-  const location = useLocation()
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+
+  const handleApply = () => {
+    if (onApplyClick) onApplyClick()
+    else navigate('/')
+  }
 
   return (
-    <>
-      <nav className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
-        <div className="max-w-5xl mx-auto px-4 md:px-6 h-16 flex items-center justify-between gap-4">
+    <nav style={{ background:'white', borderBottom:'1px solid #E5E7EB', position:'sticky', top:0, zIndex:50, boxShadow:'0 1px 8px rgba(0,0,0,0.06)' }}>
+      <div style={{ maxWidth:1024, margin:'0 auto', padding:'0 20px', height:64, display:'flex', alignItems:'center', justifyContent:'space-between', gap:16 }}>
 
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 flex-shrink-0">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{background:'var(--blue)'}}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
-            </div>
-            <span className="font-black text-xl hidden sm:block" style={{fontFamily:'Fraunces,serif',color:'var(--navy)'}}>eVisa</span>
-          </Link>
+        {/* Logo */}
+        <Link to="/" style={{ display:'flex', alignItems:'center', gap:8, textDecoration:'none', flexShrink:0 }}>
+          <div style={{ width:32, height:32, background:'var(--blue)', borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center' }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
+              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <span style={{ fontFamily:'Fraunces,serif', fontWeight:900, fontSize:21, color:'var(--navy)' }}>eVisa</span>
+        </Link>
 
-          {/* Desktop links */}
-          <ul className="hidden md:flex gap-6 flex-1 justify-center">
-            {NAV_LINKS.map(l => (
-              <li key={l.to}>
-                <Link
-                  to={l.to}
-                  className={`text-sm font-500 transition-colors hover:text-blue-600 ${location.pathname === l.to ? 'text-blue-600 font-semibold' : 'text-gray-600'}`}
-                >
-                  {l.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+        {/* Desktop links */}
+        <ul style={{ display:'flex', gap:20, listStyle:'none', flex:1, justifyContent:'center' }} className="nav-desktop">
+          {LINKS.map(l => (
+            <li key={l.to}>
+              <Link to={l.to} style={{
+                textDecoration:'none', fontSize:14, fontWeight:600,
+                color: pathname===l.to ? 'var(--blue)' : '#4B5563',
+                paddingBottom:2,
+                borderBottom: pathname===l.to ? '2px solid var(--blue)' : '2px solid transparent',
+                transition:'color .15s, border-color .15s'
+              }}>{l.label}</Link>
+            </li>
+          ))}
+        </ul>
 
-          {/* Right side */}
-          <div className="flex items-center gap-2">
-            {user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 p-1 rounded-full hover:bg-gray-100 transition-colors"
-                >
-                  <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full" />
-                  <span className="hidden sm:block text-sm font-semibold text-gray-700 max-w-[100px] truncate">{user.name.split(' ').pop()}</span>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="hidden sm:block text-gray-400">
-                    <path d="M6 9l6 6 6-6"/>
-                  </svg>
-                </button>
-                {userMenuOpen && (
-                  <div className="absolute right-0 top-12 bg-white border border-gray-200 rounded-xl shadow-lg w-48 py-1 z-50">
-                    <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-semibold text-gray-800">{user.name}</p>
-                      <p className="text-xs text-gray-400 truncate">{user.email}</p>
+        {/* Right */}
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          {user ? (
+            <div style={{ position:'relative' }}>
+              <button
+                onClick={() => setUserMenu(v => !v)}
+                style={{ display:'flex', alignItems:'center', gap:8, background:'none', border:'none', cursor:'pointer', padding:'4px 6px', borderRadius:8 }}
+              >
+                <img src={user.avatar} alt="" style={{ width:34, height:34, borderRadius:'50%', border:`2px solid ${user.role==='admin' ? 'var(--gold)' : 'var(--blue-light)'}` }} />
+                <span style={{ fontSize:13, fontWeight:600, color:'#374151', maxWidth:90, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }} className="nav-desktop">
+                  {user.name.split(' ').at(-1)}
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" strokeWidth="2" className="nav-desktop">
+                  <path d="M6 9l6 6 6-6"/>
+                </svg>
+              </button>
+              {userMenu && (
+                <div style={{ position:'absolute', right:0, top:48, background:'white', border:'1px solid #E5E7EB', borderRadius:12, boxShadow:'0 8px 24px rgba(0,0,0,0.12)', width:220, overflow:'hidden', zIndex:60 }}>
+                  <div style={{ padding:'12px 16px', borderBottom:'1px solid #F3F4F6' }}>
+                    <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                      <p style={{ fontSize:14, fontWeight:700, color:'#111827' }}>{user.name}</p>
+                      {user.role === 'admin' && (
+                        <span style={{ fontSize:9, fontWeight:800, padding:'2px 6px', borderRadius:4, background:'var(--gold)', color:'var(--navy)' }}>ADMIN</span>
+                      )}
                     </div>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Đơn của tôi</button>
-                    <button className="w-full text-left px-4 py-2 text-sm text-gray-600 hover:bg-gray-50">Cài đặt</button>
-                    <button onClick={() => { logout(); setUserMenuOpen(false) }} className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-red-50">Đăng xuất</button>
+                    <p style={{ fontSize:12, color:'#9CA3AF', marginTop:2, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{user.email}</p>
                   </div>
-                )}
-              </div>
-            ) : (
-              <button
-                onClick={() => setShowLoginModal(true)}
-                className="hidden sm:block text-sm font-semibold text-gray-700 hover:text-blue-600 transition-colors px-3 py-1.5 rounded-lg hover:bg-blue-50"
-              >
-                Đăng nhập
-              </button>
-            )}
 
-            <button
-              onClick={onApplyClick || (() => {})}
-              className="text-sm font-bold text-white px-4 py-2 rounded-lg transition-all hover:opacity-90 flex-shrink-0"
-              style={{background:'var(--blue)'}}
-            >
-              Đăng ký visa
-            </button>
+                  {user.role === 'admin' ? (
+                    <Link
+                      to="/admin"
+                      onClick={() => setUserMenu(false)}
+                      style={{ display:'block', padding:'10px 16px', textDecoration:'none', fontSize:14, color:'#374151', fontFamily:'inherit' }}
+                      onMouseEnter={e => e.currentTarget.style.background='#F9FAFB'}
+                      onMouseLeave={e => e.currentTarget.style.background='transparent'}
+                    >⚙️ Admin Dashboard</Link>
+                  ) : (
+                    <Link
+                      to="/my-orders"
+                      onClick={() => setUserMenu(false)}
+                      style={{ display:'block', padding:'10px 16px', textDecoration:'none', fontSize:14, color:'#374151', fontFamily:'inherit' }}
+                      onMouseEnter={e => e.currentTarget.style.background='#F9FAFB'}
+                      onMouseLeave={e => e.currentTarget.style.background='transparent'}
+                    >📋 Đơn của tôi</Link>
+                  )}
+                  <Link
+                    to="/support"
+                    onClick={() => setUserMenu(false)}
+                    style={{ display:'block', padding:'10px 16px', textDecoration:'none', fontSize:14, color:'#374151', fontFamily:'inherit' }}
+                    onMouseEnter={e => e.currentTarget.style.background='#F9FAFB'}
+                    onMouseLeave={e => e.currentTarget.style.background='transparent'}
+                  >💬 Hỗ trợ</Link>
 
-            {/* Hamburger */}
+                  <button
+                    onClick={() => { logout(); setUserMenu(false) }}
+                    style={{ width:'100%', textAlign:'left', padding:'10px 16px', border:'none', borderTop:'1px solid #FEE2E2', background:'none', fontSize:14, color:'#DC2626', cursor:'pointer', fontFamily:'inherit', fontWeight:600 }}
+                  >🚪 Đăng xuất</button>
+                </div>
+              )}
+            </div>
+          ) : (
             <button
-              className="md:hidden flex flex-col gap-1.5 p-1.5 rounded-lg hover:bg-gray-100"
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              <span className={`block w-5 h-0.5 bg-gray-600 transition-all ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}/>
-              <span className={`block w-5 h-0.5 bg-gray-600 transition-all ${menuOpen ? 'opacity-0' : ''}`}/>
-              <span className={`block w-5 h-0.5 bg-gray-600 transition-all ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}/>
-            </button>
-          </div>
+              onClick={() => setShowLoginModal(true)}
+              className="nav-desktop"
+              style={{ fontSize:14, fontWeight:600, color:'#374151', background:'none', border:'1.5px solid #E5E7EB', borderRadius:8, padding:'8px 16px', cursor:'pointer', fontFamily:'inherit', transition:'all .15s' }}
+              onMouseEnter={e => { e.target.style.borderColor='var(--blue)'; e.target.style.color='var(--blue)' }}
+              onMouseLeave={e => { e.target.style.borderColor='#E5E7EB'; e.target.style.color='#374151' }}
+            >Đăng nhập</button>
+          )}
+
+          <button
+            onClick={handleApply}
+            className="btn-primary"
+            style={{ fontSize:13, padding:'9px 18px' }}
+          >Đăng ký visa</button>
+
+          {/* Hamburger */}
+          <button
+            onClick={() => setMenuOpen(v => !v)}
+            style={{ background:'none', border:'none', cursor:'pointer', padding:6, display:'flex', flexDirection:'column', gap:5, borderRadius:6 }}
+            className="nav-mobile-btn"
+          >
+            <span style={{ display:'block', width:20, height:2, background:'#6B7280', borderRadius:2, transition:'all .2s', transform: menuOpen ? 'rotate(45deg) translateY(7px)' : 'none' }} />
+            <span style={{ display:'block', width:20, height:2, background:'#6B7280', borderRadius:2, transition:'all .2s', opacity: menuOpen ? 0 : 1 }} />
+            <span style={{ display:'block', width:20, height:2, background:'#6B7280', borderRadius:2, transition:'all .2s', transform: menuOpen ? 'rotate(-45deg) translateY(-7px)' : 'none' }} />
+          </button>
         </div>
+      </div>
 
-        {/* Mobile menu */}
-        {menuOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1">
-            {NAV_LINKS.map(l => (
-              <Link
-                key={l.to}
-                to={l.to}
-                onClick={() => setMenuOpen(false)}
-                className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${location.pathname === l.to ? 'bg-blue-50 text-blue-600 font-semibold' : 'text-gray-700 hover:bg-gray-50'}`}
-              >
-                {l.label}
-              </Link>
-            ))}
-            {!user && (
-              <button
-                onClick={() => { setShowLoginModal(true); setMenuOpen(false) }}
-                className="w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                Đăng nhập
-              </button>
-            )}
-          </div>
-        )}
-      </nav>
-    </>
+      {/* Mobile drawer */}
+      {menuOpen && (
+        <div style={{ borderTop:'1px solid #F3F4F6', background:'white', padding:'8px 16px 16px' }}>
+          {LINKS.map(l => (
+            <Link
+              key={l.to}
+              to={l.to}
+              onClick={() => setMenuOpen(false)}
+              style={{
+                display:'block', padding:'11px 12px', borderRadius:8, fontSize:14, fontWeight:600,
+                textDecoration:'none', margin:'2px 0',
+                background: pathname===l.to ? 'var(--blue-light)' : 'transparent',
+                color: pathname===l.to ? 'var(--blue)' : '#374151',
+              }}
+            >{l.label}</Link>
+          ))}
+
+          {user && user.role !== 'admin' && (
+            <Link
+              to="/my-orders"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                display:'block', padding:'11px 12px', borderRadius:8, fontSize:14, fontWeight:600,
+                textDecoration:'none', margin:'2px 0',
+                background: pathname==='/my-orders' ? 'var(--blue-light)' : 'transparent',
+                color: pathname==='/my-orders' ? 'var(--blue)' : '#374151',
+              }}
+            >📋 Đơn của tôi</Link>
+          )}
+
+          {user && user.role === 'admin' && (
+            <Link
+              to="/admin"
+              onClick={() => setMenuOpen(false)}
+              style={{
+                display:'block', padding:'11px 12px', borderRadius:8, fontSize:14, fontWeight:600,
+                textDecoration:'none', margin:'2px 0',
+                background: pathname==='/admin' ? '#FFFBEB' : 'transparent',
+                color: pathname==='/admin' ? '#92400E' : '#374151',
+              }}
+            >⚙️ Admin Dashboard</Link>
+          )}
+
+          {!user && (
+            <button
+              onClick={() => { setShowLoginModal(true); setMenuOpen(false) }}
+              style={{ width:'100%', textAlign:'left', padding:'11px 12px', borderRadius:8, fontSize:14, fontWeight:600, color:'#374151', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit', marginTop:2 }}
+            >Đăng nhập</button>
+          )}
+        </div>
+      )}
+
+      <style>{`
+        @media (min-width: 769px) { .nav-mobile-btn { display: none !important; } }
+        @media (max-width: 768px)  { .nav-desktop { display: none !important; } }
+      `}</style>
+    </nav>
   )
 }
