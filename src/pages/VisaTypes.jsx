@@ -120,7 +120,7 @@ export default function VisaTypes() {
         <div className="absolute -top-20 -right-20 w-[440px] h-[440px] rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)' }} />
         <div className="absolute -bottom-16 left-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.10) 0%,transparent 70%)' }} />
 
-        <div className="relative max-w-4xl mx-auto px-4 py-14 md:py-20 text-center">
+        <div className="relative max-w-4xl mx-auto px-5 py-14 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-5 text-xs font-semibold border" style={{ background:'rgba(245,166,35,0.15)', borderColor:'rgba(245,166,35,0.3)', color:'var(--gold)' }}>
             <span className="pulse w-2 h-2 rounded-full" style={{ background:'var(--gold)' }} />
             Visa điện tử cho 100+ quốc gia
@@ -140,9 +140,10 @@ export default function VisaTypes() {
                   setActive(t.key)
                   document.getElementById('detail')?.scrollIntoView({ behavior:'smooth', block:'start' })
                 }}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-sm border border-white/15 text-white hover:bg-white/20 transition-all"
+                className="group inline-flex items-center gap-2 pl-1.5 pr-4 py-1.5 rounded-full text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-md border border-white/15 text-white hover:bg-white/20 hover:border-white/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all duration-200"
               >
-                <span>{t.icon}</span> {t.name}
+                <span className="flex items-center justify-center w-7 h-7 rounded-full bg-white/15 text-base leading-none flex-shrink-0">{t.icon}</span>
+                <span>{t.name}</span>
               </button>
             ))}
           </div>
@@ -150,7 +151,7 @@ export default function VisaTypes() {
       </section>
 
       {/* ── What is eVisa? ── */}
-      <section className="max-w-5xl mx-auto px-4 py-14">
+      <section className="max-w-5xl mx-auto px-5 py-14">
         <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
           <div className="grid md:grid-cols-2">
             <div className="p-7 md:p-10">
@@ -199,7 +200,7 @@ export default function VisaTypes() {
       </section>
 
       {/* ── 4 type cards ── */}
-      <section className="max-w-6xl mx-auto px-4 pb-14" id="detail">
+      <section className="max-w-5xl mx-auto px-5 pb-14" id="detail">
         <div className="text-center mb-10">
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
             4 loại visa điện tử
@@ -309,7 +310,7 @@ export default function VisaTypes() {
       </section>
 
       {/* ── Comparison table ── */}
-      <section className="max-w-6xl mx-auto px-4 pb-14">
+      <section className="max-w-5xl mx-auto px-5 pb-14">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
             So sánh nhanh
@@ -347,7 +348,7 @@ export default function VisaTypes() {
       </section>
 
       {/* ── Decision helper ── */}
-      <section className="max-w-5xl mx-auto px-4 pb-14">
+      <section className="max-w-5xl mx-auto px-5 pb-14">
         <div className="text-center mb-8">
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
             Vẫn chưa chắc loại nào phù hợp?
@@ -376,7 +377,7 @@ export default function VisaTypes() {
       </section>
 
       {/* ── Trust strip ── */}
-      <section className="max-w-6xl mx-auto px-4 pb-14">
+      <section className="max-w-5xl mx-auto px-5 pb-14">
         <div className="bg-white rounded-2xl border border-gray-200 px-6 py-7 md:px-10 md:py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
@@ -396,7 +397,7 @@ export default function VisaTypes() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="max-w-6xl mx-auto px-4 pb-14">
+      <section className="max-w-5xl mx-auto px-5 pb-14">
         <div className="rounded-2xl overflow-hidden relative" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 60%,#0d2451 100%)' }}>
           <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)' }} />
           <div className="absolute -bottom-16 left-12 w-56 h-56 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.30) 0%,transparent 70%)' }} />

@@ -107,7 +107,7 @@ export default function Guide() {
         <div className="absolute -top-20 -right-20 w-[440px] h-[440px] rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)' }} />
         <div className="absolute -bottom-16 left-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.10) 0%,transparent 70%)' }} />
 
-        <div className="relative max-w-4xl mx-auto px-4 py-14 md:py-20 text-center">
+        <div className="relative max-w-4xl mx-auto px-5 py-14 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-5 text-xs font-semibold border" style={{ background:'rgba(245,166,35,0.15)', borderColor:'rgba(245,166,35,0.3)', color:'var(--gold)' }}>
             <span className="pulse w-2 h-2 rounded-full" style={{ background:'var(--gold)' }} />
             Hướng dẫn từ A-Z trong 10 phút
@@ -128,7 +128,7 @@ export default function Guide() {
               ['#faq','❓ FAQ'],
             ].map(([href,label]) => (
               <a key={href} href={href}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-sm border border-white/15 text-white hover:bg-white/20 transition-all"
+                className="group inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-md border border-white/15 text-white hover:bg-white/20 hover:border-white/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all duration-200"
               >{label}</a>
             ))}
           </div>
@@ -136,7 +136,7 @@ export default function Guide() {
       </section>
 
       {/* ── Process timeline ── */}
-      <section id="process" className="max-w-5xl mx-auto px-4 py-14">
+      <section id="process" className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-10">
           <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>Quy trình</div>
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
@@ -177,7 +177,7 @@ export default function Guide() {
       </section>
 
       {/* ── Document checklist ── */}
-      <section id="docs" className="max-w-5xl mx-auto px-4 py-14">
+      <section id="docs" className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-10">
           <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>Checklist</div>
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
@@ -236,7 +236,7 @@ export default function Guide() {
       </section>
 
       {/* ── Photo requirements ── */}
-      <section id="photo" className="max-w-5xl mx-auto px-4 py-14">
+      <section id="photo" className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-10">
           <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>Ảnh chân dung</div>
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
@@ -292,7 +292,7 @@ export default function Guide() {
       </section>
 
       {/* ── Common mistakes ── */}
-      <section id="mistakes" className="max-w-5xl mx-auto px-4 py-14">
+      <section id="mistakes" className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-10">
           <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'#DC2626' }}>Cảnh báo</div>
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
@@ -315,7 +315,7 @@ export default function Guide() {
       </section>
 
       {/* ── Tips ── */}
-      <section className="max-w-5xl mx-auto px-4 py-14">
+      <section className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-10">
           <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'#F59E0B' }}>Pro tips</div>
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
@@ -335,7 +335,7 @@ export default function Guide() {
       </section>
 
       {/* ── FAQ ── */}
-      <section id="faq" className="max-w-5xl mx-auto px-4 py-14">
+      <section id="faq" className="max-w-5xl mx-auto px-5 py-14">
         <div className="text-center mb-10">
           <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>FAQ</div>
           <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
@@ -366,11 +366,18 @@ export default function Guide() {
               <button
                 key={c}
                 onClick={() => setCat(c)}
-                className={`px-3.5 py-1.5 rounded-full text-xs md:text-sm font-semibold transition-all border flex items-center gap-1.5 ${active ? 'text-white border-transparent shadow-md' : 'border-gray-200 text-gray-600 bg-white hover:border-gray-300'}`}
-                style={active ? { background:'var(--blue)' } : {}}
+                className={`group relative overflow-hidden flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 border ${
+                  active
+                    ? 'text-white border-transparent shadow-md shadow-blue-500/25 -translate-y-0.5'
+                    : 'border-gray-200 text-gray-600 bg-white hover:border-blue-300 hover:text-blue-700 hover:-translate-y-0.5 hover:shadow-sm'
+                }`}
+                style={active ? { background:'linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%)' } : {}}
               >
-                {c}
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none ${active ? 'bg-white/20' : 'bg-gray-100 text-gray-500'}`}>{count}</span>
+                {active && <span className="absolute inset-x-2 top-0 h-px bg-white/40 pointer-events-none" />}
+                <span>{c}</span>
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none min-w-[20px] text-center transition-colors ${
+                  active ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-700'
+                }`}>{count}</span>
               </button>
             )
           })}
@@ -416,7 +423,7 @@ export default function Guide() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="max-w-6xl mx-auto px-4 pb-14">
+      <section className="max-w-5xl mx-auto px-5 pb-14">
         <div className="rounded-2xl overflow-hidden relative" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 60%,#0d2451 100%)' }}>
           <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)' }} />
           <div className="absolute -bottom-16 left-12 w-56 h-56 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.30) 0%,transparent 70%)' }} />

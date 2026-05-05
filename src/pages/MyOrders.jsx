@@ -72,7 +72,7 @@ export default function MyOrders() {
       {/* Header */}
       <section className="relative overflow-hidden" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 100%)' }}>
         <div className="absolute -top-12 -right-12 w-72 h-72 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)' }} />
-        <div className="relative max-w-5xl mx-auto px-4 py-10 md:py-12">
+        <div className="relative max-w-5xl mx-auto px-5 py-10 md:py-12">
           <div className="flex items-center gap-4">
             <img src={user.avatar} alt="" className="w-14 h-14 md:w-16 md:h-16 rounded-2xl border-2 border-white/30" />
             <div className="flex-1 min-w-0">
@@ -83,7 +83,7 @@ export default function MyOrders() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-5 py-8">
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
           {[
@@ -106,19 +106,30 @@ export default function MyOrders() {
           <h2 className="text-lg md:text-xl font-black" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
             Đơn của tôi
           </h2>
-          <div className="flex gap-1 bg-white rounded-lg border border-gray-200 p-1">
+          <div className="inline-flex gap-0.5 bg-gray-100 rounded-xl p-1 border border-gray-200">
             {[
-              ['all',    `Tất cả (${myOrders.length})`],
-              ['active', `Đang xử lý (${active.length})`],
-              ['done',   `Hoàn tất (${done.length})`],
-            ].map(([key, label]) => (
-              <button
-                key={key}
-                onClick={() => setFilter(key)}
-                className={`px-3 py-1.5 rounded-md text-xs md:text-sm font-semibold transition-all ${filter === key ? 'text-white' : 'text-gray-600 hover:text-gray-900'}`}
-                style={filter === key ? { background:'var(--blue)' } : {}}
-              >{label}</button>
-            ))}
+              ['all',    'Tất cả',    myOrders.length],
+              ['active', 'Đang xử lý', active.length],
+              ['done',   'Hoàn tất',   done.length],
+            ].map(([key, label, count]) => {
+              const isActive = filter === key
+              return (
+                <button
+                  key={key}
+                  onClick={() => setFilter(key)}
+                  className={`relative overflow-hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold transition-all duration-200 ${
+                    isActive ? 'text-white shadow-md shadow-blue-500/25' : 'text-gray-600 hover:text-gray-900 hover:bg-white'
+                  }`}
+                  style={isActive ? { background:'linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%)' } : {}}
+                >
+                  {isActive && <span className="absolute inset-x-2 top-0 h-px bg-white/40 pointer-events-none" />}
+                  <span>{label}</span>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none min-w-[18px] text-center ${
+                    isActive ? 'bg-white/25 text-white' : 'bg-gray-200 text-gray-600'
+                  }`}>{count}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
 
@@ -210,7 +221,7 @@ function OrderDetail({ order, onBack }) {
     <div className="min-h-screen" style={{ background:'#F9FAFB' }}>
       <Navbar />
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
+      <div className="max-w-4xl mx-auto px-5 py-8">
         <button onClick={onBack} className="inline-flex items-center gap-2 text-sm font-semibold mb-5 hover:underline" style={{ color:'var(--blue)' }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M15 19l-7-7 7-7"/>

@@ -81,7 +81,7 @@ export default function Admin() {
       {/* Admin header */}
       <section className="relative overflow-hidden" style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 100%)' }}>
         <div className="absolute -top-12 -right-12 w-72 h-72 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)' }} />
-        <div className="relative max-w-7xl mx-auto px-4 py-8 flex items-center justify-between gap-4 flex-wrap">
+        <div className="relative max-w-6xl mx-auto px-5 py-8 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg" style={{ background:'var(--gold)' }}>⚙️</div>
             <div>
@@ -103,7 +103,7 @@ export default function Admin() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-5 py-8">
         {/* Stats row */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4 mb-6">
           {[
@@ -316,7 +316,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
     <div className="min-h-screen" style={{ background:'#F9FAFB' }}>
       <Navbar />
 
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-5 py-8">
         <button onClick={onBack} className="inline-flex items-center gap-2 text-sm font-semibold mb-5 hover:underline" style={{ color:'var(--blue)' }}>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M15 19l-7-7 7-7"/>

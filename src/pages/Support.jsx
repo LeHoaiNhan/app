@@ -76,7 +76,7 @@ export default function Support() {
         <div className="absolute -top-20 -right-20 w-[440px] h-[440px] rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)' }} />
         <div className="absolute -bottom-16 left-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.10) 0%,transparent 70%)' }} />
 
-        <div className="relative max-w-4xl mx-auto px-4 py-14 md:py-20 text-center">
+        <div className="relative max-w-4xl mx-auto px-5 py-14 md:py-20 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-5 text-xs font-semibold border" style={{ background:'rgba(245,166,35,0.15)', borderColor:'rgba(245,166,35,0.3)', color:'var(--gold)' }}>
             <span className="pulse w-2 h-2 rounded-full" style={{ background:'var(--gold)' }} />
             Hỗ trợ 24/7 bằng tiếng Việt
@@ -103,7 +103,7 @@ export default function Support() {
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-4 py-12">
+      <div className="max-w-5xl mx-auto px-5 py-12">
         {/* ── Order tracking ── */}
         <section className="mb-12">
           <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
