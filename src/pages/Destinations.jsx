@@ -4,7 +4,6 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 const DESTINATIONS = [
-  // Đông Nam Á
   { name:'Thái Lan',     flag:'🇹🇭', iso:'th', region:'Đông Nam Á', time:'3-5 ngày',  price:'$29',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Thiên đường du lịch với chi phí hợp lý, ẩm thực đa dạng và bãi biển tuyệt đẹp.', city:'Bangkok' },
   { name:'Singapore',    flag:'🇸🇬', iso:'sg', region:'Đông Nam Á', time:'2-3 ngày',  price:'$39',  popular:false, trending:true,  tag:'E-Visa',          stay:'30 ngày',    entry:'Multiple', validity:'2 năm',    desc:'Đảo quốc hiện đại với hệ thống giao thông và dịch vụ đẳng cấp thế giới.', city:'Marina Bay' },
   { name:'Indonesia',    flag:'🇮🇩', iso:'id', region:'Đông Nam Á', time:'3-5 ngày',  price:'$35',  popular:false, trending:false, tag:'Visa on Arrival', stay:'30 ngày',    entry:'Single',   validity:'30 ngày',  desc:'Bali, Jakarta và hàng ngàn hòn đảo nhiệt đới đang chờ bạn khám phá.', city:'Bali' },
@@ -12,37 +11,25 @@ const DESTINATIONS = [
   { name:'Philippines',  flag:'🇵🇭', iso:'ph', region:'Đông Nam Á', time:'5-7 ngày',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Hơn 7000 hòn đảo nhiệt đới, biển xanh và văn hóa thân thiện.', city:'Manila' },
   { name:'Campuchia',    flag:'🇰🇭', iso:'kh', region:'Đông Nam Á', time:'3-5 ngày',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Angkor Wat huyền bí và nền văn hóa Khmer độc đáo.', city:'Siem Reap' },
   { name:'Myanmar',      flag:'🇲🇲', iso:'mm', region:'Đông Nam Á', time:'3-5 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'28 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Bagan với hàng ngàn ngôi chùa cổ và văn hóa Phật giáo độc đáo.', city:'Bagan' },
-
-  // Đông Á & Nam Á
   { name:'Nhật Bản',     flag:'🇯🇵', iso:'jp', region:'Đông Á',     time:'5-7 ngày',  price:'$49',  popular:true,  trending:true,  tag:'E-Visa',          stay:'15-90 ngày', entry:'Single',   validity:'3 tháng',  desc:'Đất nước mặt trời mọc với văn hóa độc đáo và cảnh quan bốn mùa tuyệt đẹp.', city:'Tokyo' },
   { name:'Hàn Quốc',     flag:'🇰🇷', iso:'kr', region:'Đông Á',     time:'5-7 ngày',  price:'$55',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30-90 ngày', entry:'Single',   validity:'3 tháng',  desc:'Xứ sở kim chi với K-pop, ẩm thực và mua sắm đẳng cấp.', city:'Seoul' },
   { name:'Đài Loan',     flag:'🇹🇼', iso:'tw', region:'Đông Á',     time:'5-7 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Đảo ngọc với ẩm thực đường phố nổi tiếng và cảnh quan đa dạng.', city:'Đài Bắc' },
   { name:'Hong Kong',    flag:'🇭🇰', iso:'hk', region:'Đông Á',     time:'Tức thì',   price:'Miễn phí', popular:false, trending:false, tag:'Miễn visa',   stay:'14 ngày',    entry:'Multiple', validity:'—',        desc:'Miễn visa 14 ngày cho công dân Việt Nam, thiên đường mua sắm châu Á.', city:'Hong Kong' },
   { name:'Ấn Độ',        flag:'🇮🇳', iso:'in', region:'Đông Á',     time:'3-5 ngày',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30-60 ngày', entry:'Multiple', validity:'1 năm',    desc:'Taj Mahal, sông Hằng và sự đa dạng văn hóa rực rỡ.', city:'Delhi' },
   { name:'Sri Lanka',    flag:'🇱🇰', iso:'lk', region:'Đông Á',     time:'3-5 ngày',  price:'$35',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Multiple', validity:'6 tháng',  desc:'Đảo ngọc Ấn Độ Dương với rừng nhiệt đới, đền cổ và bãi biển hoang sơ.', city:'Colombo' },
-
-  // Trung Đông
   { name:'Dubai (UAE)',  flag:'🇦🇪', iso:'ae', region:'Trung Đông', time:'3-5 ngày',  price:'$45',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'2 tháng',  desc:'Thành phố tương lai với Burj Khalifa, sa mạc và mua sắm xa xỉ.', city:'Dubai' },
   { name:'Qatar',        flag:'🇶🇦', iso:'qa', region:'Trung Đông', time:'3-5 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'30 ngày',  desc:'Doha hiện đại bên bờ vịnh Ba Tư, kiến trúc đỉnh cao.', city:'Doha' },
   { name:'Thổ Nhĩ Kỳ',   flag:'🇹🇷', iso:'tr', region:'Trung Đông', time:'3-5 ngày',  price:'$50',  popular:false, trending:true,  tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'180 ngày', desc:'Istanbul giao thoa Á-Âu, Cappadocia với khinh khí cầu nổi tiếng.', city:'Istanbul' },
   { name:'Saudi Arabia', flag:'🇸🇦', iso:'sa', region:'Trung Đông', time:'5-7 ngày',  price:'$120', popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'1 năm',    desc:'Mecca, Riyadh và sa mạc Ả Rập với di sản văn hóa Hồi giáo phong phú.', city:'Riyadh' },
   { name:'Oman',         flag:'🇴🇲', iso:'om', region:'Trung Đông', time:'3-5 ngày',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'30 ngày',  desc:'Pháo đài cổ, sa mạc Wahiba và bờ biển Ấn Độ Dương yên bình.', city:'Muscat' },
   { name:'Bahrain',      flag:'🇧🇭', iso:'bh', region:'Trung Đông', time:'2-3 ngày',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'14 ngày',    entry:'Multiple', validity:'90 ngày',  desc:'Đảo quốc vịnh Ba Tư với di sản văn hóa Bahrain phong phú.', city:'Manama' },
-
-  // Châu Mỹ
   { name:'Canada',       flag:'🇨🇦', iso:'ca', region:'Châu Mỹ',    time:'3-5 ngày',  price:'$80',  popular:false, trending:false, tag:'eTA',             stay:'180 ngày',   entry:'Multiple', validity:'5 năm',    desc:'Niagara, Rocky Mountains và Toronto — eTA online cấp nhanh trong vài giờ.', city:'Toronto' },
   { name:'Mexico',       flag:'🇲🇽', iso:'mx', region:'Châu Mỹ',    time:'5-7 ngày',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'180 ngày',   entry:'Multiple', validity:'30 ngày',  desc:'Văn hóa Maya, bãi biển Cancun và ẩm thực đặc sắc.', city:'Cancún' },
   { name:'Brazil',       flag:'🇧🇷', iso:'br', region:'Châu Mỹ',    time:'7-10 ngày', price:'$85',  popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'2 năm',    desc:'Rio de Janeiro, rừng Amazon và lễ hội carnival sôi động.', city:'Rio' },
-
-  // Châu Đại Dương
   { name:'Úc',           flag:'🇦🇺', iso:'au', region:'Châu Đại Dương', time:'5-10 ngày', price:'$95',  popular:true,  trending:false, tag:'E-Visa',     stay:'90 ngày',    entry:'Multiple', validity:'1 năm',    desc:'Sydney Opera House, Great Barrier Reef và outback hoang dã.', city:'Sydney' },
   { name:'New Zealand',  flag:'🇳🇿', iso:'nz', region:'Châu Đại Dương', time:'3-5 ngày',  price:'$110', popular:false, trending:false, tag:'eTA',        stay:'90 ngày',    entry:'Multiple', validity:'2 năm',    desc:'Đất nước của Chúa Tể Của Những Chiếc Nhẫn với cảnh quan tuyệt mỹ.', city:'Auckland' },
-
-  // Châu Âu
   { name:'Nga',          flag:'🇷🇺', iso:'ru', region:'Châu Âu',    time:'5-7 ngày',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'16 ngày',    entry:'Single',   validity:'60 ngày',  desc:'Moscow, St. Petersburg và bề dày lịch sử nước Nga.', city:'Moscow' },
   { name:'Albania',      flag:'🇦🇱', iso:'al', region:'Châu Âu',    time:'3-5 ngày',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Multiple', validity:'180 ngày', desc:'Bờ biển Adriatic xinh đẹp và văn hóa Balkan độc đáo.', city:'Tirana' },
-
-  // Châu Phi
   { name:'Ai Cập',       flag:'🇪🇬', iso:'eg', region:'Châu Phi',   time:'5-7 ngày',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'30 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Kim tự tháp Giza, sông Nile và nền văn minh cổ đại Ai Cập.', city:'Cairo' },
   { name:'Kenya',        flag:'🇰🇪', iso:'ke', region:'Châu Phi',   time:'3-5 ngày',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'90 ngày',    entry:'Single',   validity:'3 tháng',  desc:'Safari Maasai Mara và đại di cư của thú rừng nổi tiếng.', city:'Nairobi' },
 ]
@@ -78,6 +65,13 @@ const QUICK_PICKS = ['Thái Lan', 'Nhật Bản', 'Hàn Quốc', 'Dubai (UAE)', 
 
 const flagUrl = (iso, w = 640) => `https://flagcdn.com/w${w}/${iso}.png`
 
+const STATS = [
+  { num:`${DESTINATIONS.length}+`, label:'Quốc gia hỗ trợ' },
+  { num:'99%',                     label:'Tỷ lệ duyệt' },
+  { num:'24h',                     label:'Xử lý nhanh' },
+  { num:'24/7',                    label:'Hỗ trợ tiếng Việt' },
+]
+
 export default function Destinations() {
   const [search, setSearch]     = useState('')
   const [region, setRegion]     = useState('Tất cả')
@@ -104,202 +98,186 @@ export default function Destinations() {
   }
 
   return (
-    <div className="min-h-screen" style={{ background:'#F9FAFB' }}>
+    <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
       <Navbar />
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 55%,#0d2451 100%)' }}>
-        <div className="absolute -top-20 -right-20 w-[440px] h-[440px] rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)' }} />
-        <div className="absolute -bottom-16 left-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.10) 0%,transparent 70%)' }} />
+      {/* ── HERO ── */}
+      <section style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 55%,#0d2451 100%)', padding:'64px 20px 72px', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:-80, right:-80, width:440, height:440, background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)', pointerEvents:'none' }} />
+        <div style={{ position:'absolute', bottom:-60, left:'30%', width:320, height:320, background:'radial-gradient(circle,rgba(245,166,35,0.08) 0%,transparent 70%)', pointerEvents:'none' }} />
 
-        <div className="hidden lg:block absolute top-16 left-12 text-5xl opacity-30 rotate-12 animate-pulse">✈️</div>
-        <div className="hidden lg:block absolute bottom-20 right-20 text-4xl opacity-25 -rotate-6">🌍</div>
-        <div className="hidden lg:block absolute top-32 right-16 text-3xl opacity-20 rotate-12">🛂</div>
-
-        <div className="relative max-w-4xl mx-auto px-5 py-14 md:py-20 text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-5 text-xs font-semibold border" style={{ background:'rgba(245,166,35,0.15)', borderColor:'rgba(245,166,35,0.3)', color:'var(--gold)' }}>
-            <span className="pulse w-2 h-2 rounded-full" style={{ background:'var(--gold)' }} />
+        <div style={{ maxWidth:1024, margin:'0 auto', position:'relative', textAlign:'center' }}>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(245,166,35,0.15)', border:'1px solid rgba(245,166,35,0.3)', color:'var(--gold)', padding:'6px 14px', borderRadius:50, fontSize:13, fontWeight:600, marginBottom:20 }}>
+            <span className="pulse" style={{ width:8, height:8, background:'var(--gold)', borderRadius:'50%', display:'inline-block' }} />
             {DESTINATIONS.length} quốc gia eVisa hỗ trợ
           </div>
-          <h1 className="text-4xl md:text-6xl font-black text-white mb-4 leading-[1.05]" style={{ fontFamily:'Fraunces,serif' }}>
-            Khám phá <span style={{ color:'var(--gold)' }}>thế giới</span>
-            <br />không giới hạn
+          <h1 style={{ fontFamily:'Fraunces,serif', fontSize:'clamp(36px,6vw,56px)', fontWeight:900, color:'white', lineHeight:1.1, marginBottom:16 }}>
+            Khám phá <span style={{ color:'var(--gold)' }}>thế giới</span><br/>
+            không giới hạn
           </h1>
-          <p className="text-white/65 text-base md:text-lg mb-8 max-w-xl mx-auto leading-relaxed">
-            Tìm visa cho mọi quốc gia bạn muốn — chuyên gia của chúng tôi hỗ trợ từ A-Z
+          <p style={{ color:'rgba(255,255,255,0.68)', fontSize:17, lineHeight:1.7, marginBottom:28, maxWidth:560, marginLeft:'auto', marginRight:'auto' }}>
+            Tìm visa cho mọi quốc gia bạn muốn — chuyên gia hỗ trợ từ A-Z
           </p>
 
-          <div className="max-w-xl mx-auto relative mb-5">
-            <svg className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <div style={{ maxWidth:560, margin:'0 auto 18px', position:'relative' }}>
+            <svg style={{ position:'absolute', left:18, top:'50%', transform:'translateY(-50%)', color:'#9CA3AF' }} width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
             <input
-              className="w-full pr-5 py-4 md:py-5 rounded-2xl text-sm md:text-base outline-none border-none shadow-2xl focus:ring-4 focus:ring-white/30 transition-all"
-              style={{ paddingLeft: '52px' }}
-              placeholder="Tìm theo tên quốc gia, thành phố, khu vực..."
+              style={{ width:'100%', padding:'16px 48px 16px 48px', borderRadius:14, fontSize:15, border:'none', outline:'none', boxShadow:'0 24px 64px rgba(0,0,0,0.3)', fontFamily:'inherit' }}
+              placeholder="Tìm quốc gia, thành phố, khu vực..."
               value={search}
               onChange={e => setSearch(e.target.value)}
             />
             {search && (
-              <button onClick={() => setSearch('')} className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-400 text-sm transition-colors">
-                ✕
-              </button>
+              <button
+                onClick={() => setSearch('')}
+                style={{ position:'absolute', right:10, top:'50%', transform:'translateY(-50%)', width:30, height:30, borderRadius:'50%', background:'#F3F4F6', border:'none', cursor:'pointer', color:'#6B7280', fontSize:13 }}
+              >✕</button>
             )}
           </div>
 
-          <div className="flex items-center justify-center gap-2 flex-wrap mb-8">
-            <span className="text-white/45 text-xs">Phổ biến:</span>
+          <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'center', alignItems:'center', marginBottom:28 }}>
+            <span style={{ color:'rgba(255,255,255,0.5)', fontSize:12, marginRight:4 }}>Phổ biến:</span>
             {QUICK_PICKS.map(name => {
               const d = DESTINATIONS.find(x => x.name === name)
               return d ? (
                 <button
                   key={name}
                   onClick={() => handleQuickPick(name)}
-                  className="group inline-flex items-center gap-2 pl-1 pr-3.5 py-1 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-md border border-white/15 text-white hover:bg-white/20 hover:border-white/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all duration-200"
+                  style={{ display:'inline-flex', alignItems:'center', gap:8, padding:'4px 14px 4px 4px', borderRadius:50, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'all .2s', backdropFilter:'blur(8px)' }}
+                  onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.2)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.3)'; e.currentTarget.style.transform='translateY(-1px)' }}
+                  onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.15)'; e.currentTarget.style.transform='none' }}
                 >
-                  <span className="w-6 h-6 rounded-full overflow-hidden border border-white/25 flex-shrink-0 bg-white/10 shadow-sm">
-                    <img src={flagUrl(d.iso, 80)} alt="" className="w-full h-full object-cover" />
+                  <span style={{ width:24, height:24, borderRadius:'50%', overflow:'hidden', border:'1px solid rgba(255,255,255,0.25)', flexShrink:0 }}>
+                    <img src={flagUrl(d.iso, 80)} alt="" style={{ width:'100%', height:'100%', objectFit:'cover' }} />
                   </span>
-                  <span>{d.name}</span>
+                  {d.name}
                 </button>
               ) : null
             })}
           </div>
+        </div>
+      </section>
 
-          <div className="inline-flex items-center divide-x divide-white/15 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10">
-            {[
-              ['quốc gia',  `${DESTINATIONS.length}+`],
-              ['tỷ lệ duyệt','99%'],
-              ['xử lý nhanh','24h'],
-            ].map(([label, val]) => (
-              <div key={label} className="px-5 md:px-7 py-3.5 text-center">
-                <div className="text-white font-black text-lg leading-none" style={{ fontFamily:'Fraunces,serif' }}>{val}</div>
-                <div className="text-white/55 text-[11px] mt-1">{label}</div>
-              </div>
-            ))}
+      {/* ── STATS ── */}
+      <section style={{ background:'white', padding:'40px 20px', borderBottom:'1px solid #F3F4F6' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, textAlign:'center' }}>
+          {STATS.map(s => (
+            <div key={s.label}>
+              <div style={{ fontFamily:'Fraunces,serif', fontSize:38, fontWeight:900, color:'var(--blue)', lineHeight:1 }}>{s.num}</div>
+              <div style={{ fontSize:14, color:'#6B7280', marginTop:6, fontWeight:500 }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── REGION FILTER ── */}
+      <section style={{ background:'#F9FAFB', padding:'48px 20px 24px' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:24 }}>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:6 }}>Chọn theo khu vực</h2>
+            <p style={{ color:'#6B7280', fontSize:14 }}>Lọc nhanh theo châu lục bạn muốn đi</p>
+          </div>
+          <div style={{ display:'flex', gap:10, flexWrap:'wrap', justifyContent:'center' }}>
+            {REGIONS.map(r => {
+              const count = r.name === 'Tất cả' ? DESTINATIONS.length : DESTINATIONS.filter(d => d.region === r.name).length
+              const active = region === r.name
+              return (
+                <button
+                  key={r.name}
+                  onClick={() => setRegion(r.name)}
+                  style={{
+                    display:'inline-flex', alignItems:'center', gap:8,
+                    padding:'10px 16px 10px 10px',
+                    background: active ? 'var(--blue)' : 'white',
+                    border: active ? '1.5px solid var(--blue)' : '1.5px solid #E5E7EB',
+                    borderRadius:50, fontSize:14, fontWeight:600,
+                    color: active ? 'white' : '#374151',
+                    cursor:'pointer', fontFamily:'inherit', transition:'all .15s',
+                    boxShadow: active ? '0 8px 20px rgba(27,79,216,0.25)' : 'none'
+                  }}
+                  onMouseEnter={e => {
+                    if (!active) { e.currentTarget.style.borderColor='var(--blue)'; e.currentTarget.style.color='var(--blue)'; e.currentTarget.style.background='var(--blue-light)' }
+                  }}
+                  onMouseLeave={e => {
+                    if (!active) { e.currentTarget.style.borderColor='#E5E7EB'; e.currentTarget.style.color='#374151'; e.currentTarget.style.background='white' }
+                  }}
+                >
+                  <span style={{ width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:15, background: active ? 'rgba(255,255,255,0.2)' : '#F3F4F6' }}>{r.icon}</span>
+                  <span>{r.name}</span>
+                  <span style={{ fontSize:11, fontWeight:700, padding:'2px 7px', borderRadius:50, background: active ? 'rgba(255,255,255,0.25)' : '#F3F4F6', color: active ? 'white' : '#6B7280' }}>{count}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
       </section>
 
-      <div className="max-w-5xl mx-auto px-5 py-12">
-        {/* ── Region chips ── */}
-        <div className="flex gap-2 flex-wrap mb-10">
-          {REGIONS.map(r => {
-            const count = r.name === 'Tất cả' ? DESTINATIONS.length : DESTINATIONS.filter(d => d.region === r.name).length
-            const active = region === r.name
-            return (
-              <button
-                key={r.name}
-                onClick={() => setRegion(r.name)}
-                className={`group relative overflow-hidden flex items-center gap-2 pl-1.5 pr-3.5 py-1.5 rounded-full text-sm font-semibold transition-all duration-200 border ${
-                  active
-                    ? 'text-white border-transparent shadow-lg shadow-blue-500/30 -translate-y-0.5'
-                    : 'border-gray-200 text-gray-700 bg-white hover:border-blue-300 hover:text-blue-700 hover:-translate-y-0.5 hover:shadow-md'
-                }`}
-                style={active ? { background:'linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%)' } : {}}
-              >
-                {active && <span className="absolute inset-x-2 top-0 h-px bg-white/40 pointer-events-none" />}
-
-                <span className={`flex items-center justify-center w-7 h-7 rounded-full text-base leading-none transition-colors flex-shrink-0 ${
-                  active ? 'bg-white/20' : 'bg-gray-50 group-hover:bg-blue-50'
-                }`}>
-                  {r.icon}
-                </span>
-
-                <span>{r.name}</span>
-
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none min-w-[20px] text-center transition-colors ${
-                  active ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-700'
-                }`}>
-                  {count}
-                </span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* ── Trending ── */}
-        {showFeatured && trending.length >= 5 && (
-          <SectionHeader
-            icon="🔥"
-            title="Đang xu hướng"
-            subtitle="Những điểm đến được tìm kiếm nhiều nhất tuần này"
-            right="Cập nhật mỗi tuần"
-          >
-            <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4">
-              <FeaturedDestCard d={trending[0]} onClick={() => setSelected(trending[0])} />
+      {/* ── TRENDING ── */}
+      {showFeatured && trending.length >= 5 && (
+        <section style={{ background:'#F9FAFB', padding:'40px 20px 64px' }}>
+          <div style={{ maxWidth:1024, margin:'0 auto' }}>
+            <SectionHeader icon="🔥" title="Đang xu hướng" subtitle="Những điểm đến được tìm kiếm nhiều nhất tuần này" right="Cập nhật mỗi tuần" />
+            <div style={{ display:'grid', gap:16, marginBottom:16 }}>
+              <FeaturedDestBanner d={trending[0]} onClick={() => setSelected(trending[0])} />
+            </div>
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:16 }}>
               {trending.slice(1, 5).map(d => (
                 <DestCard key={d.name} d={d} onClick={() => setSelected(d)} highlight />
               ))}
             </div>
-          </SectionHeader>
-        )}
+          </div>
+        </section>
+      )}
 
-        {/* ── Popular ── */}
-        {showFeatured && popular.length > 0 && (
-          <SectionHeader
-            icon="⭐"
-            title="Phổ biến nhất"
-            subtitle="Top quốc gia khách Việt thường chọn"
-          >
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* ── POPULAR ── */}
+      {showFeatured && popular.length > 0 && (
+        <section style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6', borderBottom:'1px solid #F3F4F6' }}>
+          <div style={{ maxWidth:1024, margin:'0 auto' }}>
+            <SectionHeader icon="⭐" title="Phổ biến nhất" subtitle="Top quốc gia khách Việt thường chọn" />
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:16 }}>
               {popular.map(d => <DestCard key={d.name} d={d} onClick={() => setSelected(d)} />)}
             </div>
-          </SectionHeader>
-        )}
+          </div>
+        </section>
+      )}
 
-        {/* ── All / filtered ── */}
-        <SectionHeader
-          icon="🌍"
-          title={region === 'Tất cả' ? 'Tất cả điểm đến' : region}
-          subtitle={term ? `Kết quả tìm kiếm cho "${search}"` : `Tổng cộng ${filtered.length} quốc gia`}
-          right={`${filtered.length} kết quả`}
-        >
+      {/* ── ALL / FILTERED ── */}
+      <section style={{ background:'#F9FAFB', padding:'64px 20px' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <SectionHeader
+            icon="🌍"
+            title={region === 'Tất cả' ? 'Tất cả điểm đến' : region}
+            subtitle={term ? `Kết quả tìm kiếm cho "${search}"` : `Tổng cộng ${filtered.length} quốc gia`}
+            right={`${filtered.length} kết quả`}
+          />
           {filtered.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:16 }}>
               {filtered.map(d => <DestCard key={d.name} d={d} onClick={() => setSelected(d)} />)}
             </div>
           ) : (
-            <div className="text-center py-16 bg-white rounded-2xl border border-gray-200">
-              <div className="text-5xl mb-4 opacity-60">🔍</div>
-              <p className="font-bold text-base mb-1" style={{ color:'var(--navy)' }}>Không tìm thấy quốc gia phù hợp</p>
-              <p className="text-sm text-gray-500 mb-5">Thử từ khóa khác hoặc bỏ bộ lọc khu vực</p>
-              <button
-                onClick={() => { setSearch(''); setRegion('Tất cả') }}
-                className="btn-primary"
-              >Xem tất cả điểm đến</button>
+            <div style={{ background:'white', borderRadius:14, border:'1px solid #E5E7EB', padding:'56px 20px', textAlign:'center' }}>
+              <div style={{ fontSize:48, marginBottom:14, opacity:0.6 }}>🔍</div>
+              <p style={{ fontWeight:700, fontSize:16, color:'var(--navy)', marginBottom:6 }}>Không tìm thấy quốc gia phù hợp</p>
+              <p style={{ fontSize:14, color:'#6B7280', marginBottom:20 }}>Thử từ khóa khác hoặc bỏ bộ lọc khu vực</p>
+              <button onClick={() => { setSearch(''); setRegion('Tất cả') }} className="btn-primary">Xem tất cả điểm đến</button>
             </div>
           )}
-        </SectionHeader>
+        </div>
+      </section>
 
-        {/* ── CTA banner ── */}
-        <section className="mt-16 rounded-3xl overflow-hidden relative" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 60%,#0d2451 100%)' }}>
-          <div className="absolute -top-16 -right-16 w-72 h-72 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)' }} />
-          <div className="absolute -bottom-16 left-12 w-56 h-56 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.30) 0%,transparent 70%)' }} />
-
-          <div className="relative px-6 py-10 md:px-12 md:py-14 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-            <div className="flex items-center gap-4 md:gap-5">
-              <div className="text-5xl md:text-6xl">💼</div>
-              <div>
-                <h3 className="text-xl md:text-2xl font-black text-white mb-1" style={{ fontFamily:'Fraunces,serif' }}>
-                  Không thấy nước bạn cần?
-                </h3>
-                <p className="text-white/70 text-sm">Liên hệ chuyên gia — chúng tôi hỗ trợ visa cho 150+ quốc gia</p>
-              </div>
-            </div>
-            <Link
-              to="/support"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm whitespace-nowrap transition-all hover:-translate-y-0.5 hover:shadow-xl"
-              style={{ background:'var(--gold)', color:'var(--navy)' }}
-            >
-              Hỗ trợ ngay
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-              </svg>
-            </Link>
-          </div>
-        </section>
-      </div>
+      {/* ── CTA ── */}
+      <section style={{ background:'var(--navy)', padding:'56px 20px', textAlign:'center' }}>
+        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Không thấy nước bạn cần?</h2>
+        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Liên hệ chuyên gia — chúng tôi hỗ trợ visa cho 150+ quốc gia</p>
+        <Link
+          to="/support"
+          style={{ display:'inline-block', background:'var(--gold)', color:'var(--navy)', borderRadius:10, padding:'14px 32px', fontSize:16, fontWeight:800, textDecoration:'none', fontFamily:'inherit', transition:'opacity .15s' }}
+          onMouseEnter={e => e.currentTarget.style.opacity='.88'}
+          onMouseLeave={e => e.currentTarget.style.opacity='1'}
+        >Hỗ trợ ngay →</Link>
+      </section>
 
       {selected && <DestModal d={selected} onClose={() => setSelected(null)} />}
 
@@ -308,51 +286,38 @@ export default function Destinations() {
   )
 }
 
-function SectionHeader({ icon, title, subtitle, right, children }) {
+function SectionHeader({ icon, title, subtitle, right }) {
   return (
-    <section className="mb-12 last:mb-0">
-      <div className="flex items-end justify-between mb-5 gap-4">
-        <div>
-          <h2 className="text-xl md:text-2xl font-black flex items-center gap-2 mb-1" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            <span className="text-2xl">{icon}</span>
-            {title}
-          </h2>
-          {subtitle && <p className="text-sm text-gray-500">{subtitle}</p>}
-        </div>
-        {right && <span className="text-xs text-gray-400 whitespace-nowrap pb-1 hidden sm:inline">{right}</span>}
+    <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', gap:16, marginBottom:24, flexWrap:'wrap' }}>
+      <div>
+        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:6, display:'flex', alignItems:'center', gap:10 }}>
+          <span style={{ fontSize:28 }}>{icon}</span>{title}
+        </h2>
+        {subtitle && <p style={{ color:'#6B7280', fontSize:14 }}>{subtitle}</p>}
       </div>
-      {children}
-    </section>
+      {right && <span style={{ fontSize:12, color:'#9CA3AF', whiteSpace:'nowrap' }}>{right}</span>}
+    </div>
   )
 }
 
 function CardCover({ d, big = false, hires = false }) {
   const tagColor = TAG_COLORS[d.tag] || { bg:'#F3F4F6', text:'#6B7280' }
   const w = hires ? 1280 : 640
-  const height = big ? 'h-full min-h-[260px]' : 'h-32'
-
   return (
-    <div className={`relative ${height} overflow-hidden bg-gray-100`}>
+    <div style={{ position:'relative', height: big ? '100%' : 132, minHeight: big ? 260 : 132, overflow:'hidden', background:'#F3F4F6' }}>
       <img
         src={flagUrl(d.iso, w)}
         alt={`Cờ ${d.name}`}
         loading="lazy"
-        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', transition:'transform .6s' }}
+        className="card-flag-img"
       />
-      {/* Gradient overlay for legibility */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(0,0,0,0.10) 0%, rgba(0,0,0,0) 35%, rgba(0,0,0,0.55) 100%)' }} />
-
-      {/* Tag badge — top right */}
-      <span
-        className="absolute top-3 right-3 text-[10px] font-bold px-2.5 py-1 rounded-full backdrop-blur-md shadow-md"
-        style={{ background:'rgba(255,255,255,0.95)', color: tagColor.text }}
-      >
+      <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,rgba(0,0,0,0.10) 0%,rgba(0,0,0,0) 35%,rgba(0,0,0,0.55) 100%)' }} />
+      <span style={{ position:'absolute', top:12, right:12, fontSize:10, fontWeight:700, padding:'4px 10px', borderRadius:50, background:'rgba(255,255,255,0.95)', color:tagColor.text, backdropFilter:'blur(8px)', boxShadow:'0 2px 6px rgba(0,0,0,0.15)' }}>
         {d.tag}
       </span>
-
-      {/* City label — bottom left, on dark gradient */}
-      <span className="absolute bottom-2.5 left-3 text-[11px] font-bold uppercase tracking-wider text-white drop-shadow-md flex items-center gap-1">
-        <span>📍</span> {d.city}
+      <span style={{ position:'absolute', bottom:10, left:12, fontSize:11, fontWeight:700, color:'white', textTransform:'uppercase', letterSpacing:'.05em', textShadow:'0 1px 4px rgba(0,0,0,0.5)', display:'flex', alignItems:'center', gap:4 }}>
+        📍 {d.city}
       </span>
     </div>
   )
@@ -362,164 +327,130 @@ function DestCard({ d, onClick, highlight }) {
   return (
     <button
       onClick={onClick}
-      className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-xl hover:-translate-y-1 hover:border-transparent transition-all duration-300 text-left flex flex-col cursor-pointer"
+      style={{ position:'relative', background:'white', border:'1px solid #E5E7EB', borderRadius:14, overflow:'hidden', textAlign:'left', display:'flex', flexDirection:'column', cursor:'pointer', fontFamily:'inherit', padding:0, transition:'all .25s' }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow='0 16px 32px rgba(11,29,58,0.12)'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.borderColor='var(--blue)' }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none'; e.currentTarget.style.borderColor='#E5E7EB' }}
     >
       {highlight && (
-        <span
-          className="absolute top-3 left-3 z-10 text-[10px] font-bold px-2 py-1 rounded-full shadow-md flex items-center gap-1"
-          style={{ background:'var(--gold)', color:'var(--navy)' }}
-        >
+        <span style={{ position:'absolute', top:12, left:12, zIndex:10, fontSize:10, fontWeight:700, padding:'4px 8px', borderRadius:50, background:'var(--gold)', color:'var(--navy)', boxShadow:'0 2px 6px rgba(0,0,0,0.2)' }}>
           🔥 HOT
         </span>
       )}
-
       <CardCover d={d} />
-
-      <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-black text-base mb-1 leading-tight" style={{ color:'var(--navy)' }}>{d.name}</h3>
-        <p className="text-[11px] text-gray-400 mb-3 truncate">{d.desc}</p>
-
-        <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between">
-          <span className="flex items-center gap-1 text-xs text-gray-500">
+      <div style={{ padding:16, display:'flex', flexDirection:'column', flex:1 }}>
+        <h3 style={{ fontWeight:900, fontSize:16, color:'var(--navy)', marginBottom:4, lineHeight:1.2 }}>{d.name}</h3>
+        <p style={{ fontSize:11, color:'#9CA3AF', lineHeight:1.5, marginBottom:12, minHeight:32, display:'-webkit-box', WebkitLineClamp:2, WebkitBoxOrient:'vertical', overflow:'hidden' }}>{d.desc}</p>
+        <div style={{ marginTop:'auto', paddingTop:12, borderTop:'1px solid #F3F4F6', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <span style={{ display:'flex', alignItems:'center', gap:4, fontSize:12, color:'#6B7280' }}>
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
             </svg>
             {d.time}
           </span>
-          <span className="font-black text-base" style={{ color:'var(--blue)' }}>{d.price}</span>
+          <span style={{ fontWeight:900, fontSize:16, color:'var(--blue)' }}>{d.price}</span>
         </div>
       </div>
     </button>
   )
 }
 
-function FeaturedDestCard({ d, onClick }) {
+function FeaturedDestBanner({ d, onClick }) {
   return (
     <button
       onClick={onClick}
-      className="group relative bg-white border border-gray-200 rounded-2xl overflow-hidden hover:shadow-2xl hover:border-transparent transition-all duration-300 text-left cursor-pointer md:col-span-2 md:row-span-2 flex flex-col"
+      style={{ position:'relative', background:'white', border:'1px solid #E5E7EB', borderRadius:18, overflow:'hidden', cursor:'pointer', fontFamily:'inherit', padding:0, textAlign:'left', display:'grid', gridTemplateColumns:'minmax(0,2fr) minmax(0,3fr)', width:'100%', transition:'all .3s' }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow='0 24px 48px rgba(11,29,58,0.15)'; e.currentTarget.style.borderColor='var(--blue)' }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.borderColor='#E5E7EB' }}
     >
-      <span
-        className="absolute top-4 left-4 z-10 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5"
-        style={{ background:'var(--gold)', color:'var(--navy)' }}
-      >
+      <span style={{ position:'absolute', top:16, left:16, zIndex:10, fontSize:12, fontWeight:700, padding:'6px 12px', borderRadius:50, background:'var(--gold)', color:'var(--navy)', boxShadow:'0 4px 12px rgba(0,0,0,0.2)', display:'inline-flex', alignItems:'center', gap:6 }}>
         🔥 HOT NHẤT
       </span>
-
-      <div className="relative flex-1 min-h-[200px]">
+      <div style={{ position:'relative', minHeight:280 }}>
         <CardCover d={d} big hires />
       </div>
-
-      <div className="p-5 md:p-6">
-        <div className="flex items-baseline justify-between gap-3 mb-2">
-          <h3 className="text-2xl md:text-3xl font-black leading-tight" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            {d.name}
-          </h3>
-          <span className="font-black text-2xl whitespace-nowrap" style={{ color:'var(--blue)' }}>{d.price}</span>
+      <div style={{ padding:'28px', display:'flex', flexDirection:'column', justifyContent:'center' }}>
+        <div style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', gap:12, marginBottom:8 }}>
+          <h3 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'var(--navy)', lineHeight:1.1 }}>{d.name}</h3>
+          <span style={{ fontWeight:900, fontSize:24, color:'var(--blue)', whiteSpace:'nowrap' }}>{d.price}</span>
         </div>
-        <p className="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-2">{d.desc}</p>
-
-        <div className="flex items-center gap-3 flex-wrap text-xs">
-          <span className="inline-flex items-center gap-1 text-gray-600 bg-gray-50 px-2.5 py-1 rounded-full">
-            <span>⏱</span> {d.time}
-          </span>
-          <span className="inline-flex items-center gap-1 text-gray-600 bg-gray-50 px-2.5 py-1 rounded-full">
-            <span>📅</span> Lưu trú {d.stay}
-          </span>
-          <span className="inline-flex items-center gap-1 text-gray-600 bg-gray-50 px-2.5 py-1 rounded-full">
-            <span>🔁</span> {d.entry}
-          </span>
+        <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.6, marginBottom:16 }}>{d.desc}</p>
+        <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:16 }}>
+          {[['⏱', d.time], ['📅', `Lưu trú ${d.stay}`], ['🔁', d.entry]].map(([i,l]) => (
+            <span key={l} style={{ display:'inline-flex', alignItems:'center', gap:5, padding:'5px 11px', borderRadius:50, background:'#F9FAFB', fontSize:12, color:'#374151', fontWeight:500 }}>
+              {i} {l}
+            </span>
+          ))}
         </div>
-
-        <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
-          <span className="text-xs font-semibold text-gray-500">Xem chi tiết & đăng ký</span>
-          <span className="inline-flex items-center justify-center w-8 h-8 rounded-full transition-transform group-hover:translate-x-1" style={{ background:'var(--blue)', color:'white' }}>
+        <div style={{ paddingTop:16, borderTop:'1px solid #F3F4F6', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+          <span style={{ fontSize:13, fontWeight:600, color:'#6B7280' }}>Xem chi tiết & đăng ký</span>
+          <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:32, height:32, borderRadius:'50%', background:'var(--blue)', color:'white' }}>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
           </span>
         </div>
       </div>
+      <style>{`@media(max-width:720px){button[data-featured]{grid-template-columns:1fr!important}}`}</style>
     </button>
   )
 }
 
 function DestModal({ d, onClose }) {
   const tagColor = TAG_COLORS[d.tag] || { bg:'#F3F4F6', text:'#6B7280' }
-
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-      <div
-        onClick={e => e.stopPropagation()}
-        className="relative bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl fade-up"
-      >
-        {/* Header — flag image fullscreen */}
-        <div className="relative h-44 md:h-56 overflow-hidden bg-gray-100">
-          <img
-            src={flagUrl(d.iso, 1280)}
-            alt={`Cờ ${d.name}`}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-          {/* Bottom gradient for text */}
-          <div className="absolute inset-0" style={{ background:'linear-gradient(180deg, rgba(0,0,0,0.20) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0.65) 100%)' }} />
-
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center text-white bg-black/30 hover:bg-black/50 backdrop-blur-md transition-all z-10"
-            aria-label="Đóng"
+    <div onClick={onClose} style={{ position:'fixed', inset:0, zIndex:100, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
+      <div style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(4px)' }} />
+      <div onClick={e => e.stopPropagation()} className="fade-up"
+        style={{ position:'relative', background:'white', borderRadius:20, width:'100%', maxWidth:640, maxHeight:'90vh', overflowY:'auto', boxShadow:'0 24px 80px rgba(0,0,0,0.4)' }}>
+        <div style={{ position:'relative', height:200, overflow:'hidden', background:'#F3F4F6' }}>
+          <img src={flagUrl(d.iso, 1280)} alt={`Cờ ${d.name}`} style={{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover' }} />
+          <div style={{ position:'absolute', inset:0, background:'linear-gradient(180deg,rgba(0,0,0,0.20) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,0.65) 100%)' }} />
+          <button onClick={onClose}
+            style={{ position:'absolute', top:16, right:16, width:38, height:38, borderRadius:'50%', background:'rgba(0,0,0,0.4)', color:'white', border:'none', cursor:'pointer', backdropFilter:'blur(8px)', fontSize:14, zIndex:10 }}
           >✕</button>
-
-          {/* Bottom info on flag */}
-          <div className="absolute bottom-4 left-5 right-5 flex items-end justify-between gap-3">
-            <div className="text-white drop-shadow-lg">
-              <div className="text-[11px] font-semibold uppercase tracking-widest text-white/85 mb-1">📍 {d.city} · {d.region}</div>
-              <h2 className="text-3xl md:text-4xl font-black leading-tight" style={{ fontFamily:'Fraunces,serif' }}>{d.name}</h2>
+          <div style={{ position:'absolute', bottom:16, left:20, right:20, display:'flex', alignItems:'flex-end', justifyContent:'space-between', gap:12 }}>
+            <div style={{ color:'white', textShadow:'0 2px 8px rgba(0,0,0,0.5)' }}>
+              <div style={{ fontSize:11, fontWeight:600, textTransform:'uppercase', letterSpacing:'.08em', color:'rgba(255,255,255,0.85)', marginBottom:4 }}>📍 {d.city} · {d.region}</div>
+              <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, lineHeight:1.1 }}>{d.name}</h2>
             </div>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full shadow-md" style={{ background:tagColor.bg, color:tagColor.text }}>{d.tag}</span>
+            <span style={{ fontSize:12, fontWeight:700, padding:'5px 12px', borderRadius:50, background:tagColor.bg, color:tagColor.text }}>{d.tag}</span>
           </div>
         </div>
-
-        {/* Body */}
-        <div className="p-6 md:p-8">
-          <p className="text-sm text-gray-600 leading-relaxed mb-6">{d.desc}</p>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 mb-6">
+        <div style={{ padding:'24px 28px 28px' }}>
+          <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.7, marginBottom:22 }}>{d.desc}</p>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:10, marginBottom:22 }}>
             {[
-              ['⏱', 'Thời gian xử lý',  d.time],
-              ['📅', 'Lưu trú tối đa',   d.stay],
-              ['🔁', 'Số lần nhập cảnh', d.entry],
-              ['📆', 'Hiệu lực visa',    d.validity],
-              ['💰', 'Phí dịch vụ',      d.price],
-              ['📋', 'Loại visa',        d.tag],
-            ].map(([icon, label, val]) => (
-              <div key={label} className="bg-gray-50 rounded-xl p-3.5 hover:bg-gray-100 transition-colors">
-                <div className="flex items-center gap-1.5 mb-1.5">
-                  <span className="text-base leading-none">{icon}</span>
-                  <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">{label}</span>
+              ['⏱','Thời gian xử lý',  d.time],
+              ['📅','Lưu trú tối đa',   d.stay],
+              ['🔁','Số lần nhập cảnh', d.entry],
+              ['📆','Hiệu lực visa',    d.validity],
+              ['💰','Phí dịch vụ',      d.price],
+              ['📋','Loại visa',        d.tag],
+            ].map(([icon,label,val]) => (
+              <div key={label} style={{ background:'#F9FAFB', borderRadius:12, padding:'12px 14px' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:5 }}>
+                  <span style={{ fontSize:15 }}>{icon}</span>
+                  <span style={{ fontSize:10, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em' }}>{label}</span>
                 </div>
-                <p className="font-bold text-sm leading-tight" style={{ color:'var(--navy)' }}>{val}</p>
+                <p style={{ fontWeight:700, fontSize:13, color:'var(--navy)', lineHeight:1.3 }}>{val}</p>
               </div>
             ))}
           </div>
-
-          <div className="rounded-xl p-4 mb-6" style={{ background:'#FFFBEB', border:'1px solid #FDE68A' }}>
-            <h4 className="font-bold text-sm mb-2.5 flex items-center gap-1.5" style={{ color:'#92400E' }}>
-              <span className="text-base">📋</span> Giấy tờ cần chuẩn bị
+          <div style={{ borderRadius:12, padding:16, marginBottom:22, background:'#FFFBEB', border:'1px solid #FDE68A' }}>
+            <h4 style={{ fontWeight:700, fontSize:13, color:'#92400E', marginBottom:10, display:'flex', alignItems:'center', gap:6 }}>
+              📋 Giấy tờ cần chuẩn bị
             </h4>
-            <ul className="text-xs leading-relaxed space-y-1.5" style={{ color:'#78350F' }}>
+            <ul style={{ fontSize:12, color:'#78350F', lineHeight:1.7, listStyle:'none', padding:0, margin:0 }}>
               {REQUIREMENTS.map(r => (
-                <li key={r} className="flex gap-2">
-                  <span style={{ color:'#16A34A' }}>✓</span>
-                  <span>{r}</span>
+                <li key={r} style={{ display:'flex', gap:8, marginBottom:4 }}>
+                  <span style={{ color:'#16A34A' }}>✓</span><span>{r}</span>
                 </li>
               ))}
             </ul>
           </div>
-
-          <div className="flex flex-col-reverse sm:flex-row gap-3">
-            <button onClick={onClose} className="btn-secondary flex-1 sm:flex-initial sm:px-6">Để sau</button>
-            <Link to="/" onClick={onClose} className="btn-primary flex-1 justify-center">
+          <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+            <button onClick={onClose} className="btn-secondary" style={{ flex:'0 0 auto', padding:'12px 24px' }}>Để sau</button>
+            <Link to="/" onClick={onClose} className="btn-primary" style={{ flex:1, justifyContent:'center', minWidth:200 }}>
               Đăng ký visa ngay
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M5 12h14M12 5l7 7-7 7"/>

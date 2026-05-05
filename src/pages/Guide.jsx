@@ -12,30 +12,18 @@ const STEPS = [
 ]
 
 const DOCS = [
-  { id:'passport',  required:true,  label:'Hộ chiếu còn hạn ít nhất 6 tháng',           hint:'Tính từ ngày dự kiến nhập cảnh' },
-  { id:'photo',     required:true,  label:'Ảnh chân dung 4×6 nền trắng',                hint:'Chụp trong vòng 6 tháng, không đội mũ, không kính' },
-  { id:'passport-img', required:true, label:'Ảnh trang thông tin hộ chiếu',             hint:'Rõ nét, đủ 4 góc, không bị che' },
-  { id:'flight',    required:false, label:'Vé máy bay khứ hồi',                        hint:'Một số nước yêu cầu (Thái Lan, Nhật, Hàn)' },
-  { id:'hotel',     required:false, label:'Đặt phòng khách sạn / địa chỉ lưu trú',     hint:'Giúp tăng tỷ lệ chấp thuận' },
-  { id:'bank',      required:false, label:'Sao kê ngân hàng 3 tháng gần nhất',         hint:'Khuyến nghị cho visa du lịch dài ngày' },
-  { id:'insurance', required:false, label:'Bảo hiểm du lịch',                          hint:'Bắt buộc với một số nước châu Âu' },
-  { id:'invitation',required:false, label:'Thư mời (nếu có)',                          hint:'Cho mục đích thăm thân, công tác' },
+  { id:'passport',     required:true,  label:'Hộ chiếu còn hạn ít nhất 6 tháng',          hint:'Tính từ ngày dự kiến nhập cảnh' },
+  { id:'photo',        required:true,  label:'Ảnh chân dung 4×6 nền trắng',               hint:'Chụp trong vòng 6 tháng, không đội mũ, không kính' },
+  { id:'passport-img', required:true,  label:'Ảnh trang thông tin hộ chiếu',              hint:'Rõ nét, đủ 4 góc, không bị che' },
+  { id:'flight',       required:false, label:'Vé máy bay khứ hồi',                        hint:'Một số nước yêu cầu (Thái Lan, Nhật, Hàn)' },
+  { id:'hotel',        required:false, label:'Đặt phòng khách sạn / địa chỉ lưu trú',     hint:'Giúp tăng tỷ lệ chấp thuận' },
+  { id:'bank',         required:false, label:'Sao kê ngân hàng 3 tháng gần nhất',         hint:'Khuyến nghị cho visa du lịch dài ngày' },
+  { id:'insurance',    required:false, label:'Bảo hiểm du lịch',                          hint:'Bắt buộc với một số nước châu Âu' },
+  { id:'invitation',   required:false, label:'Thư mời (nếu có)',                          hint:'Cho mục đích thăm thân, công tác' },
 ]
 
-const PHOTO_DOS = [
-  'Nền trắng đồng nhất',
-  'Mặt thẳng, nhìn vào camera',
-  'Ánh sáng đều, không đổ bóng',
-  'Tóc gọn, không che mặt',
-  'Tối thiểu 400 × 400 px',
-]
-const PHOTO_DONTS = [
-  'Đội mũ, đeo kính (kể cả kính cận)',
-  'Cười hở răng, biểu cảm khác lạ',
-  'Nền có hoa văn, vật thể',
-  'Ảnh selfie, ảnh chụp với nhóm',
-  'Ảnh mờ, có filter, chỉnh sửa quá mức',
-]
+const PHOTO_DOS = ['Nền trắng đồng nhất','Mặt thẳng, nhìn vào camera','Ánh sáng đều, không đổ bóng','Tóc gọn, không che mặt','Tối thiểu 400 × 400 px']
+const PHOTO_DONTS = ['Đội mũ, đeo kính (kể cả kính cận)','Cười hở răng, biểu cảm khác lạ','Nền có hoa văn, vật thể','Ảnh selfie, ảnh chụp với nhóm','Ảnh mờ, có filter, chỉnh sửa quá mức']
 
 const MISTAKES = [
   { icon:'📅', title:'Hộ chiếu sắp hết hạn',     desc:'Hộ chiếu phải còn hạn ít nhất 6 tháng. Nhiều người bị từ chối vì hạn còn 5 tháng 28 ngày.' },
@@ -71,6 +59,14 @@ const FAQS = [
   { cat:'Sau khi nhận visa', q:'Có thể gia hạn visa không?',                           a:'Tùy quốc gia. Một số nước (Thái Lan, Indonesia) cho phép gia hạn 30 ngày tại địa phương. Đa số phải xuất cảnh và xin visa mới. Liên hệ chuyên gia để được tư vấn cụ thể.' },
 ]
 
+const QUICK_LINKS = [
+  ['#process','📋 Quy trình'],
+  ['#docs','📦 Hồ sơ'],
+  ['#photo','📸 Ảnh chuẩn'],
+  ['#mistakes','⚠️ Sai lầm'],
+  ['#faq','❓ FAQ'],
+]
+
 export default function Guide() {
   const [open, setOpen]       = useState(null)
   const [checked, setChecked] = useState(new Set(['passport','photo','passport-img']))
@@ -99,357 +95,318 @@ export default function Guide() {
   const allDone       = DOCS.filter(d => checked.has(d.id)).length
 
   return (
-    <div className="min-h-screen" style={{ background:'#F9FAFB' }}>
+    <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
       <Navbar />
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 55%,#0d2451 100%)' }}>
-        <div className="absolute -top-20 -right-20 w-[440px] h-[440px] rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)' }} />
-        <div className="absolute -bottom-16 left-1/4 w-80 h-80 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.10) 0%,transparent 70%)' }} />
+      {/* ── HERO ── */}
+      <section style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 55%,#0d2451 100%)', padding:'64px 20px 72px', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:-80, right:-80, width:440, height:440, background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)', pointerEvents:'none' }} />
+        <div style={{ position:'absolute', bottom:-60, left:'30%', width:320, height:320, background:'radial-gradient(circle,rgba(245,166,35,0.08) 0%,transparent 70%)', pointerEvents:'none' }} />
 
-        <div className="relative max-w-4xl mx-auto px-5 py-14 md:py-20 text-center">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-5 text-xs font-semibold border" style={{ background:'rgba(245,166,35,0.15)', borderColor:'rgba(245,166,35,0.3)', color:'var(--gold)' }}>
-            <span className="pulse w-2 h-2 rounded-full" style={{ background:'var(--gold)' }} />
+        <div style={{ maxWidth:1024, margin:'0 auto', position:'relative', textAlign:'center' }}>
+          <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(245,166,35,0.15)', border:'1px solid rgba(245,166,35,0.3)', color:'var(--gold)', padding:'6px 14px', borderRadius:50, fontSize:13, fontWeight:600, marginBottom:20 }}>
+            <span className="pulse" style={{ width:8, height:8, background:'var(--gold)', borderRadius:'50%', display:'inline-block' }} />
             Hướng dẫn từ A-Z trong 10 phút
           </div>
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-3 leading-tight" style={{ fontFamily:'Fraunces,serif' }}>
+          <h1 style={{ fontFamily:'Fraunces,serif', fontSize:'clamp(36px,6vw,56px)', fontWeight:900, color:'white', lineHeight:1.1, marginBottom:16 }}>
             Hướng dẫn xin <span style={{ color:'var(--gold)' }}>eVisa</span>
           </h1>
-          <p className="text-white/65 text-base mb-8 max-w-lg mx-auto">
+          <p style={{ color:'rgba(255,255,255,0.68)', fontSize:17, lineHeight:1.7, maxWidth:560, margin:'0 auto 28px' }}>
             Mọi thứ bạn cần biết để xin visa thành công — từ chuẩn bị hồ sơ đến nhận visa qua email
           </p>
 
-          <div className="flex flex-wrap justify-center gap-2">
-            {[
-              ['#process','📋 Quy trình'],
-              ['#docs','📦 Hồ sơ'],
-              ['#photo','📸 Ảnh chuẩn'],
-              ['#mistakes','⚠️ Sai lầm'],
-              ['#faq','❓ FAQ'],
-            ].map(([href,label]) => (
+          <div style={{ display:'flex', gap:8, flexWrap:'wrap', justifyContent:'center' }}>
+            {QUICK_LINKS.map(([href, label]) => (
               <a key={href} href={href}
-                className="group inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs md:text-sm font-semibold bg-white/10 backdrop-blur-md border border-white/15 text-white hover:bg-white/20 hover:border-white/30 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20 transition-all duration-200"
+                style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'8px 16px', borderRadius:50, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', fontSize:13, fontWeight:600, textDecoration:'none', transition:'all .2s', backdropFilter:'blur(8px)' }}
+                onMouseEnter={e => { e.currentTarget.style.background='rgba(255,255,255,0.2)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.3)'; e.currentTarget.style.transform='translateY(-1px)' }}
+                onMouseLeave={e => { e.currentTarget.style.background='rgba(255,255,255,0.1)'; e.currentTarget.style.borderColor='rgba(255,255,255,0.15)'; e.currentTarget.style.transform='none' }}
               >{label}</a>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Process timeline ── */}
-      <section id="process" className="max-w-5xl mx-auto px-5 py-14">
-        <div className="text-center mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>Quy trình</div>
-          <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            5 bước đơn giản, hoàn tất trong 10 phút
-          </h2>
-          <p className="text-sm text-gray-500">Từ đăng ký đến nhận visa — quy trình hoàn toàn online</p>
-        </div>
+      {/* ── PROCESS ── */}
+      <section id="process" style={{ background:'#F9FAFB', padding:'64px 20px' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:40 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Quy trình</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>5 bước đơn giản, hoàn tất trong 10 phút</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Từ đăng ký đến nhận visa — quy trình hoàn toàn online</p>
+          </div>
 
-        <div className="space-y-3">
-          {STEPS.map((s, i) => (
-            <div key={s.num} className="bg-white border border-gray-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 md:items-center hover:shadow-md transition-shadow relative">
-              {/* Vertical line */}
-              {i < STEPS.length - 1 && (
-                <div className="hidden md:block absolute left-[42px] top-full h-3 w-0.5 z-0" style={{ background:'#E5E7EB' }} />
-              )}
-
-              <div className="flex items-center gap-4 md:flex-shrink-0">
-                <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl flex items-center justify-center text-3xl flex-shrink-0 relative" style={{ background:'var(--blue-light)' }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
+            {STEPS.map(s => (
+              <div key={s.num} style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:22, display:'flex', gap:18, alignItems:'center', flexWrap:'wrap', transition:'box-shadow .2s' }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow='0 8px 24px rgba(11,29,58,0.06)'}
+                onMouseLeave={e => e.currentTarget.style.boxShadow='none'}
+              >
+                <div style={{ position:'relative', width:60, height:60, borderRadius:16, background:'var(--blue-light)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:28, flexShrink:0 }}>
                   {s.icon}
-                  <div className="absolute -top-1.5 -right-1.5 text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center text-white shadow-sm" style={{ background:'var(--blue)' }}>{s.num}</div>
+                  <div style={{ position:'absolute', top:-6, right:-6, width:24, height:24, borderRadius:'50%', background:'var(--blue)', color:'white', fontSize:10, fontWeight:900, display:'flex', alignItems:'center', justifyContent:'center', boxShadow:'0 2px 6px rgba(0,0,0,0.15)' }}>{s.num}</div>
                 </div>
-                <div className="md:hidden">
-                  <h3 className="font-black text-base" style={{ color:'var(--navy)' }}>{s.title}</h3>
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background:'#FFFBEB', color:'#92400E' }}>⏱ {s.time}</span>
+                <div style={{ flex:1, minWidth:240 }}>
+                  <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:4, flexWrap:'wrap' }}>
+                    <h3 style={{ fontWeight:900, fontSize:17, color:'var(--navy)' }}>{s.title}</h3>
+                    <span style={{ fontSize:11, fontWeight:600, padding:'2px 8px', borderRadius:50, background:'#FFFBEB', color:'#92400E' }}>⏱ {s.time}</span>
+                  </div>
+                  <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.65 }}>{s.desc}</p>
                 </div>
               </div>
-
-              <div className="flex-1">
-                <div className="hidden md:flex items-center gap-3 mb-1">
-                  <h3 className="font-black text-lg" style={{ color:'var(--navy)' }}>{s.title}</h3>
-                  <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full" style={{ background:'#FFFBEB', color:'#92400E' }}>⏱ {s.time}</span>
-                </div>
-                <p className="text-sm text-gray-600 leading-relaxed">{s.desc}</p>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── Document checklist ── */}
-      <section id="docs" className="max-w-5xl mx-auto px-5 py-14">
-        <div className="text-center mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>Checklist</div>
-          <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            Giấy tờ cần chuẩn bị
-          </h2>
-          <p className="text-sm text-gray-500">Tick từng mục để theo dõi tiến độ chuẩn bị hồ sơ</p>
-        </div>
-
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-          {/* Progress bar */}
-          <div className="px-6 py-4 border-b border-gray-100" style={{ background:'#F9FAFB' }}>
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-bold" style={{ color:'var(--navy)' }}>
-                {requiredDone === requiredCount ? '✅ Đã đủ giấy tờ bắt buộc' : `📋 Bắt buộc: ${requiredDone}/${requiredCount}`}
-              </span>
-              <span className="text-xs text-gray-500">{allDone}/{DOCS.length} mục</span>
-            </div>
-            <div className="h-2 rounded-full overflow-hidden" style={{ background:'#E5E7EB' }}>
-              <div className="h-full transition-all duration-300" style={{ width:`${(allDone / DOCS.length) * 100}%`, background:'var(--blue)' }} />
-            </div>
+      {/* ── DOCS CHECKLIST ── */}
+      <section id="docs" style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6', borderBottom:'1px solid #F3F4F6' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:40 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Checklist</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Giấy tờ cần chuẩn bị</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Tick từng mục để theo dõi tiến độ chuẩn bị hồ sơ</p>
           </div>
 
-          <div className="divide-y divide-gray-100">
-            {DOCS.map(d => {
-              const isChecked = checked.has(d.id)
-              return (
-                <button
-                  key={d.id}
-                  onClick={() => toggle(d.id)}
-                  className="w-full px-5 md:px-6 py-4 flex items-start gap-4 text-left hover:bg-gray-50 transition-colors"
-                >
-                  <div
-                    className={`w-6 h-6 rounded-md border-2 flex-shrink-0 flex items-center justify-center mt-0.5 transition-all ${isChecked ? 'border-transparent' : 'border-gray-300'}`}
-                    style={isChecked ? { background:'var(--green)' } : {}}
+          <div style={{ background:'white', borderRadius:14, border:'1px solid #E5E7EB', overflow:'hidden' }}>
+            <div style={{ padding:'16px 22px', background:'#F9FAFB', borderBottom:'1px solid #F3F4F6' }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:8, flexWrap:'wrap', gap:6 }}>
+                <span style={{ fontWeight:700, fontSize:14, color:'var(--navy)' }}>
+                  {requiredDone === requiredCount ? '✅ Đã đủ giấy tờ bắt buộc' : `📋 Bắt buộc: ${requiredDone}/${requiredCount}`}
+                </span>
+                <span style={{ fontSize:12, color:'#6B7280' }}>{allDone}/{DOCS.length} mục</span>
+              </div>
+              <div style={{ height:8, borderRadius:50, overflow:'hidden', background:'#E5E7EB' }}>
+                <div style={{ height:'100%', width:`${(allDone / DOCS.length) * 100}%`, background:'var(--blue)', transition:'width .3s' }} />
+              </div>
+            </div>
+
+            <div>
+              {DOCS.map((d, i) => {
+                const isChecked = checked.has(d.id)
+                return (
+                  <button key={d.id}
+                    onClick={() => toggle(d.id)}
+                    style={{ width:'100%', padding:'14px 22px', display:'flex', alignItems:'flex-start', gap:14, textAlign:'left', background:'white', border:'none', borderTop: i === 0 ? 'none' : '1px solid #F3F4F6', cursor:'pointer', fontFamily:'inherit', transition:'background .15s' }}
+                    onMouseEnter={e => e.currentTarget.style.background='#F9FAFB'}
+                    onMouseLeave={e => e.currentTarget.style.background='white'}
                   >
-                    {isChecked && (
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
-                        <path d="M5 13l4 4L19 7"/>
-                      </svg>
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center flex-wrap gap-2">
-                      <span className={`font-bold text-sm ${isChecked ? 'line-through text-gray-400' : ''}`} style={!isChecked ? { color:'var(--navy)' } : {}}>{d.label}</span>
-                      {d.required && (
-                        <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background:'#FEE2E2', color:'#DC2626' }}>BẮT BUỘC</span>
+                    <div style={{ width:24, height:24, borderRadius:6, border: isChecked ? 'none' : '2px solid #D1D5DB', background: isChecked ? 'var(--green)' : 'transparent', display:'flex', alignItems:'center', justifyContent:'center', flexShrink:0, marginTop:2 }}>
+                      {isChecked && (
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+                          <path d="M5 13l4 4L19 7"/>
+                        </svg>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5">{d.hint}</p>
-                  </div>
-                </button>
-              )
-            })}
+                    <div style={{ flex:1 }}>
+                      <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
+                        <span style={{ fontWeight:700, fontSize:14, color: isChecked ? '#9CA3AF' : 'var(--navy)', textDecoration: isChecked ? 'line-through' : 'none' }}>{d.label}</span>
+                        {d.required && (
+                          <span style={{ fontSize:10, fontWeight:700, padding:'2px 6px', borderRadius:4, background:'#FEE2E2', color:'#DC2626' }}>BẮT BUỘC</span>
+                        )}
+                      </div>
+                      <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>{d.hint}</p>
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Photo requirements ── */}
-      <section id="photo" className="max-w-5xl mx-auto px-5 py-14">
-        <div className="text-center mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>Ảnh chân dung</div>
-          <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            Yêu cầu ảnh chuẩn quốc tế
-          </h2>
-          <p className="text-sm text-gray-500">Ảnh sai chuẩn là lý do từ chối phổ biến nhất — đọc kỹ trước khi tải lên</p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="bg-white rounded-2xl border-2 overflow-hidden" style={{ borderColor:'#BBF7D0' }}>
-            <div className="px-5 py-4 flex items-center gap-2.5" style={{ background:'#F0FDF4' }}>
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg" style={{ background:'var(--green)' }}>✓</div>
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color:'var(--green)' }}>NÊN</div>
-                <div className="font-black text-base" style={{ color:'var(--navy)' }}>Ảnh chuẩn</div>
-              </div>
-            </div>
-            <ul className="px-5 py-4 space-y-2.5">
-              {PHOTO_DOS.map(d => (
-                <li key={d} className="flex items-start gap-2.5 text-sm">
-                  <span className="mt-0.5" style={{ color:'var(--green)' }}>✓</span>
-                  <span className="text-gray-700">{d}</span>
-                </li>
-              ))}
-            </ul>
+      {/* ── PHOTO ── */}
+      <section id="photo" style={{ background:'#F9FAFB', padding:'64px 20px' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:40 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Ảnh chân dung</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Yêu cầu ảnh chuẩn quốc tế</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Ảnh sai chuẩn là lý do từ chối phổ biến nhất</p>
           </div>
 
-          <div className="bg-white rounded-2xl border-2 overflow-hidden" style={{ borderColor:'#FECACA' }}>
-            <div className="px-5 py-4 flex items-center gap-2.5" style={{ background:'#FEF2F2' }}>
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg" style={{ background:'#DC2626' }}>✕</div>
-              <div>
-                <div className="text-[11px] font-bold uppercase tracking-wider" style={{ color:'#DC2626' }}>KHÔNG NÊN</div>
-                <div className="font-black text-base" style={{ color:'var(--navy)' }}>Lỗi thường gặp</div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:16 }}>
+            <div style={{ background:'white', borderRadius:14, border:'2px solid #BBF7D0', overflow:'hidden' }}>
+              <div style={{ padding:'14px 20px', display:'flex', alignItems:'center', gap:10, background:'#F0FDF4' }}>
+                <div style={{ width:36, height:36, borderRadius:'50%', background:'var(--green)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>✓</div>
+                <div>
+                  <div style={{ fontSize:11, fontWeight:700, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.06em' }}>NÊN</div>
+                  <div style={{ fontSize:15, fontWeight:900, color:'var(--navy)' }}>Ảnh chuẩn</div>
+                </div>
               </div>
+              <ul style={{ listStyle:'none', padding:'14px 20px', margin:0 }}>
+                {PHOTO_DOS.map(d => (
+                  <li key={d} style={{ display:'flex', gap:10, fontSize:14, color:'#374151', marginBottom:10 }}>
+                    <span style={{ color:'var(--green)', marginTop:1 }}>✓</span><span>{d}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="px-5 py-4 space-y-2.5">
-              {PHOTO_DONTS.map(d => (
-                <li key={d} className="flex items-start gap-2.5 text-sm">
-                  <span className="mt-0.5" style={{ color:'#DC2626' }}>✕</span>
-                  <span className="text-gray-700">{d}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
 
-        <div className="mt-5 rounded-xl p-4 flex items-start gap-3" style={{ background:'#FFFBEB', border:'1px solid #FDE68A' }}>
-          <span className="text-2xl">💡</span>
-          <div className="flex-1 text-sm" style={{ color:'#78350F' }}>
-            <span className="font-bold">Mẹo:</span> Hệ thống AI của eVisa tự động kiểm tra ảnh ngay khi tải lên — nếu sai chuẩn, bạn sẽ được thông báo trước khi nộp đơn.
+            <div style={{ background:'white', borderRadius:14, border:'2px solid #FECACA', overflow:'hidden' }}>
+              <div style={{ padding:'14px 20px', display:'flex', alignItems:'center', gap:10, background:'#FEF2F2' }}>
+                <div style={{ width:36, height:36, borderRadius:'50%', background:'#DC2626', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:16 }}>✕</div>
+                <div>
+                  <div style={{ fontSize:11, fontWeight:700, color:'#DC2626', textTransform:'uppercase', letterSpacing:'.06em' }}>KHÔNG NÊN</div>
+                  <div style={{ fontSize:15, fontWeight:900, color:'var(--navy)' }}>Lỗi thường gặp</div>
+                </div>
+              </div>
+              <ul style={{ listStyle:'none', padding:'14px 20px', margin:0 }}>
+                {PHOTO_DONTS.map(d => (
+                  <li key={d} style={{ display:'flex', gap:10, fontSize:14, color:'#374151', marginBottom:10 }}>
+                    <span style={{ color:'#DC2626', marginTop:1 }}>✕</span><span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          <div style={{ marginTop:18, borderRadius:12, padding:14, display:'flex', gap:10, alignItems:'flex-start', background:'#FFFBEB', border:'1px solid #FDE68A' }}>
+            <span style={{ fontSize:22 }}>💡</span>
+            <div style={{ flex:1, fontSize:14, color:'#78350F' }}>
+              <span style={{ fontWeight:700 }}>Mẹo:</span> Hệ thống AI của eVisa tự động kiểm tra ảnh ngay khi tải lên — nếu sai chuẩn, bạn sẽ được thông báo trước khi nộp đơn.
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ── Common mistakes ── */}
-      <section id="mistakes" className="max-w-5xl mx-auto px-5 py-14">
-        <div className="text-center mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'#DC2626' }}>Cảnh báo</div>
-          <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            6 sai lầm khiến đơn bị từ chối
-          </h2>
-          <p className="text-sm text-gray-500">Tránh các lỗi này để tăng tỷ lệ chấp thuận lên 99%</p>
-        </div>
+      {/* ── MISTAKES ── */}
+      <section id="mistakes" style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6', borderBottom:'1px solid #F3F4F6' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:40 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#DC2626', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Cảnh báo</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>6 sai lầm khiến đơn bị từ chối</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Tránh các lỗi này để tăng tỷ lệ chấp thuận lên 99%</p>
+          </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          {MISTAKES.map(m => (
-            <div key={m.title} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md transition-all flex gap-4">
-              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0" style={{ background:'#FEF2F2' }}>{m.icon}</div>
-              <div className="flex-1">
-                <h3 className="font-bold text-base mb-1" style={{ color:'var(--navy)' }}>{m.title}</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">{m.desc}</p>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(300px,1fr))', gap:16 }}>
+            {MISTAKES.map(m => (
+              <div key={m.title} style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:20, display:'flex', gap:14, transition:'all .2s' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow='0 8px 20px rgba(11,29,58,0.06)'; e.currentTarget.style.transform='translateY(-2px)' }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none' }}
+              >
+                <div style={{ width:48, height:48, borderRadius:12, background:'#FEF2F2', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, flexShrink:0 }}>{m.icon}</div>
+                <div style={{ flex:1 }}>
+                  <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:4 }}>{m.title}</h3>
+                  <p style={{ fontSize:13, color:'#6B7280', lineHeight:1.6 }}>{m.desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* ── Tips ── */}
-      <section className="max-w-5xl mx-auto px-5 py-14">
-        <div className="text-center mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'#F59E0B' }}>Pro tips</div>
-          <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            Mẹo từ chuyên gia eVisa
-          </h2>
-        </div>
+      {/* ── TIPS ── */}
+      <section style={{ background:'#F9FAFB', padding:'64px 20px' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:40 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#F59E0B', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>Pro tips</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)' }}>Mẹo từ chuyên gia eVisa</h2>
+          </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {TIPS.map(t => (
-            <div key={t.title} className="bg-white border border-gray-200 rounded-xl p-5 hover:shadow-md hover:-translate-y-1 transition-all">
-              <div className="text-3xl mb-3">{t.icon}</div>
-              <h3 className="font-bold text-sm mb-1" style={{ color:'var(--navy)' }}>{t.title}</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">{t.desc}</p>
-            </div>
-          ))}
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(200px,1fr))', gap:16 }}>
+            {TIPS.map(t => (
+              <div key={t.title} style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:22, transition:'all .2s' }}
+                onMouseEnter={e => { e.currentTarget.style.boxShadow='0 8px 20px rgba(11,29,58,0.06)'; e.currentTarget.style.transform='translateY(-3px)' }}
+                onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none' }}
+              >
+                <div style={{ fontSize:30, marginBottom:12 }}>{t.icon}</div>
+                <h3 style={{ fontWeight:700, fontSize:14, color:'var(--navy)', marginBottom:4 }}>{t.title}</h3>
+                <p style={{ fontSize:12, color:'#6B7280', lineHeight:1.6 }}>{t.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── FAQ ── */}
-      <section id="faq" className="max-w-5xl mx-auto px-5 py-14">
-        <div className="text-center mb-10">
-          <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color:'var(--blue)' }}>FAQ</div>
-          <h2 className="text-2xl md:text-3xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            Câu hỏi thường gặp
-          </h2>
-          <p className="text-sm text-gray-500">{FAQS.length} câu hỏi phổ biến — tìm câu trả lời trong vài giây</p>
-        </div>
+      <section id="faq" style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6' }}>
+        <div style={{ maxWidth:920, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:32 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>FAQ</div>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Câu hỏi thường gặp</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>{FAQS.length} câu hỏi phổ biến — tìm câu trả lời trong vài giây</p>
+          </div>
 
-        {/* Search */}
-        <div className="relative mb-4">
-          <svg className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-          </svg>
-          <input
-            className="w-full pl-11 pr-4 py-3.5 rounded-xl text-sm outline-none border border-gray-200 bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
-            placeholder="Tìm câu hỏi..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-          />
-        </div>
+          <div style={{ position:'relative', marginBottom:14 }}>
+            <svg style={{ position:'absolute', left:14, top:'50%', transform:'translateY(-50%)', color:'#9CA3AF' }} width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              style={{ width:'100%', padding:'12px 14px 12px 42px', borderRadius:12, fontSize:14, border:'1px solid #E5E7EB', outline:'none', background:'white', fontFamily:'inherit' }}
+              placeholder="Tìm câu hỏi..."
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+          </div>
 
-        {/* Categories */}
-        <div className="flex gap-2 flex-wrap mb-6">
-          {FAQ_CATS.map(c => {
-            const active = cat === c
-            const count = c === 'Tất cả' ? FAQS.length : FAQS.filter(f => f.cat === c).length
-            return (
-              <button
-                key={c}
-                onClick={() => setCat(c)}
-                className={`group relative overflow-hidden flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs md:text-sm font-semibold transition-all duration-200 border ${
-                  active
-                    ? 'text-white border-transparent shadow-md shadow-blue-500/25 -translate-y-0.5'
-                    : 'border-gray-200 text-gray-600 bg-white hover:border-blue-300 hover:text-blue-700 hover:-translate-y-0.5 hover:shadow-sm'
-                }`}
-                style={active ? { background:'linear-gradient(135deg, var(--blue) 0%, var(--blue-mid) 100%)' } : {}}
-              >
-                {active && <span className="absolute inset-x-2 top-0 h-px bg-white/40 pointer-events-none" />}
-                <span>{c}</span>
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none min-w-[20px] text-center transition-colors ${
-                  active ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-500 group-hover:bg-blue-100 group-hover:text-blue-700'
-                }`}>{count}</span>
-              </button>
-            )
-          })}
-        </div>
-
-        {/* FAQ items */}
-        {filteredFaqs.length > 0 ? (
-          <div className="space-y-2">
-            {filteredFaqs.map((f, i) => {
-              const isOpen = open === f.q
+          <div style={{ display:'flex', gap:8, flexWrap:'wrap', marginBottom:24 }}>
+            {FAQ_CATS.map(c => {
+              const active = cat === c
+              const count = c === 'Tất cả' ? FAQS.length : FAQS.filter(f => f.cat === c).length
               return (
-                <div key={f.q} className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-                  <button
-                    className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-sm hover:bg-gray-50 transition-colors"
-                    style={{ color:'var(--navy)' }}
-                    onClick={() => setOpen(isOpen ? null : f.q)}
-                  >
-                    <div className="flex items-start gap-3 flex-1 min-w-0">
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded mt-0.5 flex-shrink-0" style={{ background:'var(--blue-light)', color:'var(--blue)' }}>{f.cat}</span>
-                      <span className="flex-1">{f.q}</span>
-                    </div>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className={`flex-shrink-0 transition-transform ${isOpen ? 'rotate-180' : ''}`}>
-                      <path d="M6 9l6 6 6-6"/>
-                    </svg>
-                  </button>
-                  {isOpen && (
-                    <div className="px-5 pb-4 pt-1 text-sm text-gray-600 leading-relaxed border-t border-gray-100">
-                      <div className="pt-3">{f.a}</div>
-                    </div>
-                  )}
-                </div>
+                <button key={c} onClick={() => setCat(c)}
+                  style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'7px 14px', borderRadius:50, fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit', transition:'all .15s', background: active ? 'var(--blue)' : 'white', color: active ? 'white' : '#6B7280', border: active ? '1px solid var(--blue)' : '1px solid #E5E7EB', boxShadow: active ? '0 4px 12px rgba(27,79,216,0.2)' : 'none' }}
+                  onMouseEnter={e => { if (!active) { e.currentTarget.style.borderColor='var(--blue)'; e.currentTarget.style.color='var(--blue)' } }}
+                  onMouseLeave={e => { if (!active) { e.currentTarget.style.borderColor='#E5E7EB'; e.currentTarget.style.color='#6B7280' } }}
+                >
+                  <span>{c}</span>
+                  <span style={{ fontSize:10, fontWeight:700, padding:'2px 6px', borderRadius:50, background: active ? 'rgba(255,255,255,0.25)' : '#F3F4F6', color: active ? 'white' : '#6B7280', minWidth:18, textAlign:'center' }}>{count}</span>
+                </button>
               )
             })}
           </div>
-        ) : (
-          <div className="text-center py-12 bg-white rounded-2xl border border-gray-200">
-            <div className="text-4xl mb-3 opacity-60">🔍</div>
-            <p className="font-bold text-base" style={{ color:'var(--navy)' }}>Không tìm thấy câu hỏi phù hợp</p>
-            <p className="text-sm text-gray-500 mt-1 mb-4">Thử từ khóa khác hoặc liên hệ chuyên gia</p>
-            <Link to="/support" className="btn-primary">Liên hệ hỗ trợ →</Link>
-          </div>
-        )}
+
+          {filteredFaqs.length > 0 ? (
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {filteredFaqs.map(f => {
+                const isOpen = open === f.q
+                return (
+                  <div key={f.q} style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:12, overflow:'hidden' }}>
+                    <button
+                      onClick={() => setOpen(isOpen ? null : f.q)}
+                      style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, padding:'14px 20px', textAlign:'left', fontWeight:600, fontSize:14, color:'var(--navy)', background:'transparent', border:'none', cursor:'pointer', fontFamily:'inherit' }}
+                    >
+                      <div style={{ display:'flex', gap:10, flex:1, minWidth:0, alignItems:'flex-start' }}>
+                        <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:4, background:'var(--blue-light)', color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.05em', flexShrink:0, marginTop:2 }}>{f.cat}</span>
+                        <span style={{ flex:1 }}>{f.q}</span>
+                      </div>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink:0, transform: isOpen ? 'rotate(180deg)' : 'none', transition:'transform .2s' }}>
+                        <path d="M6 9l6 6 6-6"/>
+                      </svg>
+                    </button>
+                    {isOpen && (
+                      <div style={{ padding:'12px 20px 16px', fontSize:14, color:'#6B7280', lineHeight:1.7, borderTop:'1px solid #F3F4F6' }}>
+                        {f.a}
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div style={{ background:'white', borderRadius:14, border:'1px solid #E5E7EB', padding:'48px 20px', textAlign:'center' }}>
+              <div style={{ fontSize:38, opacity:0.6, marginBottom:10 }}>🔍</div>
+              <p style={{ fontSize:16, fontWeight:700, color:'var(--navy)' }}>Không tìm thấy câu hỏi phù hợp</p>
+              <p style={{ fontSize:14, color:'#6B7280', marginTop:4, marginBottom:18 }}>Thử từ khóa khác hoặc liên hệ chuyên gia</p>
+              <Link to="/support" className="btn-primary">Liên hệ hỗ trợ →</Link>
+            </div>
+          )}
+        </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="max-w-5xl mx-auto px-5 pb-14">
-        <div className="rounded-2xl overflow-hidden relative" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 60%,#0d2451 100%)' }}>
-          <div className="absolute -top-16 -right-16 w-64 h-64 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)' }} />
-          <div className="absolute -bottom-16 left-12 w-56 h-56 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(27,79,216,0.30) 0%,transparent 70%)' }} />
-
-          <div className="relative px-6 py-10 md:px-12 md:py-14 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
-            <div className="flex items-center gap-4 md:gap-5">
-              <div className="text-5xl md:text-6xl">📚</div>
-              <div>
-                <h3 className="text-xl md:text-2xl font-black text-white mb-1" style={{ fontFamily:'Fraunces,serif' }}>
-                  Còn thắc mắc khác?
-                </h3>
-                <p className="text-white/70 text-sm">Chuyên gia eVisa sẵn sàng tư vấn miễn phí 24/7</p>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
-              <Link to="/support" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-white/10 backdrop-blur-sm border border-white/20 text-white hover:bg-white/20 transition-all">
-                Liên hệ hỗ trợ
-              </Link>
-              <Link to="/" className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm transition-all hover:-translate-y-0.5 hover:shadow-xl" style={{ background:'var(--gold)', color:'var(--navy)' }}>
-                Đăng ký visa ngay
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </Link>
-            </div>
-          </div>
+      <section style={{ background:'var(--navy)', padding:'56px 20px', textAlign:'center' }}>
+        <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', marginBottom:10 }}>Còn thắc mắc khác?</h2>
+        <p style={{ color:'rgba(255,255,255,0.6)', fontSize:15, marginBottom:24 }}>Chuyên gia eVisa sẵn sàng tư vấn miễn phí 24/7</p>
+        <div style={{ display:'flex', gap:10, justifyContent:'center', flexWrap:'wrap' }}>
+          <Link to="/support" style={{ display:'inline-block', background:'rgba(255,255,255,0.1)', color:'white', borderRadius:10, padding:'14px 28px', fontSize:15, fontWeight:700, textDecoration:'none', border:'1px solid rgba(255,255,255,0.2)', fontFamily:'inherit', transition:'background .15s' }}
+            onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
+            onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
+          >Liên hệ hỗ trợ</Link>
+          <Link to="/" style={{ display:'inline-block', background:'var(--gold)', color:'var(--navy)', borderRadius:10, padding:'14px 28px', fontSize:15, fontWeight:800, textDecoration:'none', fontFamily:'inherit', transition:'opacity .15s' }}
+            onMouseEnter={e => e.currentTarget.style.opacity='.88'}
+            onMouseLeave={e => e.currentTarget.style.opacity='1'}
+          >Đăng ký visa ngay →</Link>
         </div>
       </section>
 

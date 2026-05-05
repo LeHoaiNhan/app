@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -50,7 +50,6 @@ export default function Admin() {
     )
   }
 
-  // Stats
   const stats = {
     total:     orders.length,
     submitted: orders.filter(o => o.status === 'submitted').length,
@@ -62,7 +61,6 @@ export default function Admin() {
     .filter(o => o.payment.status === 'paid' && new Date(o.createdAt).toDateString() === new Date().toDateString())
     .reduce((s, o) => s + o.fee.total, 0)
 
-  // Filter
   const term = search.trim().toLowerCase()
   const filtered = orders.filter(o => {
     const matchSearch = !term ||
@@ -75,173 +73,152 @@ export default function Admin() {
   })
 
   return (
-    <div className="min-h-screen" style={{ background:'#F9FAFB' }}>
+    <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
       <Navbar />
 
-      {/* Admin header */}
-      <section className="relative overflow-hidden" style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 100%)' }}>
-        <div className="absolute -top-12 -right-12 w-72 h-72 rounded-full pointer-events-none" style={{ background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)' }} />
-        <div className="relative max-w-6xl mx-auto px-5 py-8 flex items-center justify-between gap-4 flex-wrap">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl shadow-lg" style={{ background:'var(--gold)' }}>⚙️</div>
+      {/* ── ADMIN HERO ── */}
+      <section style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 55%,#0d2451 100%)', padding:'40px 20px', position:'relative', overflow:'hidden' }}>
+        <div style={{ position:'absolute', top:-60, right:-60, width:300, height:300, background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)', pointerEvents:'none' }} />
+        <div style={{ maxWidth:1200, margin:'0 auto', position:'relative', display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, flexWrap:'wrap' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:14 }}>
+            <div style={{ width:52, height:52, borderRadius:14, background:'var(--gold)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, boxShadow:'0 12px 24px rgba(245,166,35,0.3)' }}>⚙️</div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl md:text-2xl font-black text-white" style={{ fontFamily:'Fraunces,serif' }}>Admin Dashboard</h1>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background:'var(--gold)', color:'var(--navy)' }}>ADMIN</span>
+              <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+                <h1 style={{ fontFamily:'Fraunces,serif', fontSize:24, fontWeight:900, color:'white' }}>Admin Dashboard</h1>
+                <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:50, background:'var(--gold)', color:'var(--navy)' }}>ADMIN</span>
               </div>
-              <p className="text-white/60 text-xs">Quản lý đơn visa và xử lý hồ sơ khách hàng</p>
+              <p style={{ color:'rgba(255,255,255,0.6)', fontSize:12, marginTop:2 }}>Quản lý đơn visa và xử lý hồ sơ khách hàng</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button onClick={resetOrders} title="Reset về dữ liệu mẫu (dev)" className="text-xs font-semibold px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/15 text-white/80 hover:bg-white/20 transition-all">
-              ↻ Reset demo
-            </button>
-            <button onClick={logout} className="text-xs font-semibold px-3 py-2 rounded-lg bg-white/10 backdrop-blur-sm border border-white/15 text-white hover:bg-white/20 transition-all">
-              Đăng xuất
-            </button>
+          <div style={{ display:'flex', gap:8 }}>
+            <button onClick={resetOrders} title="Reset về dữ liệu mẫu (dev)"
+              style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.8)', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
+              onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
+              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
+            >↻ Reset demo</button>
+            <button onClick={logout}
+              style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
+              onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
+              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
+            >Đăng xuất</button>
           </div>
         </div>
       </section>
 
-      <div className="max-w-6xl mx-auto px-5 py-8">
-        {/* Stats row */}
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4 mb-6">
+      {/* ── STATS ── */}
+      <section style={{ background:'white', padding:'32px 20px', borderBottom:'1px solid #F3F4F6' }}>
+        <div style={{ maxWidth:1200, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:14 }}>
           {[
-            ['Tổng đơn',     stats.total,      '📋', '#1B4FD8'],
-            ['Mới',          stats.submitted,  '📝', '#6B7280'],
-            ['Đang xử lý',   stats.inProgress, '⚙️', '#F59E0B'],
-            ['Đã duyệt',     stats.approved,   '✅', '#16A34A'],
-            ['Từ chối',      stats.rejected,   '❌', '#DC2626'],
-            ['Doanh thu hôm nay', `$${todayRevenue}`, '💰', '#9333EA'],
+            ['Tổng đơn',          stats.total,      '📋', '#1B4FD8'],
+            ['Mới',               stats.submitted,  '📝', '#6B7280'],
+            ['Đang xử lý',        stats.inProgress, '⚙️', '#F59E0B'],
+            ['Đã duyệt',          stats.approved,   '✅', '#16A34A'],
+            ['Từ chối',           stats.rejected,   '❌', '#DC2626'],
+            ['Doanh thu hôm nay', `$${todayRevenue}`,'💰','#9333EA'],
           ].map(([label, val, icon, color]) => (
-            <div key={label} className="bg-white border border-gray-200 rounded-xl p-3 md:p-4">
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-gray-500 truncate">{label}</span>
-                <span className="text-base flex-shrink-0">{icon}</span>
+            <div key={label} style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:12, padding:14 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6 }}>
+                <span style={{ fontSize:10, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em' }}>{label}</span>
+                <span style={{ fontSize:16 }}>{icon}</span>
               </div>
-              <div className="text-xl md:text-2xl font-black" style={{ color }}>{val}</div>
+              <div style={{ fontFamily:'Fraunces,serif', fontSize:24, fontWeight:900, color, lineHeight:1 }}>{val}</div>
             </div>
           ))}
         </div>
+      </section>
 
-        {/* Filters */}
-        <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden mb-5">
-          <div className="px-4 md:px-6 py-4 border-b border-gray-100 flex flex-col md:flex-row gap-3">
-            <div className="relative flex-1">
-              <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-              </svg>
-              <input
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg text-sm border border-gray-200 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all"
-                placeholder="Tìm theo mã đơn, tên khách, email, điểm đến..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
+      {/* ── ORDERS LIST ── */}
+      <section style={{ background:'#F9FAFB', padding:'32px 20px 64px' }}>
+        <div style={{ maxWidth:1200, margin:'0 auto' }}>
+          <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, overflow:'hidden', marginBottom:14 }}>
+            <div style={{ padding:'14px 18px', borderBottom:'1px solid #F3F4F6', display:'flex', gap:10, flexWrap:'wrap' }}>
+              <div style={{ position:'relative', flex:'1 1 240px' }}>
+                <svg style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:'#9CA3AF' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input
+                  style={{ width:'100%', padding:'10px 12px 10px 36px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, outline:'none', fontFamily:'inherit' }}
+                  placeholder="Tìm theo mã đơn, tên khách, email, điểm đến..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
+              <select
+                style={{ padding:'10px 14px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, background:'white', fontFamily:'inherit', outline:'none', cursor:'pointer', minWidth:180 }}
+                value={statusFilter}
+                onChange={e => setStatusFilter(e.target.value)}
+              >
+                <option value="all">Tất cả trạng thái</option>
+                {Object.entries(ORDER_STATUSES).map(([key, s]) => (
+                  <option key={key} value={key}>{s.icon} {s.label}</option>
+                ))}
+              </select>
             </div>
-            <select
-              className="px-3 py-2.5 rounded-lg text-sm border border-gray-200 outline-none focus:border-blue-500 transition-all bg-white min-w-[180px]"
-              value={statusFilter}
-              onChange={e => setStatusFilter(e.target.value)}
-            >
-              <option value="all">Tất cả trạng thái</option>
-              {Object.entries(ORDER_STATUSES).map(([key, s]) => (
-                <option key={key} value={key}>{s.icon} {s.label}</option>
-              ))}
-            </select>
-          </div>
 
-          {/* Desktop table */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-gray-200" style={{ background:'#F9FAFB' }}>
-                  <th className="text-left px-6 py-3 text-xs font-bold uppercase tracking-wider text-gray-500">Đơn</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-500">Khách hàng</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-500">Điểm đến</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-500">Trạng thái</th>
-                  <th className="text-right px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-500">Tổng</th>
-                  <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-500">Cập nhật</th>
-                  <th className="px-4 py-3"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map(o => {
-                  const status = ORDER_STATUSES[o.status]
-                  return (
-                    <tr key={o.id} onClick={() => setSelectedId(o.id)} className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50 cursor-pointer transition-colors">
-                      <td className="px-6 py-3.5">
-                        <div className="font-mono font-bold text-xs" style={{ color:'var(--navy)' }}>{o.id}</div>
-                        <div className="text-[11px] text-gray-400 mt-0.5">{TIER_LABEL[o.processing]} · {o.visaType}</div>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <div className="font-semibold text-sm truncate max-w-[180px]" style={{ color:'var(--navy)' }}>{o.applicant.fullName}</div>
-                        <div className="text-[11px] text-gray-500 truncate max-w-[180px]">{o.applicant.email}</div>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <div className="flex items-center gap-2">
-                          <span className="text-xl">{o.flag}</span>
-                          <span className="text-sm font-semibold" style={{ color:'var(--navy)' }}>{o.destination}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3.5">
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap" style={{ background:status.bg, color:status.color }}>
-                          <span>{status.icon}</span>{status.label}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5 text-right font-bold" style={{ color:'var(--blue)' }}>${o.fee.total}</td>
-                      <td className="px-4 py-3.5 text-xs text-gray-500 whitespace-nowrap">{fmtRelative(o.updatedAt)}</td>
-                      <td className="px-4 py-3.5 text-right">
-                        <svg className="text-gray-400" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                          <path d="M9 5l7 7-7 7"/>
-                        </svg>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile cards */}
-          <div className="md:hidden divide-y divide-gray-100">
-            {filtered.map(o => {
-              const status = ORDER_STATUSES[o.status]
-              return (
-                <button key={o.id} onClick={() => setSelectedId(o.id)} className="w-full px-5 py-4 text-left hover:bg-gray-50 transition-colors">
-                  <div className="flex items-start gap-3">
-                    <span className="text-3xl flex-shrink-0">{o.flag}</span>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="font-mono font-bold text-xs" style={{ color:'var(--navy)' }}>{o.id}</span>
-                        <span className="font-bold text-sm" style={{ color:'var(--blue)' }}>${o.fee.total}</span>
-                      </div>
-                      <div className="font-semibold text-sm truncate" style={{ color:'var(--navy)' }}>{o.applicant.fullName} → {o.destination}</div>
-                      <div className="text-[11px] text-gray-500 truncate mb-2">{o.applicant.email}</div>
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background:status.bg, color:status.color }}>
-                          {status.icon} {status.label}
-                        </span>
-                        <span className="text-[10px] text-gray-400">{fmtRelative(o.updatedAt)}</span>
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-
-          {filtered.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-2 opacity-50">🔍</div>
-              <p className="text-sm text-gray-500">Không có đơn phù hợp với bộ lọc</p>
+            <div style={{ overflowX:'auto' }}>
+              <table style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
+                <thead>
+                  <tr style={{ background:'#F9FAFB', borderBottom:'1px solid #E5E7EB' }}>
+                    {['Đơn','Khách hàng','Điểm đến','Trạng thái','Tổng','Cập nhật',''].map((h, i) => (
+                      <th key={i} style={{ padding:'12px 16px', fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em', textAlign: i === 4 ? 'right' : 'left', whiteSpace:'nowrap' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map(o => {
+                    const status = ORDER_STATUSES[o.status]
+                    return (
+                      <tr key={o.id} onClick={() => setSelectedId(o.id)}
+                        style={{ borderBottom:'1px solid #F3F4F6', cursor:'pointer', transition:'background .15s' }}
+                        onMouseEnter={e => e.currentTarget.style.background='#F9FAFB'}
+                        onMouseLeave={e => e.currentTarget.style.background='white'}
+                      >
+                        <td style={{ padding:'14px 16px' }}>
+                          <div style={{ fontFamily:'monospace', fontWeight:700, fontSize:12, color:'var(--navy)' }}>{o.id}</div>
+                          <div style={{ fontSize:11, color:'#9CA3AF', marginTop:2 }}>{TIER_LABEL[o.processing]} · {o.visaType}</div>
+                        </td>
+                        <td style={{ padding:'14px 16px' }}>
+                          <div style={{ fontWeight:600, fontSize:14, color:'var(--navy)', maxWidth:180, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{o.applicant.fullName}</div>
+                          <div style={{ fontSize:11, color:'#6B7280', maxWidth:180, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{o.applicant.email}</div>
+                        </td>
+                        <td style={{ padding:'14px 16px' }}>
+                          <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                            <span style={{ fontSize:20 }}>{o.flag}</span>
+                            <span style={{ fontWeight:600, fontSize:14, color:'var(--navy)' }}>{o.destination}</span>
+                          </div>
+                        </td>
+                        <td style={{ padding:'14px 16px' }}>
+                          <span style={{ display:'inline-flex', alignItems:'center', gap:4, fontSize:11, fontWeight:700, padding:'4px 10px', borderRadius:50, whiteSpace:'nowrap', background:status.bg, color:status.color }}>
+                            <span>{status.icon}</span>{status.label}
+                          </span>
+                        </td>
+                        <td style={{ padding:'14px 16px', textAlign:'right', fontWeight:700, color:'var(--blue)' }}>${o.fee.total}</td>
+                        <td style={{ padding:'14px 16px', fontSize:12, color:'#6B7280', whiteSpace:'nowrap' }}>{fmtRelative(o.updatedAt)}</td>
+                        <td style={{ padding:'14px 16px', textAlign:'right' }}>
+                          <svg style={{ color:'#9CA3AF' }} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
             </div>
-          )}
-        </div>
 
-        <div className="text-xs text-gray-400 text-center">
-          Hiển thị {filtered.length} / {orders.length} đơn — dữ liệu lưu local trong trình duyệt
+            {filtered.length === 0 && (
+              <div style={{ textAlign:'center', padding:'48px 20px' }}>
+                <div style={{ fontSize:38, opacity:0.5, marginBottom:8 }}>🔍</div>
+                <p style={{ fontSize:14, color:'#6B7280' }}>Không có đơn phù hợp với bộ lọc</p>
+              </div>
+            )}
+          </div>
+
+          <div style={{ fontSize:12, color:'#9CA3AF', textAlign:'center' }}>
+            Hiển thị {filtered.length} / {orders.length} đơn — dữ liệu lưu local trong trình duyệt
+          </div>
         </div>
-      </div>
+      </section>
 
       <Footer />
     </div>
@@ -250,26 +227,22 @@ export default function Admin() {
 
 function AdminAuthGate({ onLogin, userIsCustomer }) {
   return (
-    <div className="min-h-screen flex flex-col" style={{ background:'#F9FAFB' }}>
+    <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', background:'#F9FAFB' }}>
       <Navbar />
-      <div className="flex-1 flex items-center justify-center px-4 py-16">
-        <div className="bg-white rounded-2xl border border-gray-200 p-8 md:p-12 max-w-md text-center">
-          <div className="w-16 h-16 rounded-2xl mx-auto mb-5 flex items-center justify-center text-3xl" style={{ background:'var(--gold)' }}>🔒</div>
-          <h2 className="text-2xl font-black mb-2" style={{ color:'var(--navy)', fontFamily:'Fraunces,serif' }}>
-            Khu vực quản trị
-          </h2>
-          <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+      <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'48px 16px' }}>
+        <div style={{ background:'white', borderRadius:20, border:'1px solid #E5E7EB', padding:'36px 32px', maxWidth:440, width:'100%', textAlign:'center', boxShadow:'0 12px 32px rgba(11,29,58,0.06)' }}>
+          <div style={{ width:68, height:68, borderRadius:18, margin:'0 auto 20px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:30, background:'var(--gold)' }}>🔒</div>
+          <h2 style={{ fontFamily:'Fraunces,serif', fontSize:26, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Khu vực quản trị</h2>
+          <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.65, marginBottom:22 }}>
             {userIsCustomer
               ? 'Tài khoản hiện tại không có quyền truy cập. Đăng xuất rồi đăng nhập với tài khoản admin.'
               : 'Khu vực này chỉ dành cho quản trị viên eVisa. Đăng nhập bằng tài khoản admin để tiếp tục.'}
           </p>
-          <button onClick={onLogin} className="btn-primary justify-center w-full mb-3" style={{ background:'var(--gold)', color:'var(--navy)' }}>
+          <button onClick={onLogin} className="btn-primary" style={{ width:'100%', justifyContent:'center', background:'var(--gold)', color:'var(--navy)', marginBottom:12 }}>
             🔑 Đăng nhập như Admin (demo)
           </button>
-          <p className="text-[11px] text-gray-400 mb-3">Phase 1: auth giả lập — Phase 2 sẽ thay bằng auth thật</p>
-          <Link to="/" className="text-sm font-semibold" style={{ color:'var(--blue)' }}>
-            ← Về trang chủ
-          </Link>
+          <p style={{ fontSize:11, color:'#9CA3AF', marginBottom:12 }}>Phase 1: auth giả lập — Phase 2 sẽ thay bằng auth thật</p>
+          <Link to="/" style={{ fontSize:13, fontWeight:600, color:'var(--blue)', textDecoration:'none' }}>← Về trang chủ</Link>
         </div>
       </div>
       <Footer />
@@ -299,10 +272,8 @@ const NEXT_ACTIONS = {
 
 function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
   const [note, setNote] = useState('')
-  const [confirmAction, setConfirmAction] = useState(null) // { to, label }
+  const [confirmAction, setConfirmAction] = useState(null)
   const status = ORDER_STATUSES[order.status]
-  const currentIdx = STAGE_FLOW.indexOf(order.status)
-  const isRejected = order.status === 'rejected'
   const actions = NEXT_ACTIONS[order.status] || []
 
   const handleConfirm = () => {
@@ -313,110 +284,105 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
   }
 
   return (
-    <div className="min-h-screen" style={{ background:'#F9FAFB' }}>
+    <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
       <Navbar />
 
-      <div className="max-w-5xl mx-auto px-5 py-8">
-        <button onClick={onBack} className="inline-flex items-center gap-2 text-sm font-semibold mb-5 hover:underline" style={{ color:'var(--blue)' }}>
+      <div style={{ maxWidth:1200, margin:'0 auto', padding:'32px 20px' }}>
+        <button onClick={onBack}
+          style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:600, color:'var(--blue)', marginBottom:18, background:'transparent', border:'none', cursor:'pointer', fontFamily:'inherit' }}
+          onMouseEnter={e => e.currentTarget.style.textDecoration='underline'}
+          onMouseLeave={e => e.currentTarget.style.textDecoration='none'}
+        >
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M15 19l-7-7 7-7"/>
           </svg>
           Quay lại danh sách
         </button>
 
-        {/* Header */}
-        <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden mb-5">
-          <div className="px-6 py-6 md:px-8 relative overflow-hidden" style={{ background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 100%)' }}>
-            <div className="relative flex items-start gap-4">
-              <div className="text-5xl md:text-6xl">{order.flag}</div>
-              <div className="flex-1 min-w-0">
-                <h1 className="text-2xl md:text-3xl font-black text-white leading-tight" style={{ fontFamily:'Fraunces,serif' }}>{order.destination}</h1>
-                <div className="font-mono text-sm text-white/60 mt-1">{order.id}</div>
-                <div className="flex items-center gap-2 mt-3 flex-wrap">
-                  <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background:status.bg, color:status.color }}>
+        <div style={{ background:'white', borderRadius:16, border:'1px solid #E5E7EB', overflow:'hidden', marginBottom:18 }}>
+          <div style={{ position:'relative', overflow:'hidden', padding:'28px 32px', background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 100%)' }}>
+            <div style={{ position:'absolute', top:-40, right:-40, width:200, height:200, background:'radial-gradient(circle,rgba(245,166,35,0.15) 0%,transparent 70%)', pointerEvents:'none' }} />
+            <div style={{ position:'relative', display:'flex', alignItems:'flex-start', gap:18, flexWrap:'wrap' }}>
+              <div style={{ fontSize:54, lineHeight:1 }}>{order.flag}</div>
+              <div style={{ flex:1, minWidth:240 }}>
+                <h1 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', lineHeight:1.1 }}>{order.destination}</h1>
+                <div style={{ fontFamily:'monospace', fontSize:14, color:'rgba(255,255,255,0.6)', marginTop:4 }}>{order.id}</div>
+                <div style={{ display:'flex', alignItems:'center', gap:6, marginTop:12, flexWrap:'wrap' }}>
+                  <span style={{ fontSize:11, fontWeight:700, padding:'4px 10px', borderRadius:50, background:status.bg, color:status.color }}>
                     {status.icon} {status.label}
                   </span>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full text-white/90 bg-white/15">{order.visaType}</span>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full text-white/90 bg-white/15">{TIER_LABEL[order.processing]}</span>
+                  <span style={{ fontSize:11, fontWeight:600, padding:'4px 10px', borderRadius:50, color:'rgba(255,255,255,0.9)', background:'rgba(255,255,255,0.15)' }}>{order.visaType}</span>
+                  <span style={{ fontSize:11, fontWeight:600, padding:'4px 10px', borderRadius:50, color:'rgba(255,255,255,0.9)', background:'rgba(255,255,255,0.15)' }}>{TIER_LABEL[order.processing]}</span>
                 </div>
               </div>
-              <div className="hidden md:block text-right flex-shrink-0">
-                <div className="text-white/60 text-xs">Tổng thu</div>
-                <div className="text-2xl font-black text-white">${order.fee.total}</div>
+              <div style={{ textAlign:'right', flexShrink:0 }}>
+                <div style={{ color:'rgba(255,255,255,0.6)', fontSize:11, textTransform:'uppercase', letterSpacing:'.06em' }}>Tổng thu</div>
+                <div style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'white' }}>${order.fee.total}</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-5">
-          {/* Left: detail (2 cols) */}
-          <div className="lg:col-span-2 space-y-5">
-            {/* Applicant */}
+        <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr', gap:18 }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:18, minWidth:0 }}>
             <Section title="👤 Thông tin người nộp đơn">
-              <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
+              <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14, paddingBottom:14, borderBottom:'1px solid #F3F4F6' }}>
                 {order.applicant.photoURL && (
-                  <img src={order.applicant.photoURL} alt="" className="w-14 h-14 rounded-xl object-cover" />
+                  <img src={order.applicant.photoURL} alt="" style={{ width:54, height:54, borderRadius:12, objectFit:'cover' }} />
                 )}
                 <div>
-                  <div className="font-bold text-base" style={{ color:'var(--navy)' }}>{order.applicant.fullName}</div>
-                  <div className="text-xs text-gray-500">{order.applicant.email} · {order.applicant.phone}</div>
+                  <div style={{ fontWeight:700, fontSize:15, color:'var(--navy)' }}>{order.applicant.fullName}</div>
+                  <div style={{ fontSize:12, color:'#6B7280' }}>{order.applicant.email} · {order.applicant.phone}</div>
                 </div>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                {[
-                  ['Ngày sinh',  fmtDate(order.applicant.dob)],
-                  ['Giới tính',  order.applicant.gender],
-                  ['Quốc tịch',  order.applicant.nationality],
-                  ['Nơi sinh',   order.applicant.birthPlace],
-                ].map(([l, v]) => <InfoRow key={l} label={l} value={v} />)}
-              </div>
+              <InfoGrid items={[
+                ['Ngày sinh',  fmtDate(order.applicant.dob)],
+                ['Giới tính',  order.applicant.gender],
+                ['Quốc tịch',  order.applicant.nationality],
+                ['Nơi sinh',   order.applicant.birthPlace],
+              ]} />
             </Section>
 
-            {/* Passport */}
             <Section title="📘 Hộ chiếu">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                {[
-                  ['Số hộ chiếu',   order.passport.no],
-                  ['Loại',          order.passport.type],
-                  ['Ngày cấp',      fmtDate(order.passport.issueDate)],
-                  ['Ngày hết hạn',  fmtDate(order.passport.expiryDate)],
-                  ['Nơi cấp',       order.passport.issuePlace],
-                  ['Quốc gia cấp',  order.passport.issueCountry],
-                ].map(([l, v]) => <InfoRow key={l} label={l} value={v} />)}
-              </div>
+              <InfoGrid items={[
+                ['Số hộ chiếu',   order.passport.no],
+                ['Loại',          order.passport.type],
+                ['Ngày cấp',      fmtDate(order.passport.issueDate)],
+                ['Ngày hết hạn',  fmtDate(order.passport.expiryDate)],
+                ['Nơi cấp',       order.passport.issuePlace],
+                ['Quốc gia cấp',  order.passport.issueCountry],
+              ]} />
             </Section>
 
-            {/* Trip */}
             <Section title="✈️ Chuyến đi">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-3">
-                {[
-                  ['Mục đích',         order.trip.purpose],
-                  ['Ngày nhập cảnh',   fmtDate(order.trip.entryDate)],
-                  ['Ngày xuất cảnh',   fmtDate(order.trip.exitDate)],
-                  ['Nơi lưu trú',      order.trip.accommodation || '—'],
-                ].map(([l, v]) => <InfoRow key={l} label={l} value={v} />)}
-                {order.trip.notes && (
-                  <div className="sm:col-span-2"><InfoRow label="Ghi chú khách" value={order.trip.notes} /></div>
-                )}
-              </div>
+              <InfoGrid items={[
+                ['Mục đích',         order.trip.purpose],
+                ['Ngày nhập cảnh',   fmtDate(order.trip.entryDate)],
+                ['Ngày xuất cảnh',   fmtDate(order.trip.exitDate)],
+                ['Nơi lưu trú',      order.trip.accommodation || '—'],
+              ]} />
+              {order.trip.notes && (
+                <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid #F3F4F6' }}>
+                  <InfoRow label="Ghi chú khách" value={order.trip.notes} />
+                </div>
+              )}
             </Section>
 
-            {/* Payment */}
             <Section title="💳 Thanh toán">
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between"><span className="text-gray-500">Phí chính phủ</span><span className="font-semibold" style={{ color:'var(--navy)' }}>${order.fee.gov}.00</span></div>
-                <div className="flex justify-between"><span className="text-gray-500">Phí dịch vụ ({TIER_LABEL[order.processing]})</span><span className="font-semibold" style={{ color:'var(--navy)' }}>${order.fee.service}.00</span></div>
-                <div className="border-t border-gray-100 pt-2 flex justify-between">
-                  <span className="font-bold" style={{ color:'var(--navy)' }}>Tổng đã thanh toán</span>
-                  <span className="text-lg font-black" style={{ color:'var(--blue)' }}>${order.fee.total}.00</span>
+              <div style={{ display:'flex', flexDirection:'column', gap:8, fontSize:14 }}>
+                <Row label="Phí chính phủ" val={`$${order.fee.gov}.00`} />
+                <Row label={`Phí dịch vụ (${TIER_LABEL[order.processing]})`} val={`$${order.fee.service}.00`} />
+                <div style={{ borderTop:'1px solid #F3F4F6', paddingTop:10, display:'flex', justifyContent:'space-between' }}>
+                  <span style={{ fontWeight:700, color:'var(--navy)' }}>Tổng đã thanh toán</span>
+                  <span style={{ fontFamily:'Fraunces,serif', fontSize:18, fontWeight:900, color:'var(--blue)' }}>${order.fee.total}.00</span>
                 </div>
-                <div className="text-xs text-gray-500 pt-2 border-t border-gray-100 flex justify-between">
+                <div style={{ fontSize:12, color:'#6B7280', paddingTop:10, borderTop:'1px solid #F3F4F6', display:'flex', justifyContent:'space-between' }}>
                   <span>{order.payment.method === 'card' ? '💳 Thẻ tín dụng' : '📱 Ví điện tử'}</span>
                   <span>{fmtDateTime(order.payment.paidAt)}</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-gray-500">Trạng thái:</span>
-                  <span className="text-[11px] font-bold px-2 py-0.5 rounded-full" style={{ background: order.payment.status === 'paid' ? '#F0FDF4' : '#FEF2F2', color: order.payment.status === 'paid' ? '#16A34A' : '#DC2626' }}>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <span style={{ fontSize:12, color:'#6B7280' }}>Trạng thái:</span>
+                  <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:50, background: order.payment.status === 'paid' ? '#F0FDF4' : '#FEF2F2', color: order.payment.status === 'paid' ? '#16A34A' : '#DC2626' }}>
                     {order.payment.status === 'paid' ? '✓ Paid' : order.payment.status === 'refunded' ? '↩️ Refunded' : '⏳ Pending'}
                   </span>
                 </div>
@@ -424,26 +390,21 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
             </Section>
           </div>
 
-          {/* Right: timeline + actions (1 col, sticky) */}
-          <div className="space-y-5">
-            {/* Status pipeline / actions */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5 lg:sticky lg:top-20">
-              <h3 className="font-bold text-base mb-3" style={{ color:'var(--navy)' }}>⚡ Cập nhật trạng thái</h3>
-
+          <div style={{ display:'flex', flexDirection:'column', gap:18, minWidth:0 }}>
+            <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18, position:'sticky', top:80 }}>
+              <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:14 }}>⚡ Cập nhật trạng thái</h3>
               {actions.length > 0 ? (
                 <>
                   {!confirmAction && (
-                    <div className="space-y-2">
+                    <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                       {actions.map(a => (
-                        <button
-                          key={a.to}
-                          onClick={() => setConfirmAction(a)}
-                          className="w-full flex items-center justify-between gap-3 px-4 py-3 rounded-lg text-sm font-bold border-2 transition-all hover:-translate-y-0.5"
-                          style={{ borderColor:a.accent, color:a.accent, background:'white' }}
+                        <button key={a.to} onClick={() => setConfirmAction(a)}
+                          style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, padding:'12px 14px', borderRadius:8, fontSize:13, fontWeight:700, border:`2px solid ${a.accent}`, color:a.accent, background:'white', cursor:'pointer', fontFamily:'inherit', transition:'all .15s' }}
+                          onMouseEnter={e => { e.currentTarget.style.transform='translateY(-1px)'; e.currentTarget.style.background=`${a.accent}11` }}
+                          onMouseLeave={e => { e.currentTarget.style.transform='none'; e.currentTarget.style.background='white' }}
                         >
-                          <span className="flex items-center gap-2">
-                            <span>{a.icon}</span>
-                            {a.label}
+                          <span style={{ display:'flex', alignItems:'center', gap:8 }}>
+                            <span>{a.icon}</span>{a.label}
                           </span>
                           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <path d="M9 5l7 7-7 7"/>
@@ -455,14 +416,13 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
 
                   {confirmAction && (
                     <div className="fade-up">
-                      <div className="rounded-lg p-3 mb-3 text-sm" style={{ background:`${confirmAction.accent}11`, border:`1px solid ${confirmAction.accent}33` }}>
-                        <div className="font-bold flex items-center gap-2" style={{ color:confirmAction.accent }}>
-                          <span>{confirmAction.icon}</span>
-                          {confirmAction.label}
+                      <div style={{ borderRadius:8, padding:12, marginBottom:12, background:`${confirmAction.accent}11`, border:`1px solid ${confirmAction.accent}33` }}>
+                        <div style={{ fontWeight:700, fontSize:13, display:'flex', alignItems:'center', gap:6, color:confirmAction.accent }}>
+                          <span>{confirmAction.icon}</span>{confirmAction.label}
                         </div>
-                        <p className="text-xs text-gray-600 mt-1">Khách sẽ được thông báo qua email và thấy update trên dashboard.</p>
+                        <p style={{ fontSize:11, color:'#6B7280', marginTop:4 }}>Khách sẽ được thông báo qua email và thấy update trên dashboard.</p>
                       </div>
-                      <label className="text-xs font-bold uppercase tracking-wider text-gray-500 mb-1 block">Ghi chú nội bộ (gửi cho khách)</label>
+                      <label style={{ fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em', display:'block', marginBottom:6 }}>Ghi chú nội bộ (gửi cho khách)</label>
                       <textarea
                         rows={3}
                         className="field-input"
@@ -470,12 +430,12 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                         value={note}
                         onChange={e => setNote(e.target.value)}
                       />
-                      <div className="flex gap-2 mt-3">
-                        <button onClick={() => { setConfirmAction(null); setNote('') }} className="btn-secondary flex-1 justify-center">Hủy</button>
-                        <button
-                          onClick={handleConfirm}
-                          className="flex-1 inline-flex items-center justify-center gap-1 px-4 py-2.5 rounded-lg text-sm font-bold text-white transition-opacity hover:opacity-90"
-                          style={{ background:confirmAction.accent }}
+                      <div style={{ display:'flex', gap:8, marginTop:12 }}>
+                        <button onClick={() => { setConfirmAction(null); setNote('') }} className="btn-secondary" style={{ flex:1, justifyContent:'center' }}>Hủy</button>
+                        <button onClick={handleConfirm}
+                          style={{ flex:1, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6, padding:'10px 14px', borderRadius:8, fontSize:13, fontWeight:700, color:'white', background:confirmAction.accent, border:'none', cursor:'pointer', fontFamily:'inherit', transition:'opacity .15s' }}
+                          onMouseEnter={e => e.currentTarget.style.opacity='.88'}
+                          onMouseLeave={e => e.currentTarget.style.opacity='1'}
                         >
                           Xác nhận
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -487,31 +447,30 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                   )}
                 </>
               ) : (
-                <div className="rounded-lg p-3 text-xs" style={{ background:status.bg, color:status.color }}>
-                  <div className="font-bold mb-0.5">{status.icon} {status.label}</div>
-                  <div className="opacity-80">Đơn ở trạng thái cuối — không còn hành động cần thực hiện.</div>
+                <div style={{ borderRadius:8, padding:12, fontSize:12, background:status.bg, color:status.color }}>
+                  <div style={{ fontWeight:700, marginBottom:2 }}>{status.icon} {status.label}</div>
+                  <div style={{ opacity:0.8 }}>Đơn ở trạng thái cuối — không còn hành động cần thực hiện.</div>
                 </div>
               )}
             </div>
 
-            {/* Timeline */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5">
-              <h3 className="font-bold text-base mb-4" style={{ color:'var(--navy)' }}>📍 Lịch sử</h3>
-              <div className="space-y-0">
+            <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18 }}>
+              <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:16 }}>📍 Lịch sử</h3>
+              <div>
                 {[...order.timeline].reverse().map((event, i) => {
                   const stage = ORDER_STATUSES[event.stage]
                   return (
-                    <div key={i} className="flex gap-3">
-                      <div className="flex flex-col items-center flex-shrink-0">
-                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-sm" style={{ background:stage.bg, color:stage.color }}>
+                    <div key={i} style={{ display:'flex', gap:12 }}>
+                      <div style={{ display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0 }}>
+                        <div style={{ width:32, height:32, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, background:stage.bg, color:stage.color }}>
                           {stage.icon}
                         </div>
-                        {i < order.timeline.length - 1 && <div className="w-0.5 flex-1 my-1 min-h-[24px] bg-gray-200" />}
+                        {i < order.timeline.length - 1 && <div style={{ width:2, flex:1, marginTop:4, marginBottom:4, minHeight:24, background:'#E5E7EB' }} />}
                       </div>
-                      <div className="flex-1 pb-4">
-                        <div className="font-bold text-sm" style={{ color:'var(--navy)' }}>{stage.label}</div>
-                        <div className="text-[11px] text-gray-400 mt-0.5">{fmtDateTime(event.at)}</div>
-                        {event.note && <div className="text-xs text-gray-600 mt-1 leading-relaxed">{event.note}</div>}
+                      <div style={{ flex:1, paddingBottom:14 }}>
+                        <div style={{ fontWeight:700, fontSize:13, color:'var(--navy)' }}>{stage.label}</div>
+                        <div style={{ fontSize:11, color:'#9CA3AF', marginTop:2 }}>{fmtDateTime(event.at)}</div>
+                        {event.note && <div style={{ fontSize:12, color:'#6B7280', marginTop:4, lineHeight:1.6 }}>{event.note}</div>}
                       </div>
                     </div>
                   )
@@ -519,21 +478,22 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
               </div>
             </div>
 
-            {/* Customer contact */}
-            <div className="bg-white border border-gray-200 rounded-2xl p-5">
-              <h3 className="font-bold text-sm mb-3" style={{ color:'var(--navy)' }}>📨 Liên hệ khách</h3>
-              <div className="space-y-2">
-                <a href={`mailto:${order.applicant.email}`} className="flex items-center gap-2 text-xs hover:underline truncate" style={{ color:'var(--blue)' }}>
-                  <span>📧</span> {order.applicant.email}
+            <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18 }}>
+              <h3 style={{ fontWeight:700, fontSize:14, color:'var(--navy)', marginBottom:12 }}>📨 Liên hệ khách</h3>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                <a href={`mailto:${order.applicant.email}`} style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'var(--blue)', textDecoration:'none' }}>
+                  📧 {order.applicant.email}
                 </a>
-                <a href={`tel:${order.applicant.phone}`} className="flex items-center gap-2 text-xs hover:underline" style={{ color:'var(--blue)' }}>
-                  <span>📞</span> {order.applicant.phone}
+                <a href={`tel:${order.applicant.phone}`} style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'var(--blue)', textDecoration:'none' }}>
+                  📞 {order.applicant.phone}
                 </a>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <style>{`@media(max-width:900px){.admin-detail-grid{grid-template-columns:1fr!important}}`}</style>
 
       <Footer />
     </div>
@@ -542,9 +502,17 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
 
 function Section({ title, children }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-2xl p-5 md:p-6">
-      <h3 className="font-bold text-base mb-4" style={{ color:'var(--navy)' }}>{title}</h3>
+    <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:22 }}>
+      <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:16 }}>{title}</h3>
       {children}
+    </div>
+  )
+}
+
+function InfoGrid({ items }) {
+  return (
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))', gap:'12px 24px' }}>
+      {items.map(([l, v]) => <InfoRow key={l} label={l} value={v} />)}
     </div>
   )
 }
@@ -552,8 +520,17 @@ function Section({ title, children }) {
 function InfoRow({ label, value }) {
   return (
     <div>
-      <div className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">{label}</div>
-      <div className="text-sm font-semibold" style={{ color:'var(--navy)' }}>{value || '—'}</div>
+      <div style={{ fontSize:11, fontWeight:700, color:'#9CA3AF', textTransform:'uppercase', letterSpacing:'.06em', marginBottom:2 }}>{label}</div>
+      <div style={{ fontSize:14, fontWeight:600, color:'var(--navy)' }}>{value || '—'}</div>
+    </div>
+  )
+}
+
+function Row({ label, val }) {
+  return (
+    <div style={{ display:'flex', justifyContent:'space-between' }}>
+      <span style={{ color:'#6B7280' }}>{label}</span>
+      <span style={{ fontWeight:600, color:'var(--navy)' }}>{val}</span>
     </div>
   )
 }
