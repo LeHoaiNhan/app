@@ -1,7 +1,37 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
+
+function validateStep2(d) {
+  const e = {}
+  if (!d.passportNo?.trim())       e.passportNo  = 'Passport number is required'
+  if (!d.passportType)             e.passportType= 'Passport type is required'
+  if (!d.issueDate)                e.issueDate   = 'Issue date is required'
+  else if (new Date(d.issueDate) > new Date()) e.issueDate = 'Issue date must be in the past'
+  if (!d.expiryDate)               e.expiryDate  = 'Expiry date is required'
+  else if (d.issueDate && new Date(d.expiryDate) <= new Date(d.issueDate)) e.expiryDate = 'Expiry must be after issue date'
+  else if (new Date(d.expiryDate) <= new Date()) e.expiryDate = 'Passport has already expired'
+  if (!d.issuePlace?.trim())       e.issuePlace  = 'Place of issue is required'
+  if (!d.issueCountry)             e.issueCountry= 'Issuing country is required'
+  return e
+}
 
 export default function Step2Passport({ data, onChange, onNext, onBack }) {
   const fileRef = useRef()
+  const [errors, setErrors] = useState({})
+
+  const setField = (field, value) => {
+    onChange(field, value)
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }))
+  }
+
+  const handleNext = () => {
+    const e = validateStep2(data)
+    setErrors(e)
+    if (Object.keys(e).length > 0) {
+      document.querySelector('[data-error="true"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+    onNext()
+  }
 
   const handleFile = (file) => {
     if (!file || !file.type.startsWith('image/')) return
@@ -14,41 +44,43 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
     <div style={{ padding:'24px 28px' }}>
       <div className="section-bar">Passport details</div>
       <div className="form-grid-2">
-        <div>
-          <label className="field-label">Passport number <span className="req">*</span></label>
+        <Field label="Passport number" required error={errors.passportNo}>
           <input className="field-input" type="text" placeholder="B1234567"
-            value={data.passportNo} onChange={e => onChange('passportNo', e.target.value)} />
-        </div>
-        <div>
-          <label className="field-label">Passport type <span className="req">*</span></label>
-          <select className="field-input" value={data.passportType} onChange={e => onChange('passportType', e.target.value)}>
+            data-error={!!errors.passportNo}
+            style={errors.passportNo ? errorStyle : undefined}
+            value={data.passportNo} onChange={e => setField('passportNo', e.target.value)} />
+        </Field>
+        <Field label="Passport type" required error={errors.passportType}>
+          <select className="field-input" value={data.passportType} onChange={e => setField('passportType', e.target.value)}>
             <option>Regular passport</option>
             <option>Diplomatic passport</option>
             <option>Official passport</option>
           </select>
-        </div>
-        <div>
-          <label className="field-label">Issue date <span className="req">*</span></label>
+        </Field>
+        <Field label="Issue date" required error={errors.issueDate}>
           <input className="field-input" type="date"
-            value={data.issueDate} onChange={e => onChange('issueDate', e.target.value)} />
-        </div>
-        <div>
-          <label className="field-label">Expiry date <span className="req">*</span></label>
+            data-error={!!errors.issueDate}
+            style={errors.issueDate ? errorStyle : undefined}
+            value={data.issueDate} onChange={e => setField('issueDate', e.target.value)} />
+        </Field>
+        <Field label="Expiry date" required error={errors.expiryDate}
+          hint="Must be valid for at least 6 months from your entry date">
           <input className="field-input" type="date"
-            value={data.expiryDate} onChange={e => onChange('expiryDate', e.target.value)} />
-          <p className="field-hint">Must be valid for at least 6 months from your entry date</p>
-        </div>
-        <div>
-          <label className="field-label">Place of issue <span className="req">*</span></label>
+            data-error={!!errors.expiryDate}
+            style={errors.expiryDate ? errorStyle : undefined}
+            value={data.expiryDate} onChange={e => setField('expiryDate', e.target.value)} />
+        </Field>
+        <Field label="Place of issue" required error={errors.issuePlace}>
           <input className="field-input" type="text" placeholder="New York Passport Agency"
-            value={data.issuePlace} onChange={e => onChange('issuePlace', e.target.value)} />
-        </div>
-        <div>
-          <label className="field-label">Issuing country <span className="req">*</span></label>
-          <select className="field-input" value={data.issueCountry} onChange={e => onChange('issueCountry', e.target.value)}>
+            data-error={!!errors.issuePlace}
+            style={errors.issuePlace ? errorStyle : undefined}
+            value={data.issuePlace} onChange={e => setField('issuePlace', e.target.value)} />
+        </Field>
+        <Field label="Issuing country" required error={errors.issueCountry}>
+          <select className="field-input" value={data.issueCountry} onChange={e => setField('issueCountry', e.target.value)}>
             {['United States','United Kingdom','Australia','Canada','Germany','France','Japan'].map(c => <option key={c}>{c}</option>)}
           </select>
-        </div>
+        </Field>
       </div>
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
@@ -84,13 +116,31 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
 
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:-24 }}>
         <button className="btn-secondary" onClick={onBack}>← Back</button>
-        <button className="btn-primary" onClick={onNext}>
+        <button className="btn-primary" onClick={handleNext}>
           Next
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>
       </div>
+    </div>
+  )
+}
+
+const errorStyle = { borderColor: '#DC2626', background: '#FEF2F2' }
+
+function Field({ label, required, error, hint, children }) {
+  return (
+    <div>
+      <label className="field-label">
+        {label}{required && <span className="req"> *</span>}
+      </label>
+      {children}
+      {error ? (
+        <p style={{ fontSize:11, color:'#DC2626', marginTop:4, fontWeight:500 }}>{error}</p>
+      ) : hint ? (
+        <p className="field-hint">{hint}</p>
+      ) : null}
     </div>
   )
 }

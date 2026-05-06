@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useOrders } from '../../contexts/OrdersContext'
+import { api } from '../../lib/api'
 
 const FEE_MAP = { normal: 49, fast: 69, express: 99 }
 
@@ -70,6 +71,16 @@ export default function Step4Payment({ formData, onBack }) {
           notes: formData.trip?.notes || '',
         },
       })
+
+      const photoDocId = formData.personal?.photoDocId
+      if (photoDocId) {
+        try {
+          await api.patch(`/uploads/${photoDocId}/link`, { orderId: order.id })
+        } catch (_e) {
+          /* non-fatal — photo URL already stored on order */
+        }
+      }
+
       setOrderCode(order.id)
       setDone(true)
     } catch (err) {

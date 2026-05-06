@@ -1,15 +1,77 @@
 import { useRef, useState } from 'react'
+import { api, getToken, apiError } from '../../lib/api'
+
+const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+function validateStep1(d) {
+  const e = {}
+  if (!d.lastName?.trim())   e.lastName   = 'Last name is required'
+  if (!d.firstName?.trim())  e.firstName  = 'First name is required'
+  if (!d.gender)             e.gender     = 'Gender is required'
+  if (!d.dob)                e.dob        = 'Date of birth is required'
+  else if (new Date(d.dob) > new Date()) e.dob = 'Date of birth must be in the past'
+  if (!d.email?.trim())      e.email      = 'Email is required'
+  else if (!EMAIL_RX.test(d.email)) e.email = 'Please enter a valid email'
+  if (!d.phone?.trim())      e.phone      = 'Phone number is required'
+  if (!d.nationality)        e.nationality= 'Nationality is required'
+  if (!d.birthPlace?.trim()) e.birthPlace = 'Place of birth is required'
+  if (!d.photoURL)           e.photo      = 'Please upload your portrait photo'
+  return e
+}
 
 export default function Step1Personal({ data, onChange, onNext }) {
   const photoRef = useRef()
   const [drag, setDrag] = useState(false)
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
+  const [errors, setErrors] = useState({})
 
-  const handleFile = (file) => {
+  const handleNext = () => {
+    const e = validateStep1(data)
+    setErrors(e)
+    if (Object.keys(e).length > 0) {
+      const firstField = document.querySelector('[data-error="true"]')
+      firstField?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      return
+    }
+    onNext()
+  }
+
+  const setField = (field, value) => {
+    onChange(field, value)
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: undefined }))
+  }
+
+  const handleFile = async (file) => {
     if (!file) return
-    if (!file.type.startsWith('image/')) { alert('Please choose an image file (JPG, PNG)'); return }
-    if (file.size > 5 * 1024 * 1024) { alert('Image too large! Max 5MB'); return }
+    if (!file.type.startsWith('image/')) { setUploadError('Please choose an image file (JPG, PNG)'); return }
+    if (file.size > 5 * 1024 * 1024) { setUploadError('Image too large! Max 5MB'); return }
+
+    setUploadError(null)
+    if (errors.photo) setErrors(prev => ({ ...prev, photo: undefined }))
     onChange('photo', file)
-    onChange('photoURL', URL.createObjectURL(file))
+    onChange('photoURL', URL.createObjectURL(file)) // local preview while uploading
+
+    if (!getToken()) {
+      setUploadError('Please sign in before uploading your photo')
+      return
+    }
+
+    setUploading(true)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('kind', 'applicant_photo')
+      const { data: res } = await api.post('/uploads/photo', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      onChange('photoURL', res.url)
+      onChange('photoDocId', res.id)
+    } catch (err) {
+      setUploadError(apiError(err, 'Photo upload failed'))
+    } finally {
+      setUploading(false)
+    }
   }
 
   const s = { padding:'24px 28px' }
@@ -18,70 +80,74 @@ export default function Step1Personal({ data, onChange, onNext }) {
     <div style={s}>
       <div className="section-bar">Name & Gender</div>
       <div className="form-grid-2">
-        <div>
-          <label className="field-label">Last name <span className="req">*</span></label>
+        <Field label="Last name" required error={errors.lastName}>
           <input className="field-input" type="text" placeholder="e.g. SMITH"
-            value={data.lastName} onChange={e => onChange('lastName', e.target.value)} />
-        </div>
-        <div>
-          <label className="field-label">First & middle name <span className="req">*</span></label>
+            data-error={!!errors.lastName}
+            style={errors.lastName ? errorStyle : undefined}
+            value={data.lastName} onChange={e => setField('lastName', e.target.value)} />
+        </Field>
+        <Field label="First & middle name" required error={errors.firstName}>
           <input className="field-input" type="text" placeholder="e.g. JOHN"
-            value={data.firstName} onChange={e => onChange('firstName', e.target.value)} />
-        </div>
-        <div>
-          <label className="field-label">Gender <span className="req">*</span></label>
-          <div className="gender-group">
+            data-error={!!errors.firstName}
+            style={errors.firstName ? errorStyle : undefined}
+            value={data.firstName} onChange={e => setField('firstName', e.target.value)} />
+        </Field>
+        <Field label="Gender" required error={errors.gender}>
+          <div className="gender-group" data-error={!!errors.gender}>
             {['Male','Female','Other'].map(g => (
               <label key={g} className={`gender-opt ${data.gender===g?'active':''}`}>
-                <input type="radio" name="gender" checked={data.gender===g} onChange={() => onChange('gender', g)} />
+                <input type="radio" name="gender" checked={data.gender===g} onChange={() => setField('gender', g)} />
                 {g}
               </label>
             ))}
           </div>
-        </div>
-        <div>
-          <label className="field-label">Date of birth <span className="req">*</span></label>
+        </Field>
+        <Field label="Date of birth" required error={errors.dob}>
           <input className="field-input" type="date"
-            value={data.dob} onChange={e => onChange('dob', e.target.value)} />
-        </div>
+            data-error={!!errors.dob}
+            style={errors.dob ? errorStyle : undefined}
+            value={data.dob} onChange={e => setField('dob', e.target.value)} />
+        </Field>
       </div>
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
 
       <div className="section-bar">Contact information</div>
       <div className="form-grid-2">
-        <div>
-          <label className="field-label">Email <span className="req">*</span></label>
+        <Field label="Email" required error={errors.email} hint="Your e-visa will be sent to this email">
           <input className="field-input" type="email" placeholder="email@example.com"
-            value={data.email} onChange={e => onChange('email', e.target.value)} />
-          <p className="field-hint">Your e-visa will be sent to this email</p>
-        </div>
-        <div>
-          <label className="field-label">Phone number <span className="req">*</span></label>
+            data-error={!!errors.email}
+            style={errors.email ? errorStyle : undefined}
+            value={data.email} onChange={e => setField('email', e.target.value)} />
+        </Field>
+        <Field label="Phone number" required error={errors.phone}>
           <input className="field-input" type="tel" placeholder="+1 555 123 4567"
-            value={data.phone} onChange={e => onChange('phone', e.target.value)} />
-        </div>
-        <div>
-          <label className="field-label">Nationality <span className="req">*</span></label>
-          <select className="field-input" value={data.nationality} onChange={e => onChange('nationality', e.target.value)}>
+            data-error={!!errors.phone}
+            style={errors.phone ? errorStyle : undefined}
+            value={data.phone} onChange={e => setField('phone', e.target.value)} />
+        </Field>
+        <Field label="Nationality" required error={errors.nationality}>
+          <select className="field-input" value={data.nationality} onChange={e => setField('nationality', e.target.value)}>
             {['United States','United Kingdom','Australia','Canada','Germany','France','Japan','South Korea','Singapore'].map(n =>
               <option key={n}>{n}</option>)}
           </select>
-        </div>
-        <div>
-          <label className="field-label">Place of birth <span className="req">*</span></label>
+        </Field>
+        <Field label="Place of birth" required error={errors.birthPlace}>
           <input className="field-input" type="text" placeholder="New York, USA"
-            value={data.birthPlace} onChange={e => onChange('birthPlace', e.target.value)} />
-        </div>
+            data-error={!!errors.birthPlace}
+            style={errors.birthPlace ? errorStyle : undefined}
+            value={data.birthPlace} onChange={e => setField('birthPlace', e.target.value)} />
+        </Field>
       </div>
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
 
-      <div className="section-bar">Portrait photo</div>
+      <div className="section-bar">Portrait photo <span className="req">*</span></div>
       <div style={{ display:'flex', gap:16, alignItems:'flex-start', flexWrap:'wrap' }}>
         <div
+          data-error={!!errors.photo}
           className={`upload-zone ${data.photoURL ? 'has-file' : ''}`}
-          style={{ flex:1, minWidth:200 }}
+          style={{ flex:1, minWidth:200, ...(errors.photo ? { borderColor: '#DC2626', background: '#FEF2F2' } : {}) }}
           onClick={() => photoRef.current.click()}
           onDragOver={e => { e.preventDefault(); setDrag(true) }}
           onDragLeave={() => setDrag(false)}
@@ -93,9 +159,11 @@ export default function Step1Personal({ data, onChange, onNext }) {
           {data.photoURL ? (
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
               <img src={data.photoURL} alt="preview"
-                style={{ width:96, height:96, objectFit:'cover', borderRadius:10, border:'2px solid var(--green)', boxShadow:'0 2px 8px rgba(0,0,0,0.1)' }} />
-              <p style={{ fontSize:13, fontWeight:700, color:'var(--green)' }}>✓ Photo uploaded</p>
-              <p style={{ fontSize:11, color:'#9CA3AF' }}>Click to change photo</p>
+                style={{ width:96, height:96, objectFit:'cover', borderRadius:10, border:`2px solid ${uploading ? 'var(--blue)' : 'var(--green)'}`, boxShadow:'0 2px 8px rgba(0,0,0,0.1)', opacity: uploading ? 0.7 : 1 }} />
+              <p style={{ fontSize:13, fontWeight:700, color: uploading ? 'var(--blue)' : 'var(--green)' }}>
+                {uploading ? '⏳ Uploading…' : '✓ Photo uploaded'}
+              </p>
+              {!uploading && <p style={{ fontSize:11, color:'#9CA3AF' }}>Click to change photo</p>}
             </div>
           ) : (
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
@@ -111,6 +179,12 @@ export default function Step1Personal({ data, onChange, onNext }) {
             </div>
           )}
         </div>
+
+        {(uploadError || errors.photo) && (
+          <div style={{ width:'100%', background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'8px 12px', fontSize:12, color:'#991B1B' }}>
+            {uploadError || errors.photo}
+          </div>
+        )}
 
         <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:10, padding:'14px 16px', width:220, flexShrink:0 }}>
           <p style={{ fontSize:13, fontWeight:700, color:'#92400E', marginBottom:8 }}>📋 Photo requirements</p>
@@ -129,13 +203,31 @@ export default function Step1Personal({ data, onChange, onNext }) {
           </svg>
           Encrypted with SSL 256-bit
         </div>
-        <button className="btn-primary" onClick={onNext}>
+        <button className="btn-primary" onClick={handleNext} disabled={uploading}>
           Next
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>
       </div>
+    </div>
+  )
+}
+
+const errorStyle = { borderColor: '#DC2626', background: '#FEF2F2' }
+
+function Field({ label, required, error, hint, children }) {
+  return (
+    <div>
+      <label className="field-label">
+        {label}{required && <span className="req"> *</span>}
+      </label>
+      {children}
+      {error ? (
+        <p style={{ fontSize:11, color:'#DC2626', marginTop:4, fontWeight:500 }}>{error}</p>
+      ) : hint ? (
+        <p className="field-hint">{hint}</p>
+      ) : null}
     </div>
   )
 }

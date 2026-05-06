@@ -313,16 +313,25 @@ function OrderDetail({ order, onBack }) {
               })}
             </div>
 
-            {order.status === 'delivered' && (
-              <div style={{ marginTop:14, paddingTop:18, borderTop:'1px solid #F3F4F6' }}>
-                <button className="btn-primary" style={{ width:'100%', justifyContent:'center' }}>
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
-                  </svg>
-                  Download visa PDF
-                </button>
-              </div>
-            )}
+            {order.status === 'delivered' && (() => {
+              const visaDoc = (order.documents || []).find(d => d.kind === 'visa_result')
+              return (
+                <div style={{ marginTop:14, paddingTop:18, borderTop:'1px solid #F3F4F6' }}>
+                  {visaDoc ? (
+                    <a href={visaDoc.url} target="_blank" rel="noreferrer" download className="btn-primary" style={{ width:'100%', justifyContent:'center' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                      </svg>
+                      Download visa PDF
+                    </a>
+                  ) : (
+                    <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:10, padding:'12px 14px', fontSize:13, color:'#92400E', textAlign:'center' }}>
+                      ⏳ Your visa is delivered. The PDF will appear here shortly — check the email we sent in the meantime.
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
           </Section>
 
           <Section title="👤 Applicant information">

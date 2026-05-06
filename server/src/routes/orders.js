@@ -1,5 +1,8 @@
 import { Router } from 'express'
 import { z } from 'zod'
+import multer from 'multer'
+import path from 'node:path'
+import fs from 'node:fs'
 import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { generateOrderId } from '../lib/orderId.js'
@@ -7,6 +10,30 @@ import { generateOrderId } from '../lib/orderId.js'
 const router = Router()
 
 const ORDER_STATUSES = ['submitted', 'review', 'sent', 'approved', 'delivered', 'rejected']
+const DOCUMENT_KINDS = ['applicant_photo', 'passport_scan', 'supporting', 'visa_result']
+
+const UPLOAD_DIR = path.resolve('uploads')
+fs.mkdirSync(UPLOAD_DIR, { recursive: true })
+
+const docStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, UPLOAD_DIR),
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase()
+    const name = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}${ext}`
+    cb(null, name)
+  },
+})
+
+const docUpload = multer({
+  storage: docStorage,
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    if (!/^(image\/(png|jpe?g|webp)|application\/pdf)$/.test(file.mimetype)) {
+      return cb(new Error('Only PNG, JPG, WEBP, or PDF files are allowed'))
+    }
+    cb(null, true)
+  },
+})
 
 router.use(requireAuth)
 
@@ -25,7 +52,10 @@ router.get('/', async (req, res, next) => {
     const orders = await prisma.order.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      include: { timeline: { orderBy: { at: 'asc' } } },
+      include: {
+        timeline: { orderBy: { at: 'asc' } },
+        documents: { orderBy: { createdAt: 'asc' } },
+      },
     })
     res.json({ orders })
   } catch (err) { next(err) }
@@ -35,7 +65,10 @@ router.get('/:id', async (req, res, next) => {
   try {
     const order = await prisma.order.findUnique({
       where: { id: req.params.id },
-      include: { timeline: { orderBy: { at: 'asc' } } },
+      include: {
+        timeline: { orderBy: { at: 'asc' } },
+        documents: { orderBy: { createdAt: 'asc' } },
+      },
     })
     if (!order) return res.status(404).json({ error: 'Order not found' })
     if (req.user.role !== 'admin' && order.customerId !== req.user.id) {
@@ -110,7 +143,10 @@ router.post('/', async (req, res, next) => {
           create: [{ stage: 'submitted', note: 'Application received, payment successful' }],
         },
       },
-      include: { timeline: { orderBy: { at: 'asc' } } },
+      include: {
+        timeline: { orderBy: { at: 'asc' } },
+        documents: { orderBy: { createdAt: 'asc' } },
+      },
     })
     res.status(201).json({ order })
   } catch (err) { next(err) }
@@ -133,9 +169,55 @@ router.patch('/:id/status', requireAdmin, async (req, res, next) => {
         status,
         timeline: { create: [{ stage: status, note: note || status }] },
       },
-      include: { timeline: { orderBy: { at: 'asc' } } },
+      include: {
+        timeline: { orderBy: { at: 'asc' } },
+        documents: { orderBy: { createdAt: 'asc' } },
+      },
     })
     res.json({ order })
+  } catch (err) { next(err) }
+})
+
+router.get('/:id/documents', async (req, res, next) => {
+  try {
+    const order = await prisma.order.findUnique({ where: { id: req.params.id } })
+    if (!order) return res.status(404).json({ error: 'Order not found' })
+    if (req.user.role !== 'admin' && order.customerId !== req.user.id) {
+      return res.status(403).json({ error: 'Forbidden' })
+    }
+    const documents = await prisma.document.findMany({
+      where: { orderId: req.params.id },
+      orderBy: { createdAt: 'asc' },
+    })
+    res.json({ documents })
+  } catch (err) { next(err) }
+})
+
+router.post('/:id/documents', requireAdmin, docUpload.single('file'), async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' })
+
+    const order = await prisma.order.findUnique({ where: { id: req.params.id } })
+    if (!order) {
+      try { fs.unlinkSync(req.file.path) } catch (_e) { /* ignore */ }
+      return res.status(404).json({ error: 'Order not found' })
+    }
+
+    const kind = DOCUMENT_KINDS.includes(req.body?.kind) ? req.body.kind : 'visa_result'
+    const url = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`
+
+    const doc = await prisma.document.create({
+      data: {
+        uploaderId: req.user.id,
+        orderId: order.id,
+        kind,
+        filename: req.file.filename,
+        url,
+        mimeType: req.file.mimetype,
+        size: req.file.size,
+      },
+    })
+    res.status(201).json({ document: doc })
   } catch (err) { next(err) }
 })
 

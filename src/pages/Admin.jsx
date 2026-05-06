@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
 import { useOrders, ORDER_STATUSES } from '../contexts/OrdersContext'
+import { api, apiError } from '../lib/api'
 
 const TIER_LABEL = { normal:'Standard', fast:'Fast', express:'Express' }
 
@@ -291,14 +292,16 @@ const NEXT_ACTIONS = {
 }
 
 function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
+  const { refresh } = useOrders()
   const [note, setNote] = useState('')
   const [confirmAction, setConfirmAction] = useState(null)
   const status = ORDER_STATUSES[order.status]
   const actions = NEXT_ACTIONS[order.status] || []
+  const visaDoc = (order.documents || []).find(d => d.kind === 'visa_result')
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!confirmAction) return
-    onUpdateStatus(confirmAction.to, note.trim())
+    await onUpdateStatus(confirmAction.to, note.trim())
     setNote('')
     setConfirmAction(null)
   }
@@ -498,6 +501,8 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
               </div>
             </div>
 
+            <AdminDocsPanel order={order} onUploaded={refresh} visaDoc={visaDoc} />
+
             <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18 }}>
               <h3 style={{ fontWeight:700, fontSize:14, color:'var(--navy)', marginBottom:12 }}>📨 Contact customer</h3>
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
@@ -551,6 +556,78 @@ function Row({ label, val }) {
     <div style={{ display:'flex', justifyContent:'space-between' }}>
       <span style={{ color:'#6B7280' }}>{label}</span>
       <span style={{ fontWeight:600, color:'var(--navy)' }}>{val}</span>
+    </div>
+  )
+}
+
+function AdminDocsPanel({ order, onUploaded, visaDoc }) {
+  const fileRef = useRef()
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState(null)
+  const canUpload = ['approved', 'delivered'].includes(order.status)
+
+  const handleFile = async (file) => {
+    if (!file) return
+    setError(null)
+    setUploading(true)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('kind', 'visa_result')
+      await api.post(`/orders/${order.id}/documents`, form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      await onUploaded()
+    } catch (err) {
+      setError(apiError(err, 'Upload failed'))
+    } finally {
+      setUploading(false)
+      if (fileRef.current) fileRef.current.value = ''
+    }
+  }
+
+  return (
+    <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18 }}>
+      <h3 style={{ fontWeight:700, fontSize:14, color:'var(--navy)', marginBottom:12 }}>📎 Visa document</h3>
+
+      {visaDoc ? (
+        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10, padding:'10px 12px', background:'#F0FDF4', border:'1px solid #BBF7D0', borderRadius:8 }}>
+            <span style={{ fontSize:20 }}>📄</span>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontSize:13, fontWeight:600, color:'var(--navy)', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{visaDoc.filename}</div>
+              <div style={{ fontSize:11, color:'#6B7280' }}>{(visaDoc.size / 1024).toFixed(1)} KB · {fmtDateTime(visaDoc.createdAt)}</div>
+            </div>
+            <a href={visaDoc.url} target="_blank" rel="noreferrer" style={{ fontSize:12, fontWeight:700, color:'var(--blue)', textDecoration:'none' }}>Open ↗</a>
+          </div>
+          {canUpload && (
+            <button onClick={() => fileRef.current?.click()} disabled={uploading}
+              style={{ fontSize:12, fontWeight:600, padding:'8px 12px', borderRadius:8, border:'1px solid #E5E7EB', background:'white', cursor:'pointer', fontFamily:'inherit', color:'#374151' }}>
+              {uploading ? 'Uploading…' : 'Replace file'}
+            </button>
+          )}
+        </div>
+      ) : canUpload ? (
+        <div>
+          <p style={{ fontSize:12, color:'#6B7280', marginBottom:10, lineHeight:1.5 }}>
+            Upload the approved visa PDF — customer will be able to download it after status moves to <strong>delivered</strong>.
+          </p>
+          <button onClick={() => fileRef.current?.click()} disabled={uploading} className="btn-primary" style={{ width:'100%', justifyContent:'center', background:'var(--gold)', color:'var(--navy)' }}>
+            {uploading ? 'Uploading…' : '📤 Upload visa PDF'}
+          </button>
+        </div>
+      ) : (
+        <p style={{ fontSize:12, color:'#9CA3AF', lineHeight:1.5 }}>
+          Available once the order is approved. Current status: <strong>{ORDER_STATUSES[order.status]?.label}</strong>.
+        </p>
+      )}
+
+      <input ref={fileRef} type="file" accept="application/pdf,image/png,image/jpeg" style={{ display:'none' }}
+        onChange={e => handleFile(e.target.files?.[0])} />
+
+      {error && (
+        <div style={{ marginTop:10, background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'8px 12px', fontSize:12, color:'#991B1B' }}>{error}</div>
+      )}
     </div>
   )
 }
