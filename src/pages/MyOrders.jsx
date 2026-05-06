@@ -428,3 +428,12 @@ function InfoRow({ label, value }) {
     </div>
   )
 }
+
+function Row({ label, val }) {
+  return (
+    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+      <span style={{ color:'#6B7280' }}>{label}</span>
+      <span style={{ fontWeight:600, color:'var(--navy)' }}>{val}</span>
+    </div>
+  )
+}
