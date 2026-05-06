@@ -4,35 +4,35 @@ import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 
 const CHANNELS = [
-  { icon:'💬', title:'Live Chat',  desc:'Phản hồi trong vòng 2 phút', avail:'24/7',                 action:'Bắt đầu chat',  color:'#EEF3FF', accent:'var(--blue)',  badge:'Online' },
-  { icon:'📧', title:'Email',      desc:'support@evisa.vn',           avail:'Phản hồi trong 4 giờ', action:'Gửi email',     color:'#F0FDF4', accent:'var(--green)', badge:null },
-  { icon:'📞', title:'Hotline',    desc:'1900 1234',                  avail:'8:00 – 22:00 mỗi ngày',action:'Gọi ngay',      color:'#FFF7ED', accent:'#F5A623',      badge:null },
+  { icon:'💬', title:'Live Chat', desc:'Reply within 2 minutes',  avail:'24/7',                action:'Start chat',  color:'#EEF3FF', accent:'var(--blue)',  badge:'Online' },
+  { icon:'📧', title:'Email',     desc:'support@evisa.com',       avail:'Reply within 4 hours',action:'Send email',  color:'#F0FDF4', accent:'var(--green)', badge:null },
+  { icon:'📞', title:'Hotline',   desc:'+1 (415) 555-0123',       avail:'8:00 AM – 10:00 PM daily',action:'Call now',color:'#FFF7ED', accent:'#F5A623',     badge:null },
 ]
 
 const TOPICS = [
-  { icon:'📝', title:'Đăng ký visa',         desc:'Hướng dẫn nộp đơn, điền form',       count:8 },
-  { icon:'📋', title:'Hồ sơ giấy tờ',        desc:'Yêu cầu, mẫu ảnh, văn bản',          count:12 },
-  { icon:'💳', title:'Thanh toán',           desc:'Phương thức, hóa đơn, hoàn tiền',    count:6 },
-  { icon:'📊', title:'Trạng thái đơn',       desc:'Tra cứu, theo dõi, cập nhật',        count:5 },
-  { icon:'👤', title:'Tài khoản',            desc:'Đăng nhập, mật khẩu, bảo mật',       count:7 },
-  { icon:'❌', title:'Visa bị từ chối',      desc:'Nguyên nhân, kháng nghị, hoàn phí',  count:4 },
-  { icon:'🔄', title:'Hoàn tiền & hủy đơn',  desc:'Chính sách, quy trình, thời gian',   count:5 },
-  { icon:'🆘', title:'Khẩn cấp',             desc:'Đơn gấp, lỗi nhập cảnh, mất visa',   count:3 },
+  { icon:'📝', title:'Apply for visa',     desc:'Submission and form guides',           count:8 },
+  { icon:'📋', title:'Documents',          desc:'Requirements, photo specs, files',     count:12 },
+  { icon:'💳', title:'Payment',            desc:'Methods, invoices, refunds',           count:6 },
+  { icon:'📊', title:'Order status',       desc:'Track, monitor, updates',              count:5 },
+  { icon:'👤', title:'Account',            desc:'Sign-in, password, security',          count:7 },
+  { icon:'❌', title:'Visa rejection',     desc:'Reasons, appeals, refunds',            count:4 },
+  { icon:'🔄', title:'Refund & cancel',    desc:'Policies, process, timing',            count:5 },
+  { icon:'🆘', title:'Emergency',          desc:'Urgent visas, entry issues, lost visa',count:3 },
 ]
 
 const TIMELINE_STAGES = [
-  { id:'submitted', icon:'📝', label:'Đã nộp đơn',           desc:'Hệ thống đã nhận hồ sơ' },
-  { id:'review',    icon:'🔍', label:'Đang kiểm tra',        desc:'Chuyên gia đang review hồ sơ' },
-  { id:'sent',      icon:'📤', label:'Đã gửi cơ quan cấp',   desc:'Hồ sơ chuyển đến cơ quan visa' },
-  { id:'approved',  icon:'✅', label:'Đã được duyệt',         desc:'Visa đang được tạo' },
-  { id:'delivered', icon:'📧', label:'Đã gửi email',          desc:'Visa điện tử đã đến hộp thư' },
+  { id:'submitted', icon:'📝', label:'Submitted',         desc:'We received your application' },
+  { id:'review',    icon:'🔍', label:'Under review',      desc:'Our experts are reviewing your file' },
+  { id:'sent',      icon:'📤', label:'Sent to authority', desc:'Forwarded to the visa-issuing authority' },
+  { id:'approved',  icon:'✅', label:'Approved',           desc:'Your visa is being issued' },
+  { id:'delivered', icon:'📧', label:'Delivered',          desc:'Your e-visa is in your inbox' },
 ]
 
 const STATS = [
-  { num:'< 2 phút', label:'Phản hồi' },
-  { num:'24/7',     label:'Hỗ trợ' },
-  { num:'4 giờ',    label:'Email' },
-  { num:'VN',       label:'Tiếng Việt' },
+  { num:'< 2 min', label:'Response time' },
+  { num:'24/7',    label:'Support' },
+  { num:'4 hours', label:'Email reply' },
+  { num:'EN',      label:'Language' },
 ]
 
 export default function Support() {
@@ -63,7 +63,7 @@ export default function Support() {
         setTrackResult({
           found:true,
           code,
-          country: ['Thái Lan','Nhật Bản','Hàn Quốc','Dubai','Singapore'][hash % 5],
+          country: ['Thailand','Japan','South Korea','Dubai','Singapore'][hash % 5],
           submittedAt: '2026-04-28',
           currentStage,
         })
@@ -84,13 +84,13 @@ export default function Support() {
         <div style={{ maxWidth:1024, margin:'0 auto', position:'relative', textAlign:'center' }}>
           <div style={{ display:'inline-flex', alignItems:'center', gap:7, background:'rgba(245,166,35,0.15)', border:'1px solid rgba(245,166,35,0.3)', color:'var(--gold)', padding:'6px 14px', borderRadius:50, fontSize:13, fontWeight:600, marginBottom:20 }}>
             <span className="pulse" style={{ width:8, height:8, background:'var(--gold)', borderRadius:'50%', display:'inline-block' }} />
-            Hỗ trợ 24/7 bằng tiếng Việt
+            24/7 English support
           </div>
           <h1 style={{ fontFamily:'Fraunces,serif', fontSize:'clamp(36px,6vw,56px)', fontWeight:900, color:'white', lineHeight:1.1, marginBottom:16 }}>
-            Trung tâm <span style={{ color:'var(--gold)' }}>hỗ trợ</span>
+            <span style={{ color:'var(--gold)' }}>Help</span> center
           </h1>
           <p style={{ color:'rgba(255,255,255,0.68)', fontSize:17, lineHeight:1.7, maxWidth:560, margin:'0 auto' }}>
-            Tra cứu đơn, tìm câu trả lời nhanh, hoặc liên hệ trực tiếp với chuyên gia eVisa
+            Track your order, find quick answers, or talk directly to one of our visa experts
           </p>
         </div>
       </section>
@@ -114,8 +114,8 @@ export default function Support() {
             <div style={{ padding:'18px 24px', display:'flex', alignItems:'center', gap:14, background:'var(--blue-light)', borderBottom:'1px solid #F3F4F6' }}>
               <div style={{ width:44, height:44, borderRadius:12, background:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22 }}>🔎</div>
               <div style={{ flex:1 }}>
-                <h2 style={{ fontFamily:'Fraunces,serif', fontSize:20, fontWeight:900, color:'var(--navy)' }}>Tra cứu đơn của bạn</h2>
-                <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Nhập mã đơn EV-XXXXXX để xem trạng thái realtime</p>
+                <h2 style={{ fontFamily:'Fraunces,serif', fontSize:20, fontWeight:900, color:'var(--navy)' }}>Track your order</h2>
+                <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Enter your order code EV-XXXXXX to see real-time status</p>
               </div>
             </div>
             <form onSubmit={handleTrack} style={{ padding:24 }}>
@@ -133,9 +133,9 @@ export default function Support() {
                       <svg className="spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="3" strokeDasharray="31" strokeDashoffset="10"/>
                       </svg>
-                      Đang tra cứu
+                      Searching
                     </>
-                  ) : 'Tra cứu →'}
+                  ) : 'Track →'}
                 </button>
               </div>
 
@@ -143,12 +143,12 @@ export default function Support() {
                 <div className="fade-up" style={{ marginTop:24 }}>
                   <div style={{ borderRadius:12, padding:16, marginBottom:20, display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, flexWrap:'wrap', background:'var(--green-light)', border:'1px solid #BBF7D0' }}>
                     <div>
-                      <div style={{ fontSize:11, fontWeight:700, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.06em' }}>Tìm thấy đơn</div>
+                      <div style={{ fontSize:11, fontWeight:700, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.06em' }}>Order found</div>
                       <div style={{ fontFamily:'monospace', fontWeight:900, fontSize:18, color:'var(--navy)', marginTop:2 }}>{trackResult.code}</div>
-                      <div style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Điểm đến: <span style={{ fontWeight:600 }}>{trackResult.country}</span> · Nộp ngày: {trackResult.submittedAt}</div>
+                      <div style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Destination: <span style={{ fontWeight:600 }}>{trackResult.country}</span> · Submitted: {trackResult.submittedAt}</div>
                     </div>
                     <div style={{ textAlign:'right' }}>
-                      <div style={{ fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em' }}>Trạng thái</div>
+                      <div style={{ fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em' }}>Status</div>
                       <div style={{ fontWeight:700, fontSize:14, color:'var(--blue)' }}>{TIMELINE_STAGES[trackResult.currentStage].label}</div>
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export default function Support() {
                             <div style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>{stage.desc}</div>
                             {current && (
                               <span style={{ display:'inline-block', marginTop:6, fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:50, background:'var(--blue-light)', color:'var(--blue)' }}>
-                                Đang diễn ra
+                                In progress
                               </span>
                             )}
                           </div>
@@ -187,8 +187,8 @@ export default function Support() {
                 <div className="fade-up" style={{ marginTop:18, borderRadius:12, padding:14, display:'flex', gap:12, alignItems:'flex-start', background:'#FEF2F2', border:'1px solid #FECACA' }}>
                   <span style={{ fontSize:22 }}>⚠️</span>
                   <div>
-                    <div style={{ fontWeight:700, fontSize:14, color:'#991B1B' }}>Không tìm thấy đơn với mã này</div>
-                    <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Mã đơn có dạng <span style={{ fontFamily:'monospace', fontWeight:700 }}>EV-XXXXXX</span>. Kiểm tra lại trong email xác nhận.</p>
+                    <div style={{ fontWeight:700, fontSize:14, color:'#991B1B' }}>No order found with that code</div>
+                    <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Order codes follow the format <span style={{ fontFamily:'monospace', fontWeight:700 }}>EV-XXXXXX</span>. Check your confirmation email.</p>
                   </div>
                 </div>
               )}
@@ -201,8 +201,8 @@ export default function Support() {
       <section style={{ background:'white', padding:'64px 20px', borderTop:'1px solid #F3F4F6', borderBottom:'1px solid #F3F4F6' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ textAlign:'center', marginBottom:36 }}>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Liên hệ chuyên gia</h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>Chọn kênh phù hợp — chúng tôi luôn sẵn sàng</p>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Contact our experts</h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>Pick the channel that works for you — we’re always here</p>
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:18 }}>
@@ -240,10 +240,10 @@ export default function Support() {
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
           <div style={{ display:'flex', alignItems:'flex-end', justifyContent:'space-between', marginBottom:24, gap:12, flexWrap:'wrap' }}>
             <div>
-              <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:4 }}>Trung tâm trợ giúp</h2>
-              <p style={{ fontSize:14, color:'#6B7280' }}>{TOPICS.reduce((s,t) => s+t.count, 0)} bài viết theo {TOPICS.length} chủ đề</p>
+              <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:4 }}>Help center</h2>
+              <p style={{ fontSize:14, color:'#6B7280' }}>{TOPICS.reduce((s,t) => s+t.count, 0)} articles across {TOPICS.length} topics</p>
             </div>
-            <Link to="/guide" style={{ fontSize:13, fontWeight:700, color:'var(--blue)', textDecoration:'none' }}>Xem tất cả →</Link>
+            <Link to="/guide" style={{ fontSize:13, fontWeight:700, color:'var(--blue)', textDecoration:'none' }}>View all →</Link>
           </div>
 
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:14 }}>
@@ -256,7 +256,7 @@ export default function Support() {
                 <div style={{ fontSize:30, marginBottom:12 }}>{t.icon}</div>
                 <h3 style={{ fontWeight:700, fontSize:14, color:'var(--navy)', marginBottom:4, lineHeight:1.3 }}>{t.title}</h3>
                 <p style={{ fontSize:12, color:'#6B7280', lineHeight:1.6, marginBottom:8 }}>{t.desc}</p>
-                <span style={{ fontSize:11, fontWeight:600, color:'var(--blue)' }}>{t.count} bài viết →</span>
+                <span style={{ fontSize:11, fontWeight:600, color:'var(--blue)' }}>{t.count} articles →</span>
               </Link>
             ))}
           </div>
@@ -270,8 +270,8 @@ export default function Support() {
             <div style={{ padding:'18px 24px', display:'flex', alignItems:'center', gap:14, background:'var(--blue-light)', borderBottom:'1px solid #F3F4F6' }}>
               <div style={{ width:44, height:44, borderRadius:12, background:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22 }}>📝</div>
               <div>
-                <h2 style={{ fontFamily:'Fraunces,serif', fontSize:20, fontWeight:900, color:'var(--navy)' }}>Gửi yêu cầu hỗ trợ</h2>
-                <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Chúng tôi sẽ phản hồi qua email trong vòng 4 giờ làm việc</p>
+                <h2 style={{ fontFamily:'Fraunces,serif', fontSize:20, fontWeight:900, color:'var(--navy)' }}>Send a support request</h2>
+                <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>We’ll reply by email within 4 business hours</p>
               </div>
             </div>
             <div style={{ padding:'28px' }}>
@@ -282,44 +282,44 @@ export default function Support() {
                       <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                     </svg>
                   </div>
-                  <h3 style={{ fontFamily:'Fraunces,serif', fontSize:22, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Yêu cầu đã được gửi!</h3>
-                  <p style={{ fontSize:14, color:'#6B7280', marginBottom:22 }}>Chúng tôi sẽ liên hệ với bạn qua email <span style={{ fontWeight:600, color:'var(--navy)' }}>{form.email || 'của bạn'}</span> trong 4 giờ.</p>
+                  <h3 style={{ fontFamily:'Fraunces,serif', fontSize:22, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Request sent!</h3>
+                  <p style={{ fontSize:14, color:'#6B7280', marginBottom:22 }}>We’ll reach out to <span style={{ fontWeight:600, color:'var(--navy)' }}>{form.email || 'your email'}</span> within 4 hours.</p>
                   <button onClick={() => { setSent(false); setForm({ name:'', email:'', subject:'', message:'' }) }} className="btn-secondary">
-                    Gửi yêu cầu khác
+                    Send another request
                   </button>
                 </div>
               ) : (
                 <form onSubmit={handleSend} style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(240px,1fr))', gap:16 }}>
                   <div>
-                    <label className="field-label">Họ tên <span className="req">*</span></label>
-                    <input className="field-input" placeholder="Nguyễn Văn An" value={form.name} onChange={e => setForm({...form, name:e.target.value})} required />
+                    <label className="field-label">Full name <span className="req">*</span></label>
+                    <input className="field-input" placeholder="John Smith" value={form.name} onChange={e => setForm({...form, name:e.target.value})} required />
                   </div>
                   <div>
                     <label className="field-label">Email <span className="req">*</span></label>
                     <input className="field-input" type="email" placeholder="email@example.com" value={form.email} onChange={e => setForm({...form, email:e.target.value})} required />
                   </div>
                   <div style={{ gridColumn:'1 / -1' }}>
-                    <label className="field-label">Chủ đề</label>
+                    <label className="field-label">Topic</label>
                     <select className="field-input" value={form.subject} onChange={e => setForm({...form, subject:e.target.value})}>
-                      <option value="">Chọn chủ đề...</option>
+                      <option value="">Choose a topic...</option>
                       {TOPICS.map(t => <option key={t.title}>{t.title}</option>)}
-                      <option>Khác</option>
+                      <option>Other</option>
                     </select>
                   </div>
                   <div style={{ gridColumn:'1 / -1' }}>
-                    <label className="field-label">Nội dung <span className="req">*</span></label>
-                    <textarea className="field-input" rows={5} placeholder="Mô tả chi tiết vấn đề của bạn..." value={form.message} onChange={e => setForm({...form, message:e.target.value})} required />
-                    <p className="field-hint">Nếu liên quan đến đơn cụ thể, vui lòng đính kèm mã đơn EV-XXXXXX</p>
+                    <label className="field-label">Message <span className="req">*</span></label>
+                    <textarea className="field-input" rows={5} placeholder="Describe your issue in detail..." value={form.message} onChange={e => setForm({...form, message:e.target.value})} required />
+                    <p className="field-hint">If this is about a specific order, please include the order code EV-XXXXXX</p>
                   </div>
                   <div style={{ gridColumn:'1 / -1', display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10, paddingTop:6 }}>
                     <div style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'#9CA3AF' }}>
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2">
                         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
                       </svg>
-                      Thông tin được mã hóa SSL 256-bit
+                      Encrypted with SSL 256-bit
                     </div>
                     <button type="submit" className="btn-primary">
-                      Gửi yêu cầu
+                      Send request
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"/>
                       </svg>
@@ -350,10 +350,10 @@ function ChatWidget({ open, onToggle }) {
               <span style={{ position:'absolute', bottom:0, right:0, width:11, height:11, borderRadius:'50%', border:'2px solid white', background:'#10B981' }} />
             </div>
             <div style={{ flex:1, minWidth:0 }}>
-              <div style={{ fontWeight:700, color:'white', fontSize:14 }}>Chuyên gia eVisa</div>
+              <div style={{ fontWeight:700, color:'white', fontSize:14 }}>eVisa Expert</div>
               <div style={{ fontSize:11, color:'rgba(255,255,255,0.7)', display:'flex', alignItems:'center', gap:4 }}>
                 <span className="pulse" style={{ width:6, height:6, borderRadius:'50%', background:'#10B981' }} />
-                Đang online · Phản hồi trong 2 phút
+                Online · Reply in 2 minutes
               </div>
             </div>
             <button onClick={onToggle} style={{ width:30, height:30, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', color:'rgba(255,255,255,0.8)', background:'transparent', border:'none', cursor:'pointer', transition:'background .15s' }}
@@ -366,15 +366,15 @@ function ChatWidget({ open, onToggle }) {
             <div style={{ display:'flex', gap:8 }}>
               <div style={{ width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, background:'var(--blue-light)', flexShrink:0 }}>👋</div>
               <div style={{ background:'white', borderRadius:16, borderTopLeftRadius:4, padding:'10px 14px', maxWidth:'80%', boxShadow:'0 1px 3px rgba(0,0,0,0.05)' }}>
-                <p style={{ fontSize:13, color:'var(--navy)' }}>Chào bạn! Tôi có thể giúp gì cho bạn hôm nay?</p>
+                <p style={{ fontSize:13, color:'var(--navy)' }}>Hi there! How can I help you today?</p>
               </div>
             </div>
             <div style={{ display:'flex', gap:8 }}>
               <div style={{ width:28, height:28, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, background:'var(--blue-light)', flexShrink:0 }}>💡</div>
               <div style={{ background:'white', borderRadius:16, borderTopLeftRadius:4, padding:'10px 14px', maxWidth:'85%', boxShadow:'0 1px 3px rgba(0,0,0,0.05)' }}>
-                <p style={{ fontSize:11, color:'#6B7280', marginBottom:8 }}>Câu hỏi phổ biến:</p>
+                <p style={{ fontSize:11, color:'#6B7280', marginBottom:8 }}>Popular questions:</p>
                 <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-                  {['📍 Tra cứu đơn của tôi','💳 Vấn đề thanh toán','📋 Yêu cầu hồ sơ','⏰ Thời gian xử lý'].map(q => (
+                  {['📍 Track my order','💳 Payment issue','📋 Document requirements','⏰ Processing time'].map(q => (
                     <button key={q} style={{ textAlign:'left', fontSize:12, fontWeight:600, padding:'7px 12px', borderRadius:8, border:'1px solid #E5E7EB', background:'white', color:'var(--navy)', cursor:'pointer', fontFamily:'inherit', transition:'all .15s' }}
                       onMouseEnter={e => { e.currentTarget.style.borderColor='var(--blue)'; e.currentTarget.style.background='var(--blue-light)' }}
                       onMouseLeave={e => { e.currentTarget.style.borderColor='#E5E7EB'; e.currentTarget.style.background='white' }}
@@ -386,7 +386,7 @@ function ChatWidget({ open, onToggle }) {
           </div>
 
           <div style={{ borderTop:'1px solid #F3F4F6', padding:10, display:'flex', gap:8, alignItems:'center', background:'white' }}>
-            <input type="text" placeholder="Nhập tin nhắn..."
+            <input type="text" placeholder="Type a message..."
               style={{ flex:1, padding:'8px 12px', borderRadius:8, fontSize:13, background:'#F9FAFB', border:'1px solid transparent', outline:'none', fontFamily:'inherit' }}
             />
             <button style={{ width:36, height:36, borderRadius:8, display:'flex', alignItems:'center', justifyContent:'center', color:'white', background:'var(--blue)', border:'none', cursor:'pointer', flexShrink:0 }}>
@@ -400,7 +400,7 @@ function ChatWidget({ open, onToggle }) {
 
       <button
         onClick={onToggle}
-        aria-label="Mở chat"
+        aria-label="Open chat"
         style={{ position:'fixed', bottom:20, right:20, zIndex:91, width:56, height:56, borderRadius:'50%', boxShadow:'0 12px 32px rgba(27,79,216,0.4)', display:'flex', alignItems:'center', justifyContent:'center', color:'white', background:'linear-gradient(135deg,var(--blue) 0%,var(--blue-mid) 100%)', border:'none', cursor:'pointer', transition:'transform .15s' }}
         onMouseEnter={e => e.currentTarget.style.transform='scale(1.06)'}
         onMouseLeave={e => e.currentTarget.style.transform='scale(1)'}

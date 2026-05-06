@@ -13,14 +13,14 @@ export default function Footer() {
           <span style={{ fontFamily:'Fraunces,serif', fontWeight:900, fontSize:20, color:'white' }}>eVisa</span>
         </div>
         <div style={{ display:'flex', gap:20, flexWrap:'wrap' }}>
-          {[['/','Trang chủ'],['/destinations','Điểm đến'],['/visa-types','Loại visa'],['/pricing','Bảng giá'],['/guide','Hướng dẫn'],['/support','Hỗ trợ']].map(([to,l]) => (
+          {[['/','Home'],['/destinations','Destinations'],['/visa-types','Visa Types'],['/pricing','Pricing'],['/guide','Guide'],['/support','Support']].map(([to,l]) => (
             <Link key={to} to={to} style={{ color:'rgba(255,255,255,0.5)', textDecoration:'none', fontSize:13, transition:'color .15s' }}
               onMouseEnter={e => e.target.style.color='white'}
               onMouseLeave={e => e.target.style.color='rgba(255,255,255,0.5)'}
             >{l}</Link>
           ))}
         </div>
-        <p style={{ fontSize:12 }}>© 2025 eVisa Vietnam · support@evisa.vn</p>
+        <p style={{ fontSize:12 }}>© 2026 eVisa · support@evisa.com</p>
       </div>
     </footer>
   )

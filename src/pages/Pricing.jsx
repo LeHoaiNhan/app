@@ -67,7 +67,7 @@ const TAG_COLORS = {
   'E-Visa':          { bg:'#EEF3FF', text:'#1B4FD8' },
   'Visa on Arrival': { bg:'#FFF7ED', text:'#D97706' },
   'eTA':             { bg:'#FDF4FF', text:'#9333EA' },
-  'Miễn visa':       { bg:'#ECFDF5', text:'#059669' },
+  'Visa-free':       { bg:'#ECFDF5', text:'#059669' },
 }
 
 const FAQS = [

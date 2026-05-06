@@ -9,22 +9,22 @@ const TIER_LABEL = { normal:'Standard', fast:'Fast', express:'Express' }
 
 const fmtDate = (iso) => {
   if (!iso) return '—'
-  return new Date(iso).toLocaleDateString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric' })
+  return new Date(iso).toLocaleDateString('en-US', { day:'2-digit', month:'2-digit', year:'numeric' })
 }
 const fmtDateTime = (iso) => {
   if (!iso) return '—'
-  return new Date(iso).toLocaleString('vi-VN', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
+  return new Date(iso).toLocaleString('en-US', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' })
 }
 const fmtRelative = (iso) => {
   if (!iso) return '—'
   const diff = Date.now() - new Date(iso).getTime()
   const mins = Math.floor(diff / 60000)
-  if (mins < 1) return 'vừa xong'
-  if (mins < 60) return `${mins} phút trước`
+  if (mins < 1) return 'just now'
+  if (mins < 60) return `${mins} min ago`
   const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs} giờ trước`
+  if (hrs < 24) return `${hrs} hr ago`
   const days = Math.floor(hrs / 24)
-  if (days < 7) return `${days} ngày trước`
+  if (days < 7) return `${days} days ago`
   return fmtDate(iso)
 }
 
@@ -87,11 +87,11 @@ export default function Admin() {
                 <h1 style={{ fontFamily:'Fraunces,serif', fontSize:24, fontWeight:900, color:'white' }}>Admin Dashboard</h1>
                 <span style={{ fontSize:10, fontWeight:700, padding:'2px 8px', borderRadius:50, background:'var(--gold)', color:'var(--navy)' }}>ADMIN</span>
               </div>
-              <p style={{ color:'rgba(255,255,255,0.6)', fontSize:12, marginTop:2 }}>Quản lý đơn visa và xử lý hồ sơ khách hàng</p>
+              <p style={{ color:'rgba(255,255,255,0.6)', fontSize:12, marginTop:2 }}>Manage visa orders and process customer applications</p>
             </div>
           </div>
           <div style={{ display:'flex', gap:8 }}>
-            <button onClick={resetOrders} title="Reset về dữ liệu mẫu (dev)"
+            <button onClick={resetOrders} title="Reset to sample data (dev only)"
               style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.8)', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
               onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
               onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
@@ -100,7 +100,7 @@ export default function Admin() {
               style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
               onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
               onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
-            >Đăng xuất</button>
+            >Sign out</button>
           </div>
         </div>
       </section>
@@ -109,12 +109,12 @@ export default function Admin() {
       <section style={{ background:'white', padding:'32px 20px', borderBottom:'1px solid #F3F4F6' }}>
         <div style={{ maxWidth:1200, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:14 }}>
           {[
-            ['Tổng đơn',          stats.total,      '📋', '#1B4FD8'],
-            ['Mới',               stats.submitted,  '📝', '#6B7280'],
-            ['Đang xử lý',        stats.inProgress, '⚙️', '#F59E0B'],
-            ['Đã duyệt',          stats.approved,   '✅', '#16A34A'],
-            ['Từ chối',           stats.rejected,   '❌', '#DC2626'],
-            ['Doanh thu hôm nay', `$${todayRevenue}`,'💰','#9333EA'],
+            ['Total orders',     stats.total,      '📋', '#1B4FD8'],
+            ['New',              stats.submitted,  '📝', '#6B7280'],
+            ['In progress',      stats.inProgress, '⚙️', '#F59E0B'],
+            ['Approved',         stats.approved,   '✅', '#16A34A'],
+            ['Rejected',         stats.rejected,   '❌', '#DC2626'],
+            ['Revenue today',    `$${todayRevenue}`,'💰','#9333EA'],
           ].map(([label, val, icon, color]) => (
             <div key={label} style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:12, padding:14 }}>
               <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:6 }}>
@@ -138,7 +138,7 @@ export default function Admin() {
                 </svg>
                 <input
                   style={{ width:'100%', padding:'10px 12px 10px 36px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, outline:'none', fontFamily:'inherit' }}
-                  placeholder="Tìm theo mã đơn, tên khách, email, điểm đến..."
+                  placeholder="Search by order code, name, email, destination..."
                   value={search}
                   onChange={e => setSearch(e.target.value)}
                 />
@@ -148,7 +148,7 @@ export default function Admin() {
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
               >
-                <option value="all">Tất cả trạng thái</option>
+                <option value="all">All statuses</option>
                 {Object.entries(ORDER_STATUSES).map(([key, s]) => (
                   <option key={key} value={key}>{s.icon} {s.label}</option>
                 ))}
@@ -159,7 +159,7 @@ export default function Admin() {
               <table style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
                 <thead>
                   <tr style={{ background:'#F9FAFB', borderBottom:'1px solid #E5E7EB' }}>
-                    {['Đơn','Khách hàng','Điểm đến','Trạng thái','Tổng','Cập nhật',''].map((h, i) => (
+                    {['Order','Customer','Destination','Status','Total','Updated',''].map((h, i) => (
                       <th key={i} style={{ padding:'12px 16px', fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em', textAlign: i === 4 ? 'right' : 'left', whiteSpace:'nowrap' }}>{h}</th>
                     ))}
                   </tr>
@@ -209,13 +209,13 @@ export default function Admin() {
             {filtered.length === 0 && (
               <div style={{ textAlign:'center', padding:'48px 20px' }}>
                 <div style={{ fontSize:38, opacity:0.5, marginBottom:8 }}>🔍</div>
-                <p style={{ fontSize:14, color:'#6B7280' }}>Không có đơn phù hợp với bộ lọc</p>
+                <p style={{ fontSize:14, color:'#6B7280' }}>No orders match your filter</p>
               </div>
             )}
           </div>
 
           <div style={{ fontSize:12, color:'#9CA3AF', textAlign:'center' }}>
-            Hiển thị {filtered.length} / {orders.length} đơn — dữ liệu lưu local trong trình duyệt
+            Showing {filtered.length} of {orders.length} orders — data stored locally in your browser
           </div>
         </div>
       </section>
@@ -232,17 +232,17 @@ function AdminAuthGate({ onLogin, userIsCustomer }) {
       <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'48px 16px' }}>
         <div style={{ background:'white', borderRadius:20, border:'1px solid #E5E7EB', padding:'36px 32px', maxWidth:440, width:'100%', textAlign:'center', boxShadow:'0 12px 32px rgba(11,29,58,0.06)' }}>
           <div style={{ width:68, height:68, borderRadius:18, margin:'0 auto 20px', display:'flex', alignItems:'center', justifyContent:'center', fontSize:30, background:'var(--gold)' }}>🔒</div>
-          <h2 style={{ fontFamily:'Fraunces,serif', fontSize:26, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Khu vực quản trị</h2>
+          <h2 style={{ fontFamily:'Fraunces,serif', fontSize:26, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Admin area</h2>
           <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.65, marginBottom:22 }}>
             {userIsCustomer
-              ? 'Tài khoản hiện tại không có quyền truy cập. Đăng xuất rồi đăng nhập với tài khoản admin.'
-              : 'Khu vực này chỉ dành cho quản trị viên eVisa. Đăng nhập bằng tài khoản admin để tiếp tục.'}
+              ? 'Your current account doesn’t have admin access. Sign out and sign in with an admin account.'
+              : 'This area is for eVisa administrators only. Sign in with an admin account to continue.'}
           </p>
           <button onClick={onLogin} className="btn-primary" style={{ width:'100%', justifyContent:'center', background:'var(--gold)', color:'var(--navy)', marginBottom:12 }}>
-            🔑 Đăng nhập như Admin (demo)
+            🔑 Sign in as Admin (demo)
           </button>
-          <p style={{ fontSize:11, color:'#9CA3AF', marginBottom:12 }}>Phase 1: auth giả lập — Phase 2 sẽ thay bằng auth thật</p>
-          <Link to="/" style={{ fontSize:13, fontWeight:600, color:'var(--blue)', textDecoration:'none' }}>← Về trang chủ</Link>
+          <p style={{ fontSize:11, color:'#9CA3AF', marginBottom:12 }}>Phase 1: mock auth — Phase 2 will use real auth</p>
+          <Link to="/" style={{ fontSize:13, fontWeight:600, color:'var(--blue)', textDecoration:'none' }}>← Back to home</Link>
         </div>
       </div>
       <Footer />
@@ -252,19 +252,19 @@ function AdminAuthGate({ onLogin, userIsCustomer }) {
 
 const NEXT_ACTIONS = {
   submitted: [
-    { to:'review',   label:'Bắt đầu kiểm tra',   icon:'🔍', accent:'#1B4FD8' },
-    { to:'rejected', label:'Từ chối đơn',         icon:'❌', accent:'#DC2626' },
+    { to:'review',   label:'Start review',          icon:'🔍', accent:'#1B4FD8' },
+    { to:'rejected', label:'Reject order',          icon:'❌', accent:'#DC2626' },
   ],
   review: [
-    { to:'sent',     label:'Đã gửi cơ quan cấp', icon:'📤', accent:'#9333EA' },
-    { to:'rejected', label:'Từ chối đơn',         icon:'❌', accent:'#DC2626' },
+    { to:'sent',     label:'Sent to authority',     icon:'📤', accent:'#9333EA' },
+    { to:'rejected', label:'Reject order',          icon:'❌', accent:'#DC2626' },
   ],
   sent: [
-    { to:'approved', label:'Đánh dấu chấp thuận', icon:'✅', accent:'#16A34A' },
-    { to:'rejected', label:'Từ chối đơn',         icon:'❌', accent:'#DC2626' },
+    { to:'approved', label:'Mark as approved',      icon:'✅', accent:'#16A34A' },
+    { to:'rejected', label:'Reject order',          icon:'❌', accent:'#DC2626' },
   ],
   approved: [
-    { to:'delivered',label:'Gửi email visa cho khách', icon:'📧', accent:'#059669' },
+    { to:'delivered',label:'Email visa to customer', icon:'📧', accent:'#059669' },
   ],
   delivered: [],
   rejected: [],
@@ -296,7 +296,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M15 19l-7-7 7-7"/>
           </svg>
-          Quay lại danh sách
+          Back to list
         </button>
 
         <div style={{ background:'white', borderRadius:16, border:'1px solid #E5E7EB', overflow:'hidden', marginBottom:18 }}>
@@ -316,7 +316,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                 </div>
               </div>
               <div style={{ textAlign:'right', flexShrink:0 }}>
-                <div style={{ color:'rgba(255,255,255,0.6)', fontSize:11, textTransform:'uppercase', letterSpacing:'.06em' }}>Tổng thu</div>
+                <div style={{ color:'rgba(255,255,255,0.6)', fontSize:11, textTransform:'uppercase', letterSpacing:'.06em' }}>Total revenue</div>
                 <div style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'white' }}>${order.fee.total}</div>
               </div>
             </div>
@@ -325,7 +325,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
 
         <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr', gap:18 }}>
           <div style={{ display:'flex', flexDirection:'column', gap:18, minWidth:0 }}>
-            <Section title="👤 Thông tin người nộp đơn">
+            <Section title="👤 Applicant information">
               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14, paddingBottom:14, borderBottom:'1px solid #F3F4F6' }}>
                 {order.applicant.photoURL && (
                   <img src={order.applicant.photoURL} alt="" style={{ width:54, height:54, borderRadius:12, objectFit:'cover' }} />
@@ -336,52 +336,52 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                 </div>
               </div>
               <InfoGrid items={[
-                ['Ngày sinh',  fmtDate(order.applicant.dob)],
-                ['Giới tính',  order.applicant.gender],
-                ['Quốc tịch',  order.applicant.nationality],
-                ['Nơi sinh',   order.applicant.birthPlace],
+                ['Date of birth', fmtDate(order.applicant.dob)],
+                ['Gender',        order.applicant.gender],
+                ['Nationality',   order.applicant.nationality],
+                ['Place of birth',order.applicant.birthPlace],
               ]} />
             </Section>
 
-            <Section title="📘 Hộ chiếu">
+            <Section title="📘 Passport">
               <InfoGrid items={[
-                ['Số hộ chiếu',   order.passport.no],
-                ['Loại',          order.passport.type],
-                ['Ngày cấp',      fmtDate(order.passport.issueDate)],
-                ['Ngày hết hạn',  fmtDate(order.passport.expiryDate)],
-                ['Nơi cấp',       order.passport.issuePlace],
-                ['Quốc gia cấp',  order.passport.issueCountry],
+                ['Passport number',  order.passport.no],
+                ['Type',             order.passport.type],
+                ['Issue date',       fmtDate(order.passport.issueDate)],
+                ['Expiry date',      fmtDate(order.passport.expiryDate)],
+                ['Place of issue',   order.passport.issuePlace],
+                ['Issuing country',  order.passport.issueCountry],
               ]} />
             </Section>
 
-            <Section title="✈️ Chuyến đi">
+            <Section title="✈️ Trip">
               <InfoGrid items={[
-                ['Mục đích',         order.trip.purpose],
-                ['Ngày nhập cảnh',   fmtDate(order.trip.entryDate)],
-                ['Ngày xuất cảnh',   fmtDate(order.trip.exitDate)],
-                ['Nơi lưu trú',      order.trip.accommodation || '—'],
+                ['Purpose',          order.trip.purpose],
+                ['Entry date',       fmtDate(order.trip.entryDate)],
+                ['Exit date',        fmtDate(order.trip.exitDate)],
+                ['Accommodation',    order.trip.accommodation || '—'],
               ]} />
               {order.trip.notes && (
                 <div style={{ marginTop:14, paddingTop:14, borderTop:'1px solid #F3F4F6' }}>
-                  <InfoRow label="Ghi chú khách" value={order.trip.notes} />
+                  <InfoRow label="Customer notes" value={order.trip.notes} />
                 </div>
               )}
             </Section>
 
-            <Section title="💳 Thanh toán">
+            <Section title="💳 Payment">
               <div style={{ display:'flex', flexDirection:'column', gap:8, fontSize:14 }}>
-                <Row label="Phí chính phủ" val={`$${order.fee.gov}.00`} />
-                <Row label={`Phí dịch vụ (${TIER_LABEL[order.processing]})`} val={`$${order.fee.service}.00`} />
+                <Row label="Government fee" val={`$${order.fee.gov}.00`} />
+                <Row label={`Service fee (${TIER_LABEL[order.processing]})`} val={`$${order.fee.service}.00`} />
                 <div style={{ borderTop:'1px solid #F3F4F6', paddingTop:10, display:'flex', justifyContent:'space-between' }}>
-                  <span style={{ fontWeight:700, color:'var(--navy)' }}>Tổng đã thanh toán</span>
+                  <span style={{ fontWeight:700, color:'var(--navy)' }}>Total paid</span>
                   <span style={{ fontFamily:'Fraunces,serif', fontSize:18, fontWeight:900, color:'var(--blue)' }}>${order.fee.total}.00</span>
                 </div>
                 <div style={{ fontSize:12, color:'#6B7280', paddingTop:10, borderTop:'1px solid #F3F4F6', display:'flex', justifyContent:'space-between' }}>
-                  <span>{order.payment.method === 'card' ? '💳 Thẻ tín dụng' : '📱 Ví điện tử'}</span>
+                  <span>{order.payment.method === 'card' ? '💳 Credit card' : '📱 Digital wallet'}</span>
                   <span>{fmtDateTime(order.payment.paidAt)}</span>
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:8 }}>
-                  <span style={{ fontSize:12, color:'#6B7280' }}>Trạng thái:</span>
+                  <span style={{ fontSize:12, color:'#6B7280' }}>Status:</span>
                   <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:50, background: order.payment.status === 'paid' ? '#F0FDF4' : '#FEF2F2', color: order.payment.status === 'paid' ? '#16A34A' : '#DC2626' }}>
                     {order.payment.status === 'paid' ? '✓ Paid' : order.payment.status === 'refunded' ? '↩️ Refunded' : '⏳ Pending'}
                   </span>
@@ -392,7 +392,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
 
           <div style={{ display:'flex', flexDirection:'column', gap:18, minWidth:0 }}>
             <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18, position:'sticky', top:80 }}>
-              <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:14 }}>⚡ Cập nhật trạng thái</h3>
+              <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:14 }}>⚡ Update status</h3>
               {actions.length > 0 ? (
                 <>
                   {!confirmAction && (
@@ -420,24 +420,24 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                         <div style={{ fontWeight:700, fontSize:13, display:'flex', alignItems:'center', gap:6, color:confirmAction.accent }}>
                           <span>{confirmAction.icon}</span>{confirmAction.label}
                         </div>
-                        <p style={{ fontSize:11, color:'#6B7280', marginTop:4 }}>Khách sẽ được thông báo qua email và thấy update trên dashboard.</p>
+                        <p style={{ fontSize:11, color:'#6B7280', marginTop:4 }}>The customer will receive an email notification and see the update on their dashboard.</p>
                       </div>
-                      <label style={{ fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em', display:'block', marginBottom:6 }}>Ghi chú nội bộ (gửi cho khách)</label>
+                      <label style={{ fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em', display:'block', marginBottom:6 }}>Internal note (sent to customer)</label>
                       <textarea
                         rows={3}
                         className="field-input"
-                        placeholder={confirmAction.to === 'rejected' ? 'Lý do từ chối — sẽ gửi cho khách' : 'Tùy chọn — ghi chú thêm về update này'}
+                        placeholder={confirmAction.to === 'rejected' ? 'Rejection reason — sent to customer' : 'Optional — additional notes about this update'}
                         value={note}
                         onChange={e => setNote(e.target.value)}
                       />
                       <div style={{ display:'flex', gap:8, marginTop:12 }}>
-                        <button onClick={() => { setConfirmAction(null); setNote('') }} className="btn-secondary" style={{ flex:1, justifyContent:'center' }}>Hủy</button>
+                        <button onClick={() => { setConfirmAction(null); setNote('') }} className="btn-secondary" style={{ flex:1, justifyContent:'center' }}>Cancel</button>
                         <button onClick={handleConfirm}
                           style={{ flex:1, display:'inline-flex', alignItems:'center', justifyContent:'center', gap:6, padding:'10px 14px', borderRadius:8, fontSize:13, fontWeight:700, color:'white', background:confirmAction.accent, border:'none', cursor:'pointer', fontFamily:'inherit', transition:'opacity .15s' }}
                           onMouseEnter={e => e.currentTarget.style.opacity='.88'}
                           onMouseLeave={e => e.currentTarget.style.opacity='1'}
                         >
-                          Xác nhận
+                          Confirm
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                             <path d="M5 12l5 5L20 7"/>
                           </svg>
@@ -449,13 +449,13 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
               ) : (
                 <div style={{ borderRadius:8, padding:12, fontSize:12, background:status.bg, color:status.color }}>
                   <div style={{ fontWeight:700, marginBottom:2 }}>{status.icon} {status.label}</div>
-                  <div style={{ opacity:0.8 }}>Đơn ở trạng thái cuối — không còn hành động cần thực hiện.</div>
+                  <div style={{ opacity:0.8 }}>Order is in its final state — no further actions needed.</div>
                 </div>
               )}
             </div>
 
             <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18 }}>
-              <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:16 }}>📍 Lịch sử</h3>
+              <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:16 }}>📍 History</h3>
               <div>
                 {[...order.timeline].reverse().map((event, i) => {
                   const stage = ORDER_STATUSES[event.stage]
@@ -479,7 +479,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
             </div>
 
             <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18 }}>
-              <h3 style={{ fontWeight:700, fontSize:14, color:'var(--navy)', marginBottom:12 }}>📨 Liên hệ khách</h3>
+              <h3 style={{ fontWeight:700, fontSize:14, color:'var(--navy)', marginBottom:12 }}>📨 Contact customer</h3>
               <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
                 <a href={`mailto:${order.applicant.email}`} style={{ display:'flex', alignItems:'center', gap:6, fontSize:12, color:'var(--blue)', textDecoration:'none' }}>
                   📧 {order.applicant.email}

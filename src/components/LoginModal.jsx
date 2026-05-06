@@ -36,16 +36,16 @@ export default function LoginModal() {
             <span style={{ fontFamily:'Fraunces,serif', fontWeight:900, fontSize:22, color:'var(--navy)' }}>eVisa</span>
           </div>
           <h2 style={{ fontSize:20, fontWeight:800, color:'var(--navy)', marginBottom:4 }}>
-            {tab==='login' ? 'Chào mừng trở lại!' : 'Tạo tài khoản mới'}
+            {tab==='login' ? 'Welcome back!' : 'Create your account'}
           </h2>
           <p style={{ fontSize:13, color:'#6B7280' }}>
-            {tab==='login' ? 'Đăng nhập để theo dõi đơn visa' : 'Miễn phí, chỉ mất 30 giây'}
+            {tab==='login' ? 'Sign in to track your visa orders' : 'Free, takes only 30 seconds'}
           </p>
         </div>
 
         {/* Tab switch */}
         <div style={{ display:'flex', background:'#F3F4F6', borderRadius:10, padding:4, marginBottom:20 }}>
-          {[['login','Đăng nhập'],['register','Đăng ký']].map(([t,l]) => (
+          {[['login','Sign in'],['register','Sign up']].map(([t,l]) => (
             <button key={t} onClick={() => setTab(t)}
               style={{ flex:1, padding:'8px 0', borderRadius:8, border:'none', cursor:'pointer', fontFamily:'inherit',
                 fontSize:14, fontWeight:600, transition:'all .15s',
@@ -77,13 +77,13 @@ export default function LoginModal() {
               <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             </svg>
           )}
-          {loading ? 'Đang đăng nhập...' : `${tab==='login'?'Đăng nhập':'Đăng ký'} với Google`}
+          {loading ? 'Signing in...' : `${tab==='login'?'Sign in':'Sign up'} with Google`}
         </button>
 
         {/* Divider */}
         <div style={{ display:'flex', alignItems:'center', gap:10, marginBottom:16 }}>
           <div style={{ flex:1, height:1, background:'#E5E7EB' }} />
-          <span style={{ fontSize:12, color:'#9CA3AF' }}>hoặc</span>
+          <span style={{ fontSize:12, color:'#9CA3AF' }}>or</span>
           <div style={{ flex:1, height:1, background:'#E5E7EB' }} />
         </div>
 
@@ -91,8 +91,8 @@ export default function LoginModal() {
         <div style={{ display:'flex', flexDirection:'column', gap:12 }}>
           {tab==='register' && (
             <div>
-              <label className="field-label">Họ và tên <span className="req">*</span></label>
-              <input className="field-input" type="text" placeholder="Nguyễn Văn An"
+              <label className="field-label">Full name <span className="req">*</span></label>
+              <input className="field-input" type="text" placeholder="John Smith"
                 value={form.name} onChange={e => setForm({...form, name:e.target.value})} />
             </div>
           )}
@@ -102,13 +102,13 @@ export default function LoginModal() {
               value={form.email} onChange={e => setForm({...form, email:e.target.value})} />
           </div>
           <div>
-            <label className="field-label">Mật khẩu <span className="req">*</span></label>
+            <label className="field-label">Password <span className="req">*</span></label>
             <input className="field-input" type="password" placeholder="••••••••"
               value={form.password} onChange={e => setForm({...form, password:e.target.value})} />
           </div>
           {tab==='login' && (
             <div style={{ textAlign:'right' }}>
-              <span style={{ fontSize:13, color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Quên mật khẩu?</span>
+              <span style={{ fontSize:13, color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Forgot password?</span>
             </div>
           )}
           <button onClick={handleGoogle}
@@ -116,13 +116,13 @@ export default function LoginModal() {
               borderRadius:10, fontSize:15, fontWeight:700, cursor:'pointer', fontFamily:'inherit', transition:'opacity .15s' }}
             onMouseEnter={e => e.target.style.opacity='.88'}
             onMouseLeave={e => e.target.style.opacity='1'}
-          >{tab==='login' ? 'Đăng nhập' : 'Tạo tài khoản'}</button>
+          >{tab==='login' ? 'Sign in' : 'Create account'}</button>
         </div>
 
         <p style={{ textAlign:'center', fontSize:12, color:'#9CA3AF', marginTop:20, lineHeight:1.6 }}>
-          Bằng cách tiếp tục, bạn đồng ý với{' '}
-          <span style={{ color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Điều khoản</span> và{' '}
-          <span style={{ color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Chính sách bảo mật</span>
+          By continuing, you agree to our{' '}
+          <span style={{ color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Terms</span> and{' '}
+          <span style={{ color:'var(--blue)', cursor:'pointer', fontWeight:600 }}>Privacy Policy</span>
         </p>
       </div>
     </div>

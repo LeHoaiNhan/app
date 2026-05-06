@@ -22,9 +22,9 @@ export function AuthProvider({ children }) {
     setTimeout(() => {
       setUser({
         id: 'demo-customer',
-        name: 'Nguyễn Văn An',
-        email: 'nguyenvanan@gmail.com',
-        avatar: 'https://ui-avatars.com/api/?name=Nguyen+Van+An&background=1B4FD8&color=fff&size=80',
+        name: 'John Smith',
+        email: 'john.smith@gmail.com',
+        avatar: 'https://ui-avatars.com/api/?name=John+Smith&background=1B4FD8&color=fff&size=80',
         role: 'customer',
       })
       setShowLoginModal(false)
@@ -34,8 +34,8 @@ export function AuthProvider({ children }) {
   const loginAsAdmin = () => {
     setUser({
       id: 'admin-demo',
-      name: 'Admin eVisa',
-      email: 'admin@evisa.vn',
+      name: 'eVisa Admin',
+      email: 'admin@evisa.com',
       avatar: 'https://ui-avatars.com/api/?name=Admin&background=F5A623&color=0B1D3A&size=80&bold=true',
       role: 'admin',
     })

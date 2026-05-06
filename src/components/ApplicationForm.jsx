@@ -5,17 +5,17 @@ import Step3Trip     from './steps/Step3Trip'
 import Step4Payment  from './steps/Step4Payment'
 
 const STEPS = [
-  { id:1, label:'Cá nhân',    emoji:'👤' },
-  { id:2, label:'Hộ chiếu',   emoji:'📘' },
-  { id:3, label:'Hành trình', emoji:'✈️' },
-  { id:4, label:'Thanh toán', emoji:'💳' },
+  { id:1, label:'Personal',  emoji:'👤' },
+  { id:2, label:'Passport',  emoji:'📘' },
+  { id:3, label:'Trip',      emoji:'✈️' },
+  { id:4, label:'Payment',   emoji:'💳' },
 ]
-const TITLES = ['Thông tin cá nhân','Thông tin hộ chiếu','Thông tin hành trình','Xác nhận & Thanh toán']
+const TITLES = ['Personal information','Passport information','Trip details','Confirm & Pay']
 
 const INIT = {
-  personal: { lastName:'',firstName:'',gender:'Nam',dob:'',email:'',phone:'',nationality:'Việt Nam',birthPlace:'',photo:null,photoURL:'' },
-  passport: { passportNo:'',passportType:'Hộ chiếu phổ thông',issueDate:'',expiryDate:'',issuePlace:'',issueCountry:'Việt Nam',passportImg:null,passportImgURL:'' },
-  trip:     { destination:'Thái Lan',purpose:'Du lịch',entryDate:'',exitDate:'',visaType:'E-Visa (điện tử)',processing:'normal',accommodation:'',notes:'' },
+  personal: { lastName:'',firstName:'',gender:'Male',dob:'',email:'',phone:'',nationality:'United States',birthPlace:'',photo:null,photoURL:'' },
+  passport: { passportNo:'',passportType:'Regular passport',issueDate:'',expiryDate:'',issuePlace:'',issueCountry:'United States',passportImg:null,passportImgURL:'' },
+  trip:     { destination:'Thailand',purpose:'Tourism',entryDate:'',exitDate:'',visaType:'E-Visa (electronic)',processing:'normal',accommodation:'',notes:'' },
 }
 
 export default function ApplicationForm() {
@@ -35,10 +35,10 @@ export default function ApplicationForm() {
         {/* Header */}
         <div style={{ textAlign:'center', marginBottom:32 }}>
           <h2 style={{ fontFamily:'Fraunces,serif', fontSize:34, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>
-            Đăng ký visa trực tuyến
+            Apply for your visa online
           </h2>
           <p style={{ color:'#6B7280', fontSize:15 }}>
-            Điền thông tin để bắt đầu quy trình xin visa nhanh chóng
+            Fill out your details to start the application process
           </p>
         </div>
 
@@ -68,7 +68,7 @@ export default function ApplicationForm() {
               {STEPS[step-1].emoji} {TITLES[step-1]}
             </h3>
             <span style={{ fontSize:12, fontWeight:600, color:'#6B7280', background:'white', padding:'4px 12px', borderRadius:20, border:'1px solid #E5E7EB' }}>
-              Bước {step} / 4
+              Step {step} of 4
             </span>
           </div>
 

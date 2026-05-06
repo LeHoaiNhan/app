@@ -6,8 +6,8 @@ export default function Step1Personal({ data, onChange, onNext }) {
 
   const handleFile = (file) => {
     if (!file) return
-    if (!file.type.startsWith('image/')) { alert('Vui lòng chọn file ảnh (JPG, PNG)'); return }
-    if (file.size > 5 * 1024 * 1024) { alert('Ảnh quá lớn! Tối đa 5MB'); return }
+    if (!file.type.startsWith('image/')) { alert('Please choose an image file (JPG, PNG)'); return }
+    if (file.size > 5 * 1024 * 1024) { alert('Image too large! Max 5MB'); return }
     onChange('photo', file)
     onChange('photoURL', URL.createObjectURL(file))
   }
@@ -16,23 +16,22 @@ export default function Step1Personal({ data, onChange, onNext }) {
 
   return (
     <div style={s}>
-      {/* Họ tên */}
-      <div className="section-bar">Họ tên & Giới tính</div>
+      <div className="section-bar">Name & Gender</div>
       <div className="form-grid-2">
         <div>
-          <label className="field-label">Họ <span className="req">*</span></label>
-          <input className="field-input" type="text" placeholder="VD: NGUYEN"
+          <label className="field-label">Last name <span className="req">*</span></label>
+          <input className="field-input" type="text" placeholder="e.g. SMITH"
             value={data.lastName} onChange={e => onChange('lastName', e.target.value)} />
         </div>
         <div>
-          <label className="field-label">Tên đệm & Tên <span className="req">*</span></label>
-          <input className="field-input" type="text" placeholder="VD: VAN AN"
+          <label className="field-label">First & middle name <span className="req">*</span></label>
+          <input className="field-input" type="text" placeholder="e.g. JOHN"
             value={data.firstName} onChange={e => onChange('firstName', e.target.value)} />
         </div>
         <div>
-          <label className="field-label">Giới tính <span className="req">*</span></label>
+          <label className="field-label">Gender <span className="req">*</span></label>
           <div className="gender-group">
-            {['Nam','Nữ','Khác'].map(g => (
+            {['Male','Female','Other'].map(g => (
               <label key={g} className={`gender-opt ${data.gender===g?'active':''}`}>
                 <input type="radio" name="gender" checked={data.gender===g} onChange={() => onChange('gender', g)} />
                 {g}
@@ -41,7 +40,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
           </div>
         </div>
         <div>
-          <label className="field-label">Ngày sinh <span className="req">*</span></label>
+          <label className="field-label">Date of birth <span className="req">*</span></label>
           <input className="field-input" type="date"
             value={data.dob} onChange={e => onChange('dob', e.target.value)} />
         </div>
@@ -49,40 +48,37 @@ export default function Step1Personal({ data, onChange, onNext }) {
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
 
-      {/* Liên hệ */}
-      <div className="section-bar">Thông tin liên hệ</div>
+      <div className="section-bar">Contact information</div>
       <div className="form-grid-2">
         <div>
           <label className="field-label">Email <span className="req">*</span></label>
           <input className="field-input" type="email" placeholder="email@example.com"
             value={data.email} onChange={e => onChange('email', e.target.value)} />
-          <p className="field-hint">Visa điện tử sẽ gửi về email này</p>
+          <p className="field-hint">Your e-visa will be sent to this email</p>
         </div>
         <div>
-          <label className="field-label">Số điện thoại <span className="req">*</span></label>
-          <input className="field-input" type="tel" placeholder="+84 xxx xxx xxx"
+          <label className="field-label">Phone number <span className="req">*</span></label>
+          <input className="field-input" type="tel" placeholder="+1 555 123 4567"
             value={data.phone} onChange={e => onChange('phone', e.target.value)} />
         </div>
         <div>
-          <label className="field-label">Quốc tịch <span className="req">*</span></label>
+          <label className="field-label">Nationality <span className="req">*</span></label>
           <select className="field-input" value={data.nationality} onChange={e => onChange('nationality', e.target.value)}>
-            {['Việt Nam','Mỹ','Nhật Bản','Hàn Quốc','Trung Quốc','Pháp','Đức','Anh','Úc'].map(n =>
+            {['United States','United Kingdom','Australia','Canada','Germany','France','Japan','South Korea','Singapore'].map(n =>
               <option key={n}>{n}</option>)}
           </select>
         </div>
         <div>
-          <label className="field-label">Nơi sinh <span className="req">*</span></label>
-          <input className="field-input" type="text" placeholder="TP. Hồ Chí Minh, Việt Nam"
+          <label className="field-label">Place of birth <span className="req">*</span></label>
+          <input className="field-input" type="text" placeholder="New York, USA"
             value={data.birthPlace} onChange={e => onChange('birthPlace', e.target.value)} />
         </div>
       </div>
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
 
-      {/* Ảnh chân dung */}
-      <div className="section-bar">Ảnh chân dung</div>
+      <div className="section-bar">Portrait photo</div>
       <div style={{ display:'flex', gap:16, alignItems:'flex-start', flexWrap:'wrap' }}>
-        {/* Drop zone */}
         <div
           className={`upload-zone ${data.photoURL ? 'has-file' : ''}`}
           style={{ flex:1, minWidth:200 }}
@@ -98,8 +94,8 @@ export default function Step1Personal({ data, onChange, onNext }) {
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
               <img src={data.photoURL} alt="preview"
                 style={{ width:96, height:96, objectFit:'cover', borderRadius:10, border:'2px solid var(--green)', boxShadow:'0 2px 8px rgba(0,0,0,0.1)' }} />
-              <p style={{ fontSize:13, fontWeight:700, color:'var(--green)' }}>✓ Ảnh đã tải lên</p>
-              <p style={{ fontSize:11, color:'#9CA3AF' }}>Nhấn để thay đổi ảnh</p>
+              <p style={{ fontSize:13, fontWeight:700, color:'var(--green)' }}>✓ Photo uploaded</p>
+              <p style={{ fontSize:11, color:'#9CA3AF' }}>Click to change photo</p>
             </div>
           ) : (
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
@@ -109,34 +105,32 @@ export default function Step1Personal({ data, onChange, onNext }) {
                 </svg>
               </div>
               <p style={{ fontSize:14, fontWeight:600, color:'#374151' }}>
-                {drag ? 'Thả ảnh vào đây...' : 'Kéo thả hoặc nhấn để chọn ảnh'}
+                {drag ? 'Drop photo here...' : 'Drag & drop or click to upload'}
               </p>
-              <p style={{ fontSize:12, color:'#9CA3AF' }}>JPG, PNG · Nền trắng, mặt thẳng · Tối đa 5MB</p>
+              <p style={{ fontSize:12, color:'#9CA3AF' }}>JPG, PNG · White background, face front · Max 5MB</p>
             </div>
           )}
         </div>
 
-        {/* Requirements box */}
         <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:10, padding:'14px 16px', width:220, flexShrink:0 }}>
-          <p style={{ fontSize:13, fontWeight:700, color:'#92400E', marginBottom:8 }}>📋 Yêu cầu ảnh</p>
+          <p style={{ fontSize:13, fontWeight:700, color:'#92400E', marginBottom:8 }}>📋 Photo requirements</p>
           <ul style={{ fontSize:12, color:'#78350F', lineHeight:1.8, paddingLeft:0, listStyle:'none' }}>
-            {['Nền trắng đồng nhất','Mặt thẳng, nhìn vào camera','Không đội mũ, không kính','Chụp trong vòng 6 tháng','Tối thiểu 400 × 400px'].map(r => (
+            {['Plain white background','Face camera straight on','No hat, no glasses','Taken in last 6 months','At least 400 × 400px'].map(r => (
               <li key={r}>✓ {r}</li>
             ))}
           </ul>
         </div>
       </div>
 
-      {/* Actions */}
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:-24 }}>
         <div className="secure-note">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           </svg>
-          Thông tin được mã hóa SSL 256-bit
+          Encrypted with SSL 256-bit
         </div>
         <button className="btn-primary" onClick={onNext}>
-          Tiếp theo
+          Next
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
