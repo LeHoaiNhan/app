@@ -21,16 +21,24 @@ enum OrderStatus {
   rejected
 }
 
+enum DocumentKind {
+  applicant_photo
+  passport_scan
+  supporting
+  visa_result
+}
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String     @id @default(cuid())
+  email     String     @unique
   name      String
   avatar    String?
-  role      Role     @default(customer)
-  googleId  String?  @unique
+  role      Role       @default(customer)
+  googleId  String?    @unique
   password  String?
-  createdAt DateTime @default(now())
+  createdAt DateTime   @default(now())
   orders    Order[]
+  documents Document[]
 }
 
 model Order {
@@ -48,11 +56,29 @@ model Order {
   passport    Json
   trip        Json
   timeline    TimelineEntry[]
+  documents   Document[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
   @@index([customerId])
   @@index([status])
+}
+
+model Document {
+  id         String       @id @default(cuid())
+  uploaderId String
+  uploader   User         @relation(fields: [uploaderId], references: [id])
+  orderId    String?
+  order      Order?       @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  kind       DocumentKind @default(applicant_photo)
+  filename   String
+  url        String
+  mimeType   String
+  size       Int
+  createdAt  DateTime     @default(now())
+
+  @@index([uploaderId])
+  @@index([orderId])
 }
 
 model TimelineEntry {

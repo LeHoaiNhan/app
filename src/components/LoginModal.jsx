@@ -2,14 +2,20 @@ import { useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 
 export default function LoginModal() {
-  const { loginWithGoogle, setShowLoginModal } = useAuth()
+  const { loginWithGoogle, setShowLoginModal, authError } = useAuth()
   const [loading, setLoading] = useState(false)
   const [tab, setTab] = useState('login') // 'login' | 'register'
   const [form, setForm] = useState({ email:'', password:'', name:'' })
 
-  const handleGoogle = () => {
+  const handleGoogle = async () => {
     setLoading(true)
-    loginWithGoogle()
+    try {
+      await loginWithGoogle()
+    } catch (_) {
+      /* error surfaced via authError */
+    } finally {
+      setLoading(false)
+    }
   }
 
   const overlay = { position:'fixed', inset:0, zIndex:100, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }
@@ -86,6 +92,12 @@ export default function LoginModal() {
           <span style={{ fontSize:12, color:'#9CA3AF' }}>or</span>
           <div style={{ flex:1, height:1, background:'#E5E7EB' }} />
         </div>
+
+        {authError && (
+          <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'8px 12px', marginBottom:12, fontSize:12, color:'#991B1B' }}>
+            {authError}
+          </div>
+        )}
 
         {/* Form fields */}
         <div style={{ display:'flex', flexDirection:'column', gap:12 }}>

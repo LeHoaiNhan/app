@@ -11,13 +11,14 @@ const FLAG_MAP = {
 }
 
 export default function Step4Payment({ formData, onBack }) {
-  const { user } = useAuth()
+  const { user, setShowLoginModal } = useAuth()
   const { createOrder } = useOrders()
   const [pay, setPay]         = useState('card')
   const [card, setCard]       = useState({ number:'', expiry:'', cvv:'', name:'' })
   const [loading, setLoading] = useState(false)
   const [done, setDone]       = useState(false)
   const [orderCode, setOrderCode] = useState(null)
+  const [error, setError]     = useState(null)
 
   const proc  = formData.trip?.processing || 'normal'
   const total = FEE_MAP[proc] || 49
@@ -25,28 +26,34 @@ export default function Step4Payment({ formData, onBack }) {
   const svcFee  = total - govFee
   const fullName = `${formData.personal?.lastName||''} ${formData.personal?.firstName||''}`.trim() || '—'
 
-  const handlePay = () => {
+  const handlePay = async () => {
+    setError(null)
+    if (!user) {
+      setShowLoginModal(true)
+      return
+    }
     setLoading(true)
-    setTimeout(() => {
-      const destination = formData.trip?.destination || 'Thailand'
-      const order = createOrder({
-        customerId: user?.id || 'guest',
+    const destination = formData.trip?.destination || 'Thailand'
+    const photoURL = formData.personal?.photoURL || ''
+    const applicant = {
+      fullName,
+      email: formData.personal?.email || '',
+      phone: formData.personal?.phone || '',
+      dob: formData.personal?.dob || '',
+      gender: formData.personal?.gender || '',
+      nationality: formData.personal?.nationality || '',
+      birthPlace: formData.personal?.birthPlace || '',
+    }
+    if (/^https?:\/\//.test(photoURL)) applicant.photoURL = photoURL
+    try {
+      const order = await createOrder({
         destination,
         flag: FLAG_MAP[destination] || '🌍',
         visaType: formData.trip?.visaType || 'E-Visa',
         processing: proc,
         fee: { gov: govFee, service: svcFee, total, currency: 'USD' },
         payment: { method: pay, status: 'paid', paidAt: new Date().toISOString() },
-        applicant: {
-          fullName,
-          email: formData.personal?.email || '',
-          phone: formData.personal?.phone || '',
-          dob: formData.personal?.dob || '',
-          gender: formData.personal?.gender || '',
-          nationality: formData.personal?.nationality || '',
-          birthPlace: formData.personal?.birthPlace || '',
-          photoURL: formData.personal?.photoURL || '',
-        },
+        applicant,
         passport: {
           no: formData.passport?.passportNo || '',
           type: formData.passport?.passportType || '',
@@ -64,9 +71,12 @@ export default function Step4Payment({ formData, onBack }) {
         },
       })
       setOrderCode(order.id)
-      setLoading(false)
       setDone(true)
-    }, 2000)
+    } catch (err) {
+      setError(err?.response?.data?.error || err?.message || 'Failed to submit application')
+    } finally {
+      setLoading(false)
+    }
   }
 
   /* ── Success screen ── */
@@ -193,6 +203,17 @@ export default function Step4Payment({ formData, onBack }) {
           <div style={{ width:120, height:120, background:'#E5E7EB', borderRadius:8, margin:'16px auto 0', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#9CA3AF' }}>
             QR Code<br/>(demo)
           </div>
+        </div>
+      )}
+
+      {error && (
+        <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'10px 14px', marginTop:16, fontSize:13, color:'#991B1B' }}>
+          {error}
+        </div>
+      )}
+      {!user && (
+        <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:8, padding:'10px 14px', marginTop:16, fontSize:13, color:'#92400E' }}>
+          You need to sign in before submitting your application.
         </div>
       )}
 

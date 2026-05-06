@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
-import { useOrders, ORDER_STATUSES, STAGE_FLOW } from '../contexts/OrdersContext'
+import { useOrders, ORDER_STATUSES } from '../contexts/OrdersContext'
 
 const TIER_LABEL = { normal:'Standard', fast:'Fast', express:'Express' }
 
@@ -29,14 +29,14 @@ const fmtRelative = (iso) => {
 }
 
 export default function Admin() {
-  const { user, loginAsAdmin, logout } = useAuth()
-  const { orders, updateStatus, resetOrders } = useOrders()
+  const { user, loginAsAdmin, logout, authError, authLoading } = useAuth()
+  const { orders, updateStatus, loading, error, refresh } = useOrders()
   const [selectedId, setSelectedId] = useState(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
 
   if (!user || user.role !== 'admin') {
-    return <AdminAuthGate onLogin={loginAsAdmin} userIsCustomer={!!user} />
+    return <AdminAuthGate onLogin={loginAsAdmin} userIsCustomer={!!user} authError={authError} authLoading={authLoading} />
   }
 
   const selected = selectedId ? orders.find(o => o.id === selectedId) : null
@@ -45,7 +45,7 @@ export default function Admin() {
       <AdminOrderDetail
         order={selected}
         onBack={() => setSelectedId(null)}
-        onUpdateStatus={(status, note) => updateStatus(selected.id, status, note)}
+        onUpdateStatus={async (status, note) => updateStatus(selected.id, status, note)}
       />
     )
   }
@@ -91,11 +91,11 @@ export default function Admin() {
             </div>
           </div>
           <div style={{ display:'flex', gap:8 }}>
-            <button onClick={resetOrders} title="Reset to sample data (dev only)"
+            <button onClick={refresh} title="Reload orders from server"
               style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.8)', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
               onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
               onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
-            >↻ Reset demo</button>
+            >↻ Refresh</button>
             <button onClick={logout}
               style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
               onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
@@ -215,7 +215,7 @@ export default function Admin() {
           </div>
 
           <div style={{ fontSize:12, color:'#9CA3AF', textAlign:'center' }}>
-            Showing {filtered.length} of {orders.length} orders — data stored locally in your browser
+            {loading ? 'Loading…' : error ? `Error: ${error}` : `Showing ${filtered.length} of ${orders.length} orders`}
           </div>
         </div>
       </section>
@@ -225,7 +225,12 @@ export default function Admin() {
   )
 }
 
-function AdminAuthGate({ onLogin, userIsCustomer }) {
+function AdminAuthGate({ onLogin, userIsCustomer, authError, authLoading }) {
+  const [creds, setCreds] = useState({ email: 'admin@evisa.com', password: 'admin123' })
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    onLogin(creds).catch(() => { /* surfaced via authError */ })
+  }
   return (
     <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', background:'#F9FAFB' }}>
       <Navbar />
@@ -238,10 +243,25 @@ function AdminAuthGate({ onLogin, userIsCustomer }) {
               ? 'Your current account doesn’t have admin access. Sign out and sign in with an admin account.'
               : 'This area is for eVisa administrators only. Sign in with an admin account to continue.'}
           </p>
-          <button onClick={onLogin} className="btn-primary" style={{ width:'100%', justifyContent:'center', background:'var(--gold)', color:'var(--navy)', marginBottom:12 }}>
-            🔑 Sign in as Admin (demo)
-          </button>
-          <p style={{ fontSize:11, color:'#9CA3AF', marginBottom:12 }}>Phase 1: mock auth — Phase 2 will use real auth</p>
+          <form onSubmit={handleSubmit} style={{ display:'flex', flexDirection:'column', gap:10, textAlign:'left', marginBottom:14 }}>
+            <div>
+              <label className="field-label">Admin email</label>
+              <input className="field-input" type="email" autoComplete="username"
+                value={creds.email} onChange={e => setCreds({ ...creds, email: e.target.value })} />
+            </div>
+            <div>
+              <label className="field-label">Password</label>
+              <input className="field-input" type="password" autoComplete="current-password"
+                value={creds.password} onChange={e => setCreds({ ...creds, password: e.target.value })} />
+            </div>
+            {authError && (
+              <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'8px 12px', fontSize:12, color:'#991B1B' }}>{authError}</div>
+            )}
+            <button type="submit" className="btn-primary" disabled={authLoading} style={{ width:'100%', justifyContent:'center', background:'var(--gold)', color:'var(--navy)' }}>
+              {authLoading ? 'Signing in…' : '🔑 Sign in as Admin'}
+            </button>
+          </form>
+          <p style={{ fontSize:11, color:'#9CA3AF', marginBottom:12 }}>Default dev credentials: admin@evisa.com / admin123</p>
           <Link to="/" style={{ fontSize:13, fontWeight:600, color:'var(--blue)', textDecoration:'none' }}>← Back to home</Link>
         </div>
       </div>
