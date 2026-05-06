@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  customer
+  admin
+}
+
+enum OrderStatus {
+  submitted
+  review
+  sent
+  approved
+  delivered
+  rejected
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  avatar    String?
+  role      Role     @default(customer)
+  googleId  String?  @unique
+  password  String?
+  createdAt DateTime @default(now())
+  orders    Order[]
+}
+
+model Order {
+  id          String          @id
+  customerId  String
+  customer    User            @relation(fields: [customerId], references: [id])
+  status      OrderStatus     @default(submitted)
+  destination String
+  flag        String?
+  visaType    String
+  processing  String
+  fee         Json
+  payment     Json
+  applicant   Json
+  passport    Json
+  trip        Json
+  timeline    TimelineEntry[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([customerId])
+  @@index([status])
+}
+
+model TimelineEntry {
+  id      String   @id @default(cuid())
+  orderId String
+  order   Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  stage   String
+  at      DateTime @default(now())
+  note    String?
+
+  @@index([orderId])
+}
