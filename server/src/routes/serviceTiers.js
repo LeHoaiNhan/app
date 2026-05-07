@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { verifyToken } from '../lib/jwt.js'
+import { recordAudit } from '../lib/audit.js'
 
 const router = Router()
 
@@ -42,6 +43,7 @@ router.post('/', requireAuth, requireAdmin, async (req, res, next) => {
   try {
     const data = tierSchema.parse(req.body)
     const tier = await prisma.serviceTier.create({ data })
+    await recordAudit(req, { action: 'service_tier.create', resource: `ServiceTier:${tier.id}`, payload: { key: tier.key } })
     res.status(201).json({ tier })
   } catch (err) {
     if (err.code === 'P2002') return res.status(409).json({ error: 'Tier key already exists' })
@@ -56,6 +58,7 @@ router.patch('/:id', requireAuth, requireAdmin, async (req, res, next) => {
       where: { id: req.params.id },
       data,
     })
+    await recordAudit(req, { action: 'service_tier.update', resource: `ServiceTier:${tier.id}`, payload: data })
     res.json({ tier })
   } catch (err) {
     if (err.code === 'P2025') return res.status(404).json({ error: 'Tier not found' })
@@ -67,6 +70,7 @@ router.patch('/:id', requireAuth, requireAdmin, async (req, res, next) => {
 router.delete('/:id', requireAuth, requireAdmin, async (req, res, next) => {
   try {
     await prisma.serviceTier.delete({ where: { id: req.params.id } })
+    await recordAudit(req, { action: 'service_tier.delete', resource: `ServiceTier:${req.params.id}` })
     res.json({ ok: true })
   } catch (err) {
     if (err.code === 'P2025') return res.status(404).json({ error: 'Tier not found' })

@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { verifyToken } from '../lib/jwt.js'
+import { recordAudit } from '../lib/audit.js'
 
 const router = Router()
 
@@ -50,6 +51,7 @@ router.post('/', requireAuth, requireAdmin, async (req, res, next) => {
   try {
     const data = countrySchema.parse(req.body)
     const country = await prisma.country.create({ data })
+    await recordAudit(req, { action: 'country.create', resource: `Country:${country.id}`, payload: { name: country.name } })
     res.status(201).json({ country })
   } catch (err) {
     if (err.code === 'P2002') return res.status(409).json({ error: 'Country name already exists' })
@@ -64,6 +66,7 @@ router.patch('/:id', requireAuth, requireAdmin, async (req, res, next) => {
       where: { id: req.params.id },
       data,
     })
+    await recordAudit(req, { action: 'country.update', resource: `Country:${country.id}`, payload: data })
     res.json({ country })
   } catch (err) {
     if (err.code === 'P2025') return res.status(404).json({ error: 'Country not found' })
@@ -75,6 +78,7 @@ router.patch('/:id', requireAuth, requireAdmin, async (req, res, next) => {
 router.delete('/:id', requireAuth, requireAdmin, async (req, res, next) => {
   try {
     await prisma.country.delete({ where: { id: req.params.id } })
+    await recordAudit(req, { action: 'country.delete', resource: `Country:${req.params.id}` })
     res.json({ ok: true })
   } catch (err) {
     if (err.code === 'P2025') return res.status(404).json({ error: 'Country not found' })

@@ -220,6 +220,34 @@ async function main() {
   }
   console.log(`[seed] ${SEED_SERVICE_TIERS.length} service tiers`)
 
+  const supportCount = await prisma.supportMessage.count()
+  if (supportCount === 0) {
+    await prisma.supportMessage.createMany({
+      data: [
+        {
+          name: 'John Smith', email: 'john.smith@gmail.com',
+          subject: 'Order status', orderId: 'EV-A47B92', status: 'open',
+          message: 'Hi, can you tell me when EV-A47B92 will be processed? I leave next week.',
+        },
+        {
+          name: 'Emma Johnson', email: 'emma.johnson@gmail.com',
+          subject: 'Documents', status: 'in_progress',
+          message: 'I uploaded the wrong passport scan. How do I replace it on order EV-P3L8M2?',
+          orderId: 'EV-P3L8M2',
+        },
+        {
+          name: 'David Wilson', email: 'david.wilson@gmail.com',
+          subject: 'Refund & cancel', status: 'resolved',
+          orderId: 'EV-Q9F2R8',
+          message: 'My order EV-Q9F2R8 was rejected — please confirm the refund timing.',
+          reply: 'Hi David, your $19 service fee has been refunded. It should reflect within 3–5 business days.',
+          repliedAt: new Date('2026-04-21T12:00:00Z'),
+        },
+      ],
+    })
+    console.log('[seed] 3 support messages')
+  }
+
   console.log('[seed] done')
 }
 

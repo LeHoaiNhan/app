@@ -6,6 +6,8 @@ import fs from 'node:fs'
 import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { generateOrderId } from '../lib/orderId.js'
+import { recordAudit } from '../lib/audit.js'
+import { notifyOrderStatus } from '../lib/notifier.js'
 
 const router = Router()
 
@@ -174,6 +176,12 @@ router.patch('/:id/status', requireAdmin, async (req, res, next) => {
         documents: { orderBy: { createdAt: 'asc' } },
       },
     })
+    await recordAudit(req, {
+      action: 'order.status_update',
+      resource: `Order:${order.id}`,
+      payload: { from: exists.status, to: status, note },
+    })
+    notifyOrderStatus(order, status, note).catch(err => console.warn('[notifier]', err.message))
     res.json({ order })
   } catch (err) { next(err) }
 })

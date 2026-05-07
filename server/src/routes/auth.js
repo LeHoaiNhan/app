@@ -6,11 +6,12 @@ import { prisma } from '../lib/prisma.js'
 import { signToken } from '../lib/jwt.js'
 import { requireAuth } from '../middleware/auth.js'
 import { recordLoginEvent } from '../lib/loginLog.js'
+import { authLimiter } from '../lib/rateLimit.js'
 
 const router = Router()
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID)
 
-router.post('/google', async (req, res) => {
+router.post('/google', authLimiter, async (req, res) => {
   try {
     const { idToken } = req.body
 
@@ -79,7 +80,7 @@ const adminSchema = z.object({
   password: z.string().min(1),
 })
 
-router.post('/admin', async (req, res, next) => {
+router.post('/admin', authLimiter, async (req, res, next) => {
   try {
     const { email, password } = adminSchema.parse(req.body)
     const user = await prisma.user.findUnique({ where: { email } })

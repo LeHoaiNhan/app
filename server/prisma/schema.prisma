@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
- 
+
 enum Role {
   customer
   admin
@@ -29,17 +29,19 @@ enum DocumentKind {
 }
 
 model User {
-  id        String     @id @default(cuid())
-  email     String     @unique
+  id        String       @id @default(cuid())
+  email     String       @unique
   name      String
   avatar    String?
-  role      Role       @default(customer)
-  googleId  String?    @unique
+  role      Role         @default(customer)
+  googleId  String?      @unique
   password  String?
-  createdAt DateTime   @default(now())
+  active    Boolean      @default(true)
+  createdAt DateTime     @default(now())
   orders    Order[]
   documents Document[]
   loginLogs LoginLog[]
+  audits    AdminAudit[]
 }
 
 enum LoginEvent {
@@ -160,4 +162,45 @@ model Country {
 
   @@index([region])
   @@index([active])
+}
+
+enum SupportStatus {
+  open
+  in_progress
+  resolved
+  closed
+}
+
+model SupportMessage {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  orderId   String?
+  status    SupportStatus @default(open)
+  reply     String?
+  repliedAt DateTime?
+  ip        String?
+  userAgent String?
+  createdAt DateTime      @default(now())
+
+  @@index([status])
+  @@index([email])
+  @@index([createdAt])
+}
+
+model AdminAudit {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  action    String
+  resource  String
+  payload   Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([actorId])
+  @@index([resource])
+  @@index([createdAt])
 }
