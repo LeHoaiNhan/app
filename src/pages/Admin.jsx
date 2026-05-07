@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 import { useAuth } from '../contexts/AuthContext'
 import { useOrders, ORDER_STATUSES } from '../contexts/OrdersContext'
 import { api, apiError } from '../lib/api'
@@ -78,6 +79,7 @@ export default function Admin() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo title="Admin" description="eVisa admin dashboard." path="/admin" noindex />
       <Navbar />
 
       {/* ── ADMIN HERO ── */}

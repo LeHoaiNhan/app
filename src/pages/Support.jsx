@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 
 const CHANNELS = [
   { icon:'💬', title:'Live Chat', desc:'Reply within 2 minutes',  avail:'24/7',                action:'Start chat',  color:'#EEF3FF', accent:'var(--blue)',  badge:'Online' },
@@ -74,6 +75,11 @@ export default function Support() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo
+        title="Help center — Track your order or contact us"
+        description="Track your eVisa order status, browse FAQs, or talk to our visa experts. 24/7 live chat and email support within 4 hours."
+        path="/support"
+      />
       <Navbar />
 
       {/* ── HERO ── */}

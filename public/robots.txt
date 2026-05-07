@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /my-orders
+Disallow: /admin
+
+Sitemap: https://lehoainhan.github.io/app/sitemap.xml

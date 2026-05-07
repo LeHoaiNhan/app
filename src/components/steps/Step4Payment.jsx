@@ -5,6 +5,7 @@ import { useOrders } from '../../contexts/OrdersContext'
 import { useCountries } from '../../lib/useCountries'
 import { useServiceTiers } from '../../lib/useServiceTiers'
 import { api } from '../../lib/api'
+import PaypalCheckout from '../PaypalCheckout'
 
 export default function Step4Payment({ formData, onBack }) {
   const { user, setShowLoginModal } = useAuth()
@@ -27,13 +28,7 @@ export default function Step4Payment({ formData, onBack }) {
   const total = govFee + svcFee
   const fullName = `${formData.personal?.lastName||''} ${formData.personal?.firstName||''}`.trim() || '—'
 
-  const handlePay = async () => {
-    setError(null)
-    if (!user) {
-      setShowLoginModal(true)
-      return
-    }
-    setLoading(true)
+  const submitOrder = async (paymentInfo) => {
     const photoURL = formData.personal?.photoURL || ''
     const applicant = {
       fullName,
@@ -45,45 +40,79 @@ export default function Step4Payment({ formData, onBack }) {
       birthPlace: formData.personal?.birthPlace || '',
     }
     if (/^https?:\/\//.test(photoURL)) applicant.photoURL = photoURL
+
+    const order = await createOrder({
+      destination,
+      flag: country?.flag || '🌍',
+      visaType: country?.tag || formData.trip?.visaType || 'E-Visa',
+      processing: proc,
+      fee: { gov: govFee, service: svcFee, total, currency: 'USD' },
+      payment: paymentInfo,
+      applicant,
+      passport: {
+        no: formData.passport?.passportNo || '',
+        type: formData.passport?.passportType || '',
+        issueDate: formData.passport?.issueDate || '',
+        expiryDate: formData.passport?.expiryDate || '',
+        issuePlace: formData.passport?.issuePlace || '',
+        issueCountry: formData.passport?.issueCountry || '',
+      },
+      trip: {
+        purpose: formData.trip?.purpose || '',
+        entryDate: formData.trip?.entryDate || '',
+        exitDate: formData.trip?.exitDate || '',
+        accommodation: formData.trip?.accommodation || '',
+        notes: formData.trip?.notes || '',
+      },
+    })
+
+    const photoDocId = formData.personal?.photoDocId
+    if (photoDocId) {
+      try {
+        await api.patch(`/uploads/${photoDocId}/link`, { orderId: order.id })
+      } catch (_e) { /* non-fatal */ }
+    }
+
+    setOrderCode(order.id)
+    setDone(true)
+    return order
+  }
+
+  const handlePay = async () => {
+    setError(null)
+    if (!user) {
+      setShowLoginModal(true)
+      return
+    }
+    setLoading(true)
     try {
-      const order = await createOrder({
-        destination,
-        flag: country?.flag || '🌍',
-        visaType: country?.tag || formData.trip?.visaType || 'E-Visa',
-        processing: proc,
-        fee: { gov: govFee, service: svcFee, total, currency: 'USD' },
-        payment: { method: pay, status: 'paid', paidAt: new Date().toISOString() },
-        applicant,
-        passport: {
-          no: formData.passport?.passportNo || '',
-          type: formData.passport?.passportType || '',
-          issueDate: formData.passport?.issueDate || '',
-          expiryDate: formData.passport?.expiryDate || '',
-          issuePlace: formData.passport?.issuePlace || '',
-          issueCountry: formData.passport?.issueCountry || '',
-        },
-        trip: {
-          purpose: formData.trip?.purpose || '',
-          entryDate: formData.trip?.entryDate || '',
-          exitDate: formData.trip?.exitDate || '',
-          accommodation: formData.trip?.accommodation || '',
-          notes: formData.trip?.notes || '',
-        },
-      })
-
-      const photoDocId = formData.personal?.photoDocId
-      if (photoDocId) {
-        try {
-          await api.patch(`/uploads/${photoDocId}/link`, { orderId: order.id })
-        } catch (_e) {
-          /* non-fatal — photo URL already stored on order */
-        }
-      }
-
-      setOrderCode(order.id)
-      setDone(true)
+      await submitOrder({ method: pay, status: 'paid', paidAt: new Date().toISOString() })
     } catch (err) {
       setError(err?.response?.data?.error || err?.message || 'Failed to submit application')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handlePaypalApproved = async (capture) => {
+    setError(null)
+    if (!user) {
+      setShowLoginModal(true)
+      return
+    }
+    setLoading(true)
+    try {
+      await submitOrder({
+        method: 'paypal',
+        status: 'paid',
+        paidAt: new Date().toISOString(),
+        paypalOrderId: capture.paypalOrderId,
+        paypalCaptureId: capture.captureId,
+        paypalAmount: capture.amount,
+        payer: capture.payer,
+      })
+    } catch (err) {
+      setError(err?.response?.data?.error || err?.message || 'Payment captured but failed to save order — contact support with capture ID ' + capture.captureId)
     } finally {
       setLoading(false)
     }
@@ -161,7 +190,7 @@ export default function Step4Payment({ formData, onBack }) {
       {/* Payment method */}
       <div className="section-bar">Payment method</div>
       <div className="pay-opts" style={{ marginBottom:20 }}>
-        {[['card','💳','Credit / Debit card'],['ewallet','📱','Digital wallet / QR Code']].map(([val,ico,lbl]) => (
+        {[['card','💳','Credit / Debit card'],['ewallet','📱','Digital wallet / QR Code'],['paypal','🅿️','PayPal']].map(([val,ico,lbl]) => (
           <label key={val} className={`pay-opt ${pay===val?'active':''}`} onClick={() => setPay(val)}>
             <input type="radio" name="pay" style={{ display:'none' }} checked={pay===val} readOnly />
             <span style={{ fontSize:18 }}>{ico}</span>
@@ -209,10 +238,31 @@ export default function Step4Payment({ formData, onBack }) {
         <div style={{ textAlign:'center', padding:'24px 16px', background:'#F9FAFB', borderRadius:10, border:'1px solid #E5E7EB', marginBottom:8 }}>
           <div style={{ fontSize:48, marginBottom:8 }}>📱</div>
           <p style={{ fontSize:14, fontWeight:600, color:'var(--navy)', marginBottom:4 }}>Scan QR code to pay</p>
-          <p style={{ fontSize:12, color:'#6B7280' }}>Supports: Apple Pay · Google Pay · PayPal · Alipay</p>
+          <p style={{ fontSize:12, color:'#6B7280' }}>Supports: Apple Pay · Google Pay · Alipay</p>
           <div style={{ width:120, height:120, background:'#E5E7EB', borderRadius:8, margin:'16px auto 0', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#9CA3AF' }}>
             QR Code<br/>(demo)
           </div>
+        </div>
+      )}
+
+      {pay==='paypal' && (
+        <div style={{ padding:'16px 16px 8px', background:'#F9FAFB', borderRadius:10, border:'1px solid #E5E7EB', marginBottom:8 }}>
+          <p style={{ fontSize:13, color:'#6B7280', marginBottom:12 }}>
+            You will be charged <strong style={{ color:'var(--navy)' }}>${total}.00 USD</strong>. The order will only be created after PayPal confirms the payment.
+          </p>
+          {!user ? (
+            <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:8, padding:'10px 14px', fontSize:13, color:'#92400E' }}>
+              Please sign in before paying with PayPal.
+            </div>
+          ) : (
+            <PaypalCheckout
+              amount={total}
+              currency="USD"
+              description={`eVisa — ${destination} (${tier?.label || proc})`}
+              onApproved={handlePaypalApproved}
+              onError={(msg) => setError(typeof msg === 'string' ? msg : 'PayPal error')}
+            />
+          )}
         </div>
       )}
 
@@ -229,23 +279,25 @@ export default function Step4Payment({ formData, onBack }) {
 
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:-24 }}>
         <button className="btn-secondary" onClick={onBack}>← Back</button>
-        <button className="btn-green" onClick={handlePay} disabled={loading} style={{ minWidth:200 }}>
-          {loading ? (
-            <>
-              <svg className="spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="3" strokeDasharray="31" strokeDashoffset="10"/>
-              </svg>
-              Processing...
-            </>
-          ) : (
-            <>
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-              Submit & Pay ${total}
-            </>
-          )}
-        </button>
+        {pay !== 'paypal' && (
+          <button className="btn-green" onClick={handlePay} disabled={loading} style={{ minWidth:200 }}>
+            {loading ? (
+              <>
+                <svg className="spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="3" strokeDasharray="31" strokeDashoffset="10"/>
+                </svg>
+                Processing...
+              </>
+            ) : (
+              <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                Submit & Pay ${total}
+              </>
+            )}
+          </button>
+        )}
       </div>
     </div>
   )

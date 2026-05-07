@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 
 const STEPS = [
   { num:'01', icon:'🌍', title:'Pick destination & visa type', time:'1 min',   desc:'Check the visa requirements for your destination and choose the eVisa type that fits your trip.' },
@@ -96,6 +97,11 @@ export default function Guide() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo
+        title="How to apply — Step-by-step guide"
+        description="Step-by-step guide to applying for your e-visa: choose destination, fill in your info, upload documents, pay, and receive your approval by email."
+        path="/guide"
+      />
       <Navbar />
 
       {/* ── HERO ── */}

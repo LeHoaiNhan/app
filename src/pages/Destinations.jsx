@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 import { useCountries } from '../lib/useCountries'
 
 const SERVICE_FEE_DEFAULT = 19
@@ -85,6 +86,11 @@ export default function Destinations() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo
+        title="Destinations — 60+ countries"
+        description="Browse visa requirements, fees and processing times for 60+ destinations. E-Visa, Visa on Arrival and eTA programs in one place."
+        path="/destinations"
+      />
       <Navbar />
 
       {/* ── HERO ── */}

@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 import { useCountries } from '../lib/useCountries'
 import { useServiceTiers } from '../lib/useServiceTiers'
 
@@ -75,6 +76,11 @@ export default function Pricing() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo
+        title="Pricing — Government and service fees"
+        description="Transparent fees for every destination and processing speed. Compare government fees and our service tiers (normal, fast, express)."
+        path="/pricing"
+      />
       <Navbar />
 
       {/* ── HERO ── */}

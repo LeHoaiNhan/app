@@ -92,10 +92,14 @@ const createSchema = z.object({
     currency: z.string().default('USD'),
   }),
   payment: z.object({
-    method: z.enum(['card', 'ewallet', 'bank']),
+    method: z.enum(['card', 'ewallet', 'bank', 'paypal']),
     status: z.enum(['paid', 'pending', 'refunded']).default('paid'),
     paidAt: z.string().datetime().optional(),
-  }),
+    paypalOrderId: z.string().optional(),
+    paypalCaptureId: z.string().optional(),
+    paypalAmount: z.object({ currency_code: z.string(), value: z.string() }).optional(),
+    payer: z.object({ email: z.string().optional(), payerId: z.string().optional() }).nullable().optional(),
+  }).passthrough(),
   applicant: z.object({
     fullName: z.string().min(1),
     email: z.string().email(),

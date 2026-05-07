@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import Navbar from '../components/Navbar'
 import ApplicationForm from '../components/ApplicationForm'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 
 const STATS = [
   { num:'99%',  label:'Approval rate' },
@@ -22,6 +23,19 @@ export default function Home() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo
+        title="Apply for your travel visa online"
+        description="Apply for E-Visa, Visa on Arrival and eTA online for 60+ countries. Fast processing, transparent pricing, expert review, 24/7 support."
+        path="/"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: 'eVisa application service',
+          provider: { '@type': 'Organization', name: 'eVisa' },
+          areaServed: 'Worldwide',
+          serviceType: 'Visa application processing',
+        }}
+      />
       <Navbar onApplyClick={scroll} />
 
       {/* ── HERO ── */}

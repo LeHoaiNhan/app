@@ -2,13 +2,79 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <meta name="theme-color" content="#0B1D3A" />
+    <link rel="icon" type="image/svg+xml" href="/app/favicon.svg" />
+    <link rel="canonical" href="https://lehoainhan.github.io/app/" />
+
+    <title>eVisa — Apply for your travel visa online</title>
+    <meta name="description" content="Apply for E-Visa, Visa on Arrival and eTA online for 60+ countries. Fast processing, transparent pricing, expert review, 24/7 support." />
+    <meta name="keywords" content="evisa, e-visa, online visa, travel visa, visa on arrival, eTA, visa application, Thailand visa, Japan visa, Korea visa" />
+    <meta name="author" content="eVisa" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="eVisa" />
+    <meta property="og:title" content="eVisa — Apply for your travel visa online" />
+    <meta property="og:description" content="Apply for E-Visa, Visa on Arrival and eTA online for 60+ countries. Fast processing, transparent pricing, 24/7 support." />
+    <meta property="og:url" content="https://lehoainhan.github.io/app/" />
+    <meta property="og:image" content="https://lehoainhan.github.io/app/og-cover.png" />
+    <meta property="og:locale" content="en_US" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="eVisa — Apply for your travel visa online" />
+    <meta name="twitter:description" content="Apply for E-Visa, Visa on Arrival and eTA online for 60+ countries." />
+    <meta name="twitter:image" content="https://lehoainhan.github.io/app/og-cover.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "eVisa",
+      "url": "https://lehoainhan.github.io/app/",
+      "logo": "https://lehoainhan.github.io/app/favicon.svg",
+      "description": "Online visa application service for 60+ countries.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "support@evisa.com",
+        "telephone": "+1-415-555-0123",
+        "availableLanguage": ["English"]
+      },
+      "sameAs": []
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "eVisa",
+      "url": "https://lehoainhan.github.io/app/",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://lehoainhan.github.io/app/destinations?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <script>
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 import { useAuth } from '../contexts/AuthContext'
 import { useOrders, ORDER_STATUSES, STAGE_FLOW } from '../contexts/OrdersContext'
 
@@ -25,6 +26,7 @@ export default function MyOrders() {
   if (!user) {
     return (
       <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', background:'#F9FAFB' }}>
+        <Seo title="My orders" description="Sign in to view your eVisa orders." path="/my-orders" noindex />
         <Navbar />
         <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'48px 16px' }}>
           <div style={{ background:'white', borderRadius:20, border:'1px solid #E5E7EB', padding:'36px 32px', maxWidth:440, width:'100%', textAlign:'center', boxShadow:'0 12px 32px rgba(11,29,58,0.06)' }}>
@@ -62,6 +64,7 @@ export default function MyOrders() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo title="My orders" description="Track and manage all of your eVisa applications." path="/my-orders" noindex />
       <Navbar />
 
       {/* ── HERO ── */}

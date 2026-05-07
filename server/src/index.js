@@ -11,6 +11,7 @@ import serviceTierRoutes from './routes/serviceTiers.js'
 import trackRoutes from './routes/track.js'
 import supportRoutes from './routes/support.js'
 import adminRoutes from './routes/admin.js'
+import paymentRoutes from './routes/payments.js'
 import { errorHandler } from './middleware/error.js'
 
 const app = express()
@@ -32,6 +33,7 @@ app.use('/countries', countryRoutes)
 app.use('/service-tiers', serviceTierRoutes)
 app.use('/support', supportRoutes)
 app.use('/admin', adminRoutes)
+app.use('/payments', paymentRoutes)
 
 app.use(errorHandler)
 

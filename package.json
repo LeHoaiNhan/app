@@ -13,6 +13,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@paypal/react-paypal-js": "^8.7.0",
     "@prisma/client": "^7.8.0",
     "@react-oauth/google": "^0.13.5",
     "@tailwindcss/vite": "^4.2.4",

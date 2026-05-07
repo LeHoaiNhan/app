@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import Seo from '../components/Seo'
 
 const TYPES = [
   {
@@ -76,6 +77,11 @@ export default function VisaTypes() {
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
+      <Seo
+        title="Visa types — E-Visa, Visa on Arrival, eTA"
+        description="Compare E-Visa, Visa on Arrival, eTA and visa-free options. Understand the differences, eligibility and which one fits your trip."
+        path="/visa-types"
+      />
       <Navbar />
 
       {/* ── HERO ── */}
