@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { api, getToken, setToken, apiError } from '../lib/api'
+import { api, getToken, setToken, apiError, isNetworkError } from '../lib/api'
+import { DEMO_ADMIN_USER, DEMO_ADMIN_TOKEN } from '../lib/demoData'
 
 const STORAGE_KEY = 'evisa_user_v1'
 
@@ -41,13 +42,17 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = getToken()
     if (!token) return
+    if (token === DEMO_ADMIN_TOKEN) return  // demo session — no backend to verify against
 
     api.get('/auth/me')
       .then(res => {
         setUser(res.data.user)
         localStorage.setItem(STORAGE_KEY, JSON.stringify(res.data.user))
       })
-      .catch(() => persist(null, null))
+      .catch(err => {
+        // Don't logout on network error — backend may be temporarily down. Only clear on 401.
+        if (err?.response?.status === 401) persist(null, null)
+      })
   }, [persist])
 
   // =========================
@@ -108,13 +113,22 @@ export function AuthProvider({ children }) {
         password: 'admin123',
       }
 
-      const { data } = await api.post('/auth/admin', body)
-
-      persist(data.user, data.token)
-      setShowLoginModal(false)
-
-      return data.user
-
+      try {
+        const { data } = await api.post('/auth/admin', body)
+        persist(data.user, data.token)
+        setShowLoginModal(false)
+        return data.user
+      } catch (err) {
+        // Demo fallback: backend is unreachable AND credentials match the documented demo pair.
+        const isDemoCreds = body.email === 'admin@evisa.com' && body.password === 'admin123'
+        if (isNetworkError(err) && isDemoCreds) {
+          console.warn('[auth] backend unreachable — using demo admin (no real DB)')
+          persist(DEMO_ADMIN_USER, DEMO_ADMIN_TOKEN)
+          setShowLoginModal(false)
+          return DEMO_ADMIN_USER
+        }
+        throw err
+      }
     } catch (err) {
       setAuthError(apiError(err, 'Invalid admin credentials'))
       throw err

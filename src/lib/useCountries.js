@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { api, apiError } from './api'
+import { api, apiError, isNetworkError } from './api'
+import { DEMO_COUNTRIES } from './demoData'
 
 export function useCountries() {
   const [countries, setCountries] = useState([])
@@ -10,7 +11,14 @@ export function useCountries() {
     let alive = true
     api.get('/countries')
       .then(res => { if (alive) setCountries(res.data.countries) })
-      .catch(err => { if (alive) setError(apiError(err, 'Failed to load countries')) })
+      .catch(err => {
+        if (!alive) return
+        if (isNetworkError(err)) {
+          setCountries(DEMO_COUNTRIES)
+        } else {
+          setError(apiError(err, 'Failed to load countries'))
+        }
+      })
       .finally(() => { if (alive) setLoading(false) })
     return () => { alive = false }
   }, [])

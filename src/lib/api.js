@@ -32,6 +32,9 @@ api.interceptors.response.use(
   },
 )
 
+export const isNetworkError = (err) =>
+  err?.code === 'ERR_NETWORK' || err?.message === 'Network Error' || !err?.response
+
 const baseUrl = api.defaults.baseURL || ''
 const isLocalApi = /^https?:\/\/(localhost|127\.|0\.0\.0\.0)/.test(baseUrl)
 const onLocalHost = /^(localhost|127\.|0\.0\.0\.0)/.test(typeof location !== 'undefined' ? location.hostname : '')

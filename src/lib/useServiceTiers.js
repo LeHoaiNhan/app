@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { api, apiError } from './api'
+import { api, apiError, isNetworkError } from './api'
+import { DEMO_SERVICE_TIERS } from './demoData'
 
 export function useServiceTiers() {
   const [tiers, setTiers] = useState([])
@@ -10,7 +11,14 @@ export function useServiceTiers() {
     let alive = true
     api.get('/service-tiers')
       .then(res => { if (alive) setTiers(res.data.tiers) })
-      .catch(err => { if (alive) setError(apiError(err, 'Failed to load tiers')) })
+      .catch(err => {
+        if (!alive) return
+        if (isNetworkError(err)) {
+          setTiers(DEMO_SERVICE_TIERS)
+        } else {
+          setError(apiError(err, 'Failed to load tiers'))
+        }
+      })
       .finally(() => { if (alive) setLoading(false) })
     return () => { alive = false }
   }, [])
