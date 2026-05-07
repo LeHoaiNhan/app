@@ -5,6 +5,7 @@ import Footer from '../components/Footer'
 import { useAuth } from '../contexts/AuthContext'
 import { useOrders, ORDER_STATUSES } from '../contexts/OrdersContext'
 import { api, apiError } from '../lib/api'
+import AdminCountries from './AdminCountries'
 
 const TIER_LABEL = { normal:'Standard', fast:'Fast', express:'Express' }
 
@@ -35,6 +36,7 @@ export default function Admin() {
   const [selectedId, setSelectedId] = useState(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [tab, setTab] = useState('orders')
 
   if (!user || user.role !== 'admin') {
     return <AdminAuthGate onLogin={loginAsAdmin} userIsCustomer={!!user} authError={authError} authLoading={authLoading} />
@@ -92,11 +94,13 @@ export default function Admin() {
             </div>
           </div>
           <div style={{ display:'flex', gap:8 }}>
-            <button onClick={refresh} title="Reload orders from server"
-              style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.8)', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
-              onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
-              onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
-            >↻ Refresh</button>
+            {tab === 'orders' && (
+              <button onClick={refresh} title="Reload orders from server"
+                style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.8)', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
+                onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
+                onMouseLeave={e => e.currentTarget.style.background='rgba(255,255,255,0.1)'}
+              >↻ Refresh</button>
+            )}
             <button onClick={logout}
               style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'white', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
               onMouseEnter={e => e.currentTarget.style.background='rgba(255,255,255,0.2)'}
@@ -104,7 +108,35 @@ export default function Admin() {
             >Sign out</button>
           </div>
         </div>
+
+        {/* ── TABS ── */}
+        <div style={{ maxWidth:1200, margin:'24px auto 0', position:'relative', display:'flex', gap:6, flexWrap:'wrap' }}>
+          {[
+            { key:'orders',    label:'📋 Orders' },
+            { key:'countries', label:'🌍 Countries' },
+          ].map(t => {
+            const active = tab === t.key
+            return (
+              <button
+                key={t.key}
+                onClick={() => setTab(t.key)}
+                style={{
+                  padding:'10px 18px', fontSize:13, fontWeight:700, borderRadius:10,
+                  border: active ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.15)',
+                  background: active ? 'var(--gold)' : 'rgba(255,255,255,0.08)',
+                  color: active ? 'var(--navy)' : 'white',
+                  cursor:'pointer', fontFamily:'inherit', transition:'all .15s', backdropFilter:'blur(8px)',
+                }}
+              >{t.label}</button>
+            )
+          })}
+        </div>
       </section>
+
+      {tab === 'countries' ? (
+        <AdminCountries />
+      ) : (
+      <>
 
       {/* ── STATS ── */}
       <section style={{ background:'white', padding:'32px 20px', borderBottom:'1px solid #F3F4F6' }}>
@@ -220,6 +252,8 @@ export default function Admin() {
           </div>
         </div>
       </section>
+      </>
+      )}
 
       <Footer />
     </div>

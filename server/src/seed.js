@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import bcrypt from 'bcryptjs'
 import { prisma } from './lib/prisma.js'
+import { SEED_COUNTRIES } from './seedCountries.js'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@evisa.com'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
@@ -199,6 +200,15 @@ async function main() {
     })
   }
   console.log(`[seed] ${SEED_ORDERS.length} orders`)
+
+  for (const c of SEED_COUNTRIES) {
+    await prisma.country.upsert({
+      where: { name: c.name },
+      update: c,
+      create: c,
+    })
+  }
+  console.log(`[seed] ${SEED_COUNTRIES.length} countries`)
 
   console.log('[seed] done')
 }

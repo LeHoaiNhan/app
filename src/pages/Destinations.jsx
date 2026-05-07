@@ -1,38 +1,21 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { useCountries } from '../lib/useCountries'
 
-const DESTINATIONS = [
-  { name:'Thailand',     flag:'🇹🇭', iso:'th', region:'Southeast Asia', time:'3-5 days',  price:'$29',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Tropical paradise with affordable costs, diverse cuisine, and stunning beaches.', city:'Bangkok' },
-  { name:'Singapore',    flag:'🇸🇬', iso:'sg', region:'Southeast Asia', time:'2-3 days',  price:'$39',  popular:false, trending:true,  tag:'E-Visa',          stay:'30 days',    entry:'Multiple', validity:'2 years',   desc:'Modern city-state with world-class transport and services.', city:'Marina Bay' },
-  { name:'Indonesia',    flag:'🇮🇩', iso:'id', region:'Southeast Asia', time:'3-5 days',  price:'$35',  popular:false, trending:false, tag:'Visa on Arrival', stay:'30 days',    entry:'Single',   validity:'30 days',   desc:'Bali, Jakarta, and thousands of tropical islands waiting to be explored.', city:'Bali' },
-  { name:'Malaysia',     flag:'🇲🇾', iso:'my', region:'Southeast Asia', time:'Instant',   price:'Free', popular:false, trending:false, tag:'Visa-free',       stay:'30 days',    entry:'Multiple', validity:'—',         desc:'Visa-free for many nationalities — passport must be valid for 6+ months.', city:'Kuala Lumpur' },
-  { name:'Philippines',  flag:'🇵🇭', iso:'ph', region:'Southeast Asia', time:'5-7 days',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'7,000+ tropical islands, blue seas, and warm hospitality.', city:'Manila' },
-  { name:'Cambodia',     flag:'🇰🇭', iso:'kh', region:'Southeast Asia', time:'3-5 days',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Mystical Angkor Wat and the unique Khmer culture.', city:'Siem Reap' },
-  { name:'Myanmar',      flag:'🇲🇲', iso:'mm', region:'Southeast Asia', time:'3-5 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'28 days',    entry:'Single',   validity:'3 months',  desc:'Bagan with thousands of ancient temples and rich Buddhist culture.', city:'Bagan' },
-  { name:'Japan',        flag:'🇯🇵', iso:'jp', region:'East Asia',      time:'5-7 days',  price:'$49',  popular:true,  trending:true,  tag:'E-Visa',          stay:'15-90 days', entry:'Single',   validity:'3 months',  desc:'The land of the rising sun — unique culture and beautiful four-season scenery.', city:'Tokyo' },
-  { name:'South Korea',  flag:'🇰🇷', iso:'kr', region:'East Asia',      time:'5-7 days',  price:'$55',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30-90 days', entry:'Single',   validity:'3 months',  desc:'Land of K-pop, world-class food, and premier shopping.', city:'Seoul' },
-  { name:'Taiwan',       flag:'🇹🇼', iso:'tw', region:'East Asia',      time:'5-7 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Beautiful island known for street food and diverse landscapes.', city:'Taipei' },
-  { name:'Hong Kong',    flag:'🇭🇰', iso:'hk', region:'East Asia',      time:'Instant',   price:'Free', popular:false, trending:false, tag:'Visa-free',       stay:'14 days',    entry:'Multiple', validity:'—',         desc:'Visa-free for 14 days — Asia’s shopping paradise.', city:'Hong Kong' },
-  { name:'India',        flag:'🇮🇳', iso:'in', region:'East Asia',      time:'3-5 days',  price:'$30',  popular:false, trending:false, tag:'E-Visa',          stay:'30-60 days', entry:'Multiple', validity:'1 year',    desc:'Taj Mahal, the Ganges, and dazzling cultural diversity.', city:'Delhi' },
-  { name:'Sri Lanka',    flag:'🇱🇰', iso:'lk', region:'East Asia',      time:'3-5 days',  price:'$35',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Multiple', validity:'6 months',  desc:'Indian Ocean gem with rainforests, ancient temples, and pristine beaches.', city:'Colombo' },
-  { name:'Dubai (UAE)',  flag:'🇦🇪', iso:'ae', region:'Middle East',    time:'3-5 days',  price:'$45',  popular:true,  trending:true,  tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'2 months',  desc:'Futuristic city with the Burj Khalifa, deserts, and luxury shopping.', city:'Dubai' },
-  { name:'Qatar',        flag:'🇶🇦', iso:'qa', region:'Middle East',    time:'3-5 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'30 days',   desc:'Modern Doha on the Persian Gulf with breathtaking architecture.', city:'Doha' },
-  { name:'Turkey',       flag:'🇹🇷', iso:'tr', region:'Middle East',    time:'3-5 days',  price:'$50',  popular:false, trending:true,  tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'180 days',  desc:'Istanbul where Asia meets Europe, and Cappadocia’s famous balloons.', city:'Istanbul' },
-  { name:'Saudi Arabia', flag:'🇸🇦', iso:'sa', region:'Middle East',    time:'5-7 days',  price:'$120', popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'1 year',    desc:'Mecca, Riyadh, and the rich Islamic heritage of the Arabian Peninsula.', city:'Riyadh' },
-  { name:'Oman',         flag:'🇴🇲', iso:'om', region:'Middle East',    time:'3-5 days',  price:'$50',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'30 days',   desc:'Ancient forts, the Wahiba sands, and a peaceful Indian Ocean coast.', city:'Muscat' },
-  { name:'Bahrain',      flag:'🇧🇭', iso:'bh', region:'Middle East',    time:'2-3 days',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'14 days',    entry:'Multiple', validity:'90 days',   desc:'Persian Gulf island nation with rich Bahraini cultural heritage.', city:'Manama' },
-  { name:'Canada',       flag:'🇨🇦', iso:'ca', region:'Americas',       time:'3-5 days',  price:'$80',  popular:false, trending:false, tag:'eTA',             stay:'180 days',   entry:'Multiple', validity:'5 years',   desc:'Niagara Falls, Rockies, and Toronto — eTA issued online in hours.', city:'Toronto' },
-  { name:'Mexico',       flag:'🇲🇽', iso:'mx', region:'Americas',       time:'5-7 days',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'180 days',   entry:'Multiple', validity:'30 days',   desc:'Mayan culture, Cancun beaches, and incredible cuisine.', city:'Cancún' },
-  { name:'Brazil',       flag:'🇧🇷', iso:'br', region:'Americas',       time:'7-10 days', price:'$85',  popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'2 years',   desc:'Rio de Janeiro, the Amazon rainforest, and vibrant carnival.', city:'Rio' },
-  { name:'Australia',    flag:'🇦🇺', iso:'au', region:'Oceania',        time:'5-10 days', price:'$95',  popular:true,  trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'1 year',    desc:'Sydney Opera House, the Great Barrier Reef, and the wild outback.', city:'Sydney' },
-  { name:'New Zealand',  flag:'🇳🇿', iso:'nz', region:'Oceania',        time:'3-5 days',  price:'$110', popular:false, trending:false, tag:'eTA',             stay:'90 days',    entry:'Multiple', validity:'2 years',   desc:'Land of the Lord of the Rings, with stunning landscapes everywhere.', city:'Auckland' },
-  { name:'Russia',       flag:'🇷🇺', iso:'ru', region:'Europe',         time:'5-7 days',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'16 days',    entry:'Single',   validity:'60 days',   desc:'Moscow, St. Petersburg, and the deep history of Russia.', city:'Moscow' },
-  { name:'Albania',      flag:'🇦🇱', iso:'al', region:'Europe',         time:'3-5 days',  price:'$45',  popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Multiple', validity:'180 days',  desc:'Beautiful Adriatic coast and unique Balkan culture.', city:'Tirana' },
-  { name:'Egypt',        flag:'🇪🇬', iso:'eg', region:'Africa',         time:'5-7 days',  price:'$60',  popular:false, trending:false, tag:'E-Visa',          stay:'30 days',    entry:'Single',   validity:'3 months',  desc:'Pyramids of Giza, the Nile, and ancient Egyptian civilization.', city:'Cairo' },
-  { name:'Kenya',        flag:'🇰🇪', iso:'ke', region:'Africa',         time:'3-5 days',  price:'$55',  popular:false, trending:false, tag:'E-Visa',          stay:'90 days',    entry:'Single',   validity:'3 months',  desc:'Maasai Mara safari and the famous great wildebeest migration.', city:'Nairobi' },
-]
+const SERVICE_FEE_DEFAULT = 19
+
+function toDisplay(c) {
+  return {
+    ...c,
+    time: c.processingTime,
+    stay: c.maxStay,
+    entry: c.entries,
+    desc: c.description,
+    price: c.govFee == null ? 'Free' : `$${c.govFee + SERVICE_FEE_DEFAULT}`,
+  }
+}
 
 const REGIONS = [
   { name:'All',            icon:'🌍' },
@@ -65,17 +48,20 @@ const QUICK_PICKS = ['Thailand', 'Japan', 'South Korea', 'Dubai (UAE)', 'Singapo
 
 const flagUrl = (iso, w = 640) => `https://flagcdn.com/w${w}/${iso}.png`
 
-const STATS = [
-  { num:`${DESTINATIONS.length}+`, label:'Countries supported' },
-  { num:'99%',                     label:'Approval rate' },
-  { num:'24h',                     label:'Fast processing' },
-  { num:'24/7',                    label:'English support' },
-]
-
 export default function Destinations() {
   const [search, setSearch]     = useState('')
   const [region, setRegion]     = useState('All')
   const [selected, setSelected] = useState(null)
+  const { countries, loading } = useCountries()
+
+  const DESTINATIONS = useMemo(() => countries.map(toDisplay), [countries])
+
+  const STATS = [
+    { num:`${DESTINATIONS.length}+`, label:'Countries supported' },
+    { num:'99%',                     label:'Approval rate' },
+    { num:'24h',                     label:'Fast processing' },
+    { num:'24/7',                    label:'English support' },
+  ]
 
   const term = search.trim().toLowerCase()
   const filtered = DESTINATIONS.filter(d => {

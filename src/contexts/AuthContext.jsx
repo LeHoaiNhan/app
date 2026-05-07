@@ -2,73 +2,119 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { api, getToken, setToken, apiError } from '../lib/api'
 
 const STORAGE_KEY = 'evisa_user_v1'
-const AuthContext = createContext(null)
 
-const DEMO_GOOGLE_USER = {
-  email: 'john.smith@gmail.com',
-  name: 'John Smith',
-  avatar: 'https://ui-avatars.com/api/?name=John+Smith&background=1B4FD8&color=fff&size=80',
-  googleId: 'demo-google-id-john',
-}
+const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) return JSON.parse(stored)
-    } catch (_) { /* fall through */ }
-    return null
+      return stored ? JSON.parse(stored) : null
+    } catch {
+      return null
+    }
   })
+
   const [showLoginModal, setShowLoginModal] = useState(false)
   const [authError, setAuthError] = useState(null)
   const [authLoading, setAuthLoading] = useState(false)
 
+  // =========================
+  // SAVE AUTH STATE
+  // =========================
   const persist = useCallback((nextUser, token) => {
     setUser(nextUser)
     setToken(token)
+
     try {
-      if (nextUser) localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
-      else localStorage.removeItem(STORAGE_KEY)
-    } catch (_e) {
-      /* ignore quota errors */
-    }
+      if (nextUser) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(nextUser))
+      } else {
+        localStorage.removeItem(STORAGE_KEY)
+      }
+    } catch {}
   }, [])
 
+  // =========================
+  // AUTO LOAD USER
+  // =========================
   useEffect(() => {
-    if (!getToken()) return
+    const token = getToken()
+    if (!token) return
+
     api.get('/auth/me')
       .then(res => {
         setUser(res.data.user)
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(res.data.user)) } catch (_e) { /* ignore */ }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(res.data.user))
       })
       .catch(() => persist(null, null))
   }, [persist])
 
-  const loginWithGoogle = useCallback(async () => {
-    setAuthError(null)
-    setAuthLoading(true)
+  // =========================
+  // GOOGLE LOGIN
+  // =========================
+  const handleGoogleSuccess = useCallback(async (credentialResponse) => {
     try {
-      const { data } = await api.post('/auth/google', DEMO_GOOGLE_USER)
+      setAuthLoading(true)
+      setAuthError(null)
+
+      const idToken = credentialResponse?.credential
+
+      if (!idToken) {
+        setAuthError('Google did not return credential')
+        return
+      }
+
+      const { data } = await api.post('/auth/google', {
+        idToken,
+      })
+
       persist(data.user, data.token)
       setShowLoginModal(false)
-      return data.user
+
     } catch (err) {
-      setAuthError(apiError(err, 'Google sign-in failed'))
-      throw err
+      console.error('🔥 GOOGLE AUTH ERROR:', err)
+
+      setAuthError(
+        apiError(err, 'Google sign-in failed')
+      )
     } finally {
       setAuthLoading(false)
     }
   }, [persist])
 
+  // =========================
+  // EVENT BRIDGE (optional)
+  // =========================
+  useEffect(() => {
+    const handler = (e) => {
+      handleGoogleSuccess(e?.detail)
+    }
+
+    window.addEventListener('google-login-success', handler)
+    return () => window.removeEventListener('google-login-success', handler)
+  }, [handleGoogleSuccess])
+
+  // =========================
+  // ADMIN LOGIN
+  // =========================
   const loginAsAdmin = useCallback(async (credentials) => {
-    setAuthError(null)
-    setAuthLoading(true)
     try {
-      const body = credentials || { email: 'admin@evisa.com', password: 'admin123' }
+      setAuthError(null)
+      setAuthLoading(true)
+
+      const body = credentials || {
+        email: 'admin@evisa.com',
+        password: 'admin123',
+      }
+
       const { data } = await api.post('/auth/admin', body)
+
       persist(data.user, data.token)
       setShowLoginModal(false)
+
       return data.user
+
     } catch (err) {
       setAuthError(apiError(err, 'Invalid admin credentials'))
       throw err
@@ -77,22 +123,31 @@ export function AuthProvider({ children }) {
     }
   }, [persist])
 
-  const logout = useCallback(() => {
+  // =========================
+  // LOGOUT
+  // =========================
+  const logout = useCallback(async () => {
+    try {
+      if (getToken()) await api.post('/auth/logout')
+    } catch {}
     persist(null, null)
     setAuthError(null)
   }, [persist])
 
   return (
-    <AuthContext.Provider value={{
-      user,
-      authError,
-      authLoading,
-      loginWithGoogle,
-      loginAsAdmin,
-      logout,
-      showLoginModal,
-      setShowLoginModal,
-    }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        authError,
+        authLoading,
+
+        loginAsAdmin,
+        logout,
+
+        showLoginModal,
+        setShowLoginModal,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )

@@ -6,7 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
+ 
 enum Role {
   customer
   admin
@@ -39,6 +39,35 @@ model User {
   createdAt DateTime   @default(now())
   orders    Order[]
   documents Document[]
+  loginLogs LoginLog[]
+}
+
+enum LoginEvent {
+  login_success
+  login_failure
+  logout
+}
+
+enum LoginProvider {
+  google
+  admin
+}
+
+model LoginLog {
+  id        String        @id @default(cuid())
+  userId    String?
+  user      User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+  email     String?
+  event     LoginEvent
+  provider  LoginProvider
+  ip        String?
+  userAgent String?
+  reason    String?
+  createdAt DateTime      @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([event])
 }
 
 model Order {
@@ -90,4 +119,29 @@ model TimelineEntry {
   note    String?
 
   @@index([orderId])
+}
+
+model Country {
+  id             String   @id @default(cuid())
+  name           String   @unique
+  flag           String
+  iso            String
+  region         String
+  city           String
+  tag            String
+  govFee         Int?
+  processingTime String
+  maxStay        String
+  entries        String
+  validity       String
+  description    String
+  popular        Boolean  @default(false)
+  trending       Boolean  @default(false)
+  active         Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([region])
+  @@index([active])
 }

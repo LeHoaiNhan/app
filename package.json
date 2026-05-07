@@ -9,12 +9,16 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "predeploy":"npm run build",
-    "deploy":"gh-pages -d dist"
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@prisma/client": "^7.8.0",
+    "@react-oauth/google": "^0.13.5",
     "@tailwindcss/vite": "^4.2.4",
     "axios": "^1.15.2",
+    "jwt-decode": "^4.0.0",
+    "prisma": "^7.8.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.2",

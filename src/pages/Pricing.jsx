@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
+import { useCountries } from '../lib/useCountries'
 
 const SERVICE_FEES = { normal: 19, fast: 39, express: 69 }
 
@@ -32,37 +33,6 @@ const TIERS = [
   },
 ]
 
-const PRICING = [
-  { country:'Thailand',     flag:'🇹🇭', tag:'E-Visa',          gov:0,  popular:true },
-  { country:'Singapore',    flag:'🇸🇬', tag:'E-Visa',          gov:15, popular:false },
-  { country:'Indonesia',    flag:'🇮🇩', tag:'Visa on Arrival', gov:35, popular:false },
-  { country:'Malaysia',     flag:'🇲🇾', tag:'Visa-free',       gov:null, popular:false },
-  { country:'Philippines',  flag:'🇵🇭', tag:'E-Visa',          gov:25, popular:false },
-  { country:'Cambodia',     flag:'🇰🇭', tag:'E-Visa',          gov:30, popular:false },
-  { country:'Myanmar',      flag:'🇲🇲', tag:'E-Visa',          gov:50, popular:false },
-  { country:'Japan',        flag:'🇯🇵', tag:'E-Visa',          gov:30, popular:true },
-  { country:'South Korea',  flag:'🇰🇷', tag:'E-Visa',          gov:35, popular:true },
-  { country:'Taiwan',       flag:'🇹🇼', tag:'E-Visa',          gov:30, popular:false },
-  { country:'Hong Kong',    flag:'🇭🇰', tag:'Visa-free',       gov:null, popular:false },
-  { country:'India',        flag:'🇮🇳', tag:'E-Visa',          gov:25, popular:false },
-  { country:'Sri Lanka',    flag:'🇱🇰', tag:'E-Visa',          gov:20, popular:false },
-  { country:'Dubai (UAE)',  flag:'🇦🇪', tag:'E-Visa',          gov:30, popular:true },
-  { country:'Qatar',        flag:'🇶🇦', tag:'E-Visa',          gov:35, popular:false },
-  { country:'Turkey',       flag:'🇹🇷', tag:'E-Visa',          gov:30, popular:false },
-  { country:'Saudi Arabia', flag:'🇸🇦', tag:'E-Visa',          gov:80, popular:false },
-  { country:'Oman',         flag:'🇴🇲', tag:'E-Visa',          gov:35, popular:false },
-  { country:'Bahrain',      flag:'🇧🇭', tag:'E-Visa',          gov:40, popular:false },
-  { country:'Canada',       flag:'🇨🇦', tag:'eTA',             gov:50, popular:false },
-  { country:'Mexico',       flag:'🇲🇽', tag:'E-Visa',          gov:40, popular:false },
-  { country:'Brazil',       flag:'🇧🇷', tag:'E-Visa',          gov:60, popular:false },
-  { country:'Australia',    flag:'🇦🇺', tag:'E-Visa',          gov:95, popular:true },
-  { country:'New Zealand',  flag:'🇳🇿', tag:'eTA',             gov:80, popular:false },
-  { country:'Russia',       flag:'🇷🇺', tag:'E-Visa',          gov:40, popular:false },
-  { country:'Albania',      flag:'🇦🇱', tag:'E-Visa',          gov:30, popular:false },
-  { country:'Egypt',        flag:'🇪🇬', tag:'E-Visa',          gov:40, popular:false },
-  { country:'Kenya',        flag:'🇰🇪', tag:'E-Visa',          gov:40, popular:false },
-]
-
 const TAG_COLORS = {
   'E-Visa':          { bg:'#EEF3FF', text:'#1B4FD8' },
   'Visa on Arrival': { bg:'#FFF7ED', text:'#D97706' },
@@ -91,8 +61,10 @@ export default function Pricing() {
   const [search, setSearch] = useState('')
   const [sort, setSort]     = useState('popular')
   const [openFaq, setOpenFaq] = useState(null)
+  const { countries } = useCountries()
 
   const rows = useMemo(() => {
+    const PRICING = countries.map(c => ({ country: c.name, flag: c.flag, tag: c.tag, gov: c.govFee, popular: c.popular }))
     const term = search.trim().toLowerCase()
     let arr = PRICING.filter(p => !term || p.country.toLowerCase().includes(term))
     arr = [...arr].sort((a, b) => {
@@ -105,7 +77,7 @@ export default function Pricing() {
       return 0
     })
     return arr
-  }, [search, sort, selectedTier])
+  }, [countries, search, sort, selectedTier])
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
