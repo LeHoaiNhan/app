@@ -7,7 +7,7 @@ import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { generateOrderId } from '../lib/orderId.js'
 import { recordAudit } from '../lib/audit.js'
-import { notifyOrderStatus } from '../lib/notifier.js'
+import { notifyOrderStatus, notifyOrderConfirmation } from '../lib/notifier.js'
 import { parseDateRange, parsePagination } from '../lib/dateFilter.js'
 
 const router = Router()
@@ -160,6 +160,7 @@ router.post('/', async (req, res, next) => {
         documents: { orderBy: { createdAt: 'asc' } },
       },
     })
+    notifyOrderConfirmation(order).catch(err => console.warn('[notifier]', err.message))
     res.status(201).json({ order })
   } catch (err) { next(err) }
 })
