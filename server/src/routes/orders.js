@@ -136,6 +136,21 @@ const createSchema = z.object({
 router.post('/', async (req, res, next) => {
   try {
     const data = createSchema.parse(req.body)
+
+    // Idempotency: if a PayPal capture id is supplied and we already saved an
+    // order for it, return that order instead of double-creating + double-charging.
+    const captureId = data.payment?.paypalCaptureId
+    if (captureId) {
+      const existing = await prisma.order.findFirst({
+        where: { customerId: req.user.id, payment: { path: ['paypalCaptureId'], equals: captureId } },
+        include: {
+          timeline: { orderBy: { at: 'asc' } },
+          documents: { orderBy: { createdAt: 'asc' } },
+        },
+      })
+      if (existing) return res.status(200).json({ order: existing, idempotent: true })
+    }
+
     const id = generateOrderId()
     const order = await prisma.order.create({
       data: {

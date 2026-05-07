@@ -571,9 +571,15 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                   <span style={{ fontFamily:'Fraunces,serif', fontSize:18, fontWeight:900, color:'var(--blue)' }}>${order.fee.total}.00</span>
                 </div>
                 <div style={{ fontSize:12, color:'#6B7280', paddingTop:10, borderTop:'1px solid #F3F4F6', display:'flex', justifyContent:'space-between' }}>
-                  <span>{order.payment.method === 'card' ? '💳 Credit card' : '📱 Digital wallet'}</span>
+                  <span>{paymentMethodLabel(order.payment.method)}</span>
                   <span>{fmtDateTime(order.payment.paidAt)}</span>
                 </div>
+                {order.payment.paypalCaptureId && (
+                  <div style={{ fontSize:11, color:'#9CA3AF', display:'flex', justifyContent:'space-between', gap:8 }}>
+                    <span>PayPal capture</span>
+                    <span style={{ fontFamily:'monospace', color:'#6B7280' }}>{order.payment.paypalCaptureId}</span>
+                  </div>
+                )}
                 <div style={{ display:'flex', alignItems:'center', gap:8 }}>
                   <span style={{ fontSize:12, color:'#6B7280' }}>Status:</span>
                   <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:50, background: order.payment.status === 'paid' ? '#F0FDF4' : '#FEF2F2', color: order.payment.status === 'paid' ? '#16A34A' : '#DC2626' }}>
@@ -795,6 +801,14 @@ function Row({ label, val }) {
     </div>
   )
 }
+
+const PAY_METHOD_LABEL = {
+  paypal:  '🅿️ PayPal',
+  card:    '💳 Credit card',
+  ewallet: '📱 Digital wallet',
+  bank:    '🏦 Bank transfer',
+}
+const paymentMethodLabel = (m) => PAY_METHOD_LABEL[m] || m || '—'
 
 const DOC_KIND_META = {
   applicant_photo: { label: 'Applicant photo',   icon: '👤' },

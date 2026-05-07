@@ -12,8 +12,6 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
   const { createOrder } = useOrders()
   const { countries } = useCountries()
   const { tiers } = useServiceTiers()
-  const [pay, setPay]         = useState('card')
-  const [card, setCard]       = useState({ number:'', expiry:'', cvv:'', name:'' })
   const [loading, setLoading] = useState(false)
   const [done, setDone]       = useState(false)
   const [orderCode, setOrderCode] = useState(null)
@@ -77,22 +75,6 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
     return order
   }
 
-  const handlePay = async () => {
-    setError(null)
-    if (!user) {
-      setShowLoginModal(true)
-      return
-    }
-    setLoading(true)
-    try {
-      await submitOrder({ method: pay, status: 'paid', paidAt: new Date().toISOString() })
-    } catch (err) {
-      setError(err?.response?.data?.error || err?.message || 'Failed to submit application')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const handlePaypalApproved = async (capture) => {
     setError(null)
     if (!user) {
@@ -100,21 +82,33 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
       return
     }
     setLoading(true)
-    try {
-      await submitOrder({
-        method: 'paypal',
-        status: 'paid',
-        paidAt: new Date().toISOString(),
-        paypalOrderId: capture.paypalOrderId,
-        paypalCaptureId: capture.captureId,
-        paypalAmount: capture.amount,
-        payer: capture.payer,
-      })
-    } catch (err) {
-      setError(err?.response?.data?.error || err?.message || 'Payment captured but failed to save order — contact support with capture ID ' + capture.captureId)
-    } finally {
-      setLoading(false)
+    const paymentInfo = {
+      method: 'paypal',
+      status: 'paid',
+      paidAt: new Date().toISOString(),
+      paypalOrderId: capture.paypalOrderId,
+      paypalCaptureId: capture.captureId,
+      paypalAmount: capture.amount,
+      payer: capture.payer,
     }
+    // Money is already captured — retry submitOrder a few times before showing
+    // the contact-support fallback. Server is idempotent on paypalCaptureId.
+    let lastErr = null
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await submitOrder(paymentInfo)
+        setLoading(false)
+        return
+      } catch (err) {
+        lastErr = err
+        if (attempt < 2) await new Promise(r => setTimeout(r, 800 * (attempt + 1)))
+      }
+    }
+    setLoading(false)
+    setError(
+      (lastErr?.response?.data?.error || lastErr?.message || 'Could not save order') +
+      ` — your payment went through. Please contact support with PayPal capture ID ${capture.captureId}.`
+    )
   }
 
   /* ── Success screen ── */
@@ -193,88 +187,33 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
 
       {/* Payment method */}
       <div className="section-bar">Payment method</div>
-      <div className="pay-opts" style={{ marginBottom:20 }}>
-        {[['card','💳','Credit / Debit card'],['ewallet','📱','Digital wallet / QR Code'],['paypal','🅿️','PayPal']].map(([val,ico,lbl]) => (
-          <label key={val} className={`pay-opt ${pay===val?'active':''}`} onClick={() => setPay(val)}>
-            <input type="radio" name="pay" style={{ display:'none' }} checked={pay===val} readOnly />
-            <span style={{ fontSize:18 }}>{ico}</span>
-            <span>{lbl}</span>
-          </label>
-        ))}
+      <div style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', borderRadius:10, border:'1.5px solid var(--blue)', background:'var(--blue-light)', marginBottom:14 }}>
+        <span style={{ fontSize:20 }}>🅿️</span>
+        <div style={{ flex:1 }}>
+          <div style={{ fontSize:14, fontWeight:700, color:'var(--blue)' }}>Pay with PayPal</div>
+          <div style={{ fontSize:11, color:'#6B7280' }}>Card / wallet checkouts coming soon</div>
+        </div>
+        <span style={{ fontSize:11, fontWeight:700, padding:'2px 8px', borderRadius:50, background:'white', color:'var(--blue)', border:'1px solid #DBEAFE' }}>Selected</span>
       </div>
 
-      {/* Card form */}
-      {pay==='card' && (
-        <div className="form-grid-2" style={{ marginBottom:8 }}>
-          <div style={{ gridColumn:'span 2' }}>
-            <label className="field-label">Cardholder name <span className="req">*</span></label>
-            <input className="field-input" placeholder="JOHN SMITH"
-              autoComplete="cc-name" autoCapitalize="characters" spellCheck={false}
-              value={card.name} onChange={e => setCard({...card,name:e.target.value})} />
+      <div style={{ padding:'16px 16px 8px', background:'#F9FAFB', borderRadius:10, border:'1px solid #E5E7EB', marginBottom:8 }}>
+        <p style={{ fontSize:13, color:'#6B7280', marginBottom:12 }}>
+          You will be charged <strong style={{ color:'var(--navy)' }}>${total}.00 USD</strong>. The order will only be created after PayPal confirms the payment.
+        </p>
+        {!user ? (
+          <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:8, padding:'10px 14px', fontSize:13, color:'#92400E' }}>
+            Please sign in before paying with PayPal.
           </div>
-          <div style={{ gridColumn:'span 2' }}>
-            <label className="field-label">Card number <span className="req">*</span></label>
-            <input className="field-input" placeholder="1234  5678  9012  3456" maxLength={19}
-              autoComplete="cc-number" inputMode="numeric"
-              value={card.number}
-              onChange={e => {
-                const v = e.target.value.replace(/\D/g,'').slice(0,16)
-                setCard({...card, number: v.replace(/(.{4})/g,'$1 ').trim()})
-              }} />
-          </div>
-          <div className="card-mini-grid">
-            <div>
-              <label className="field-label">Expiry date <span className="req">*</span></label>
-              <input className="field-input" placeholder="MM/YY" maxLength={5}
-                autoComplete="cc-exp" inputMode="numeric"
-                value={card.expiry}
-                onChange={e => {
-                  let v = e.target.value.replace(/\D/g,'')
-                  if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2,4)
-                  setCard({...card, expiry: v})
-                }} />
-            </div>
-            <div>
-              <label className="field-label">CVV <span className="req">*</span></label>
-              <input className="field-input" placeholder="123" maxLength={4} type="password"
-                autoComplete="cc-csc" inputMode="numeric"
-                value={card.cvv} onChange={e => setCard({...card, cvv:e.target.value.replace(/\D/g,'').slice(0,4)})} />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {pay==='ewallet' && (
-        <div style={{ textAlign:'center', padding:'24px 16px', background:'#F9FAFB', borderRadius:10, border:'1px solid #E5E7EB', marginBottom:8 }}>
-          <div style={{ fontSize:48, marginBottom:8 }}>📱</div>
-          <p style={{ fontSize:14, fontWeight:600, color:'var(--navy)', marginBottom:4 }}>Scan QR code to pay</p>
-          <p style={{ fontSize:12, color:'#6B7280' }}>Supports: Apple Pay · Google Pay · Alipay</p>
-          <div style={{ width:120, height:120, background:'#E5E7EB', borderRadius:8, margin:'16px auto 0', display:'flex', alignItems:'center', justifyContent:'center', fontSize:12, color:'#9CA3AF' }}>
-            QR Code<br/>(demo)
-          </div>
-        </div>
-      )}
-
-      {pay==='paypal' && (
-        <div style={{ padding:'16px 16px 8px', background:'#F9FAFB', borderRadius:10, border:'1px solid #E5E7EB', marginBottom:8 }}>
-          <p style={{ fontSize:13, color:'#6B7280', marginBottom:12 }}>
-            You will be charged <strong style={{ color:'var(--navy)' }}>${total}.00 USD</strong>. The order will only be created after PayPal confirms the payment.
-          </p>
-          {!user ? (
-            <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:8, padding:'10px 14px', fontSize:13, color:'#92400E' }}>
-              Please sign in before paying with PayPal.
-            </div>
-          ) : (
-            <PaypalCheckout
-              amount={total}
-              currency="USD"
-              description={`eVisa — ${destination} (${tier?.label || proc})`}
-              onApproved={handlePaypalApproved}
-              onError={(msg) => setError(typeof msg === 'string' ? msg : 'PayPal error')}
-            />
-          )}
-        </div>
-      )}
+        ) : (
+          <PaypalCheckout
+            amount={total}
+            currency="USD"
+            description={`eVisa — ${destination} (${tier?.label || proc})`}
+            onApproved={handlePaypalApproved}
+            onError={(msg) => setError(typeof msg === 'string' ? msg : 'PayPal error')}
+          />
+        )}
+      </div>
 
       {error && (
         <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'10px 14px', marginTop:16, fontSize:13, color:'#991B1B' }}>
@@ -287,27 +226,17 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
         </div>
       )}
 
+      {loading && (
+        <div style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', borderRadius:8, background:'#EFF6FF', border:'1px solid #BFDBFE', marginTop:14, fontSize:13, color:'#1E40AF' }}>
+          <svg className="spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#1E40AF" strokeWidth="3" strokeDasharray="31" strokeDashoffset="10"/>
+          </svg>
+          Saving your order — please don’t close this page…
+        </div>
+      )}
+
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:-24 }}>
-        <button className="btn-secondary" onClick={onBack}>← Back</button>
-        {pay !== 'paypal' && (
-          <button className="btn-green" onClick={handlePay} disabled={loading} style={{ minWidth:200 }}>
-            {loading ? (
-              <>
-                <svg className="spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="3" strokeDasharray="31" strokeDashoffset="10"/>
-                </svg>
-                Processing...
-              </>
-            ) : (
-              <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                  <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Submit & Pay ${total}
-              </>
-            )}
-          </button>
-        )}
+        <button className="btn-secondary" onClick={onBack} disabled={loading}>← Back</button>
       </div>
     </div>
   )
