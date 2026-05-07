@@ -66,12 +66,10 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
       },
     })
 
-    const photoDocId = formData.personal?.photoDocId
-    if (photoDocId) {
-      try {
-        await api.patch(`/uploads/${photoDocId}/link`, { orderId: order.id })
-      } catch (_e) { /* non-fatal */ }
-    }
+    const docIds = [formData.personal?.photoDocId, formData.passport?.passportImgDocId].filter(Boolean)
+    await Promise.all(docIds.map(id =>
+      api.patch(`/uploads/${id}/link`, { orderId: order.id }).catch(() => null),
+    ))
 
     setOrderCode(order.id)
     setDone(true)

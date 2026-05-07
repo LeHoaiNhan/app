@@ -1,4 +1,6 @@
 import { useRef, useState } from 'react'
+import { api, getToken, apiError } from '../../lib/api'
+import { useAuth } from '../../contexts/AuthContext'
 import { ErrorBanner, TrustStrip } from './_StepBits'
 
 function validateStep2(d) {
@@ -12,12 +14,16 @@ function validateStep2(d) {
   else if (new Date(d.expiryDate) <= new Date()) e.expiryDate = 'Passport has already expired'
   if (!d.issuePlace?.trim())       e.issuePlace  = 'Place of issue is required'
   if (!d.issueCountry)             e.issueCountry= 'Issuing country is required'
+  if (!d.passportImgURL)           e.passportImg = 'Please upload a photo of your passport info page'
   return e
 }
 
 export default function Step2Passport({ data, onChange, onNext, onBack }) {
+  const { setShowLoginModal } = useAuth()
   const fileRef = useRef()
   const [errors, setErrors] = useState({})
+  const [uploading, setUploading] = useState(false)
+  const [uploadError, setUploadError] = useState(null)
 
   const setField = (field, value) => {
     onChange(field, value)
@@ -34,11 +40,37 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
     onNext()
   }
 
-  const handleFile = (file) => {
-    if (!file || !file.type.startsWith('image/')) return
-    if (file.size > 5 * 1024 * 1024) { alert('File too large! Max 5MB'); return }
+  const handleFile = async (file) => {
+    if (!file) return
+    if (!file.type.startsWith('image/')) { setUploadError('Please choose an image file (JPG, PNG)'); return }
+    if (file.size > 5 * 1024 * 1024) { setUploadError('Image too large! Max 5MB'); return }
+
+    setUploadError(null)
+    if (errors.passportImg) setErrors(prev => ({ ...prev, passportImg: undefined }))
     onChange('passportImg', file)
     onChange('passportImgURL', URL.createObjectURL(file))
+
+    if (!getToken()) {
+      setUploadError('Please sign in before uploading your passport photo')
+      setShowLoginModal(true)
+      return
+    }
+
+    setUploading(true)
+    try {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('kind', 'passport_scan')
+      const { data: res } = await api.post('/uploads/photo', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+      onChange('passportImgURL', res.url)
+      onChange('passportImgDocId', res.id)
+    } catch (err) {
+      setUploadError(apiError(err, 'Passport photo upload failed'))
+    } finally {
+      setUploading(false)
+    }
   }
 
   const errCount = Object.keys(errors).filter(k => errors[k]).length
@@ -91,22 +123,26 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
       </div>
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
-      <div className="section-bar">Passport info-page photo</div>
+      <div className="section-bar">Passport info-page photo <span className="req">*</span></div>
 
       <div
+        data-error={!!errors.passportImg}
         className={`upload-zone ${data.passportImgURL ? 'has-file' : ''}`}
+        style={errors.passportImg ? { borderColor: '#DC2626', background: '#FEF2F2' } : undefined}
         onClick={() => fileRef.current.click()}
         onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]) }}
         onDragOver={e => e.preventDefault()}
       >
-        <input ref={fileRef} type="file" accept="image/*" style={{ display:'none' }}
-          onChange={e => handleFile(e.target.files[0])} />
+        <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/jpg,image/webp"
+          style={{ display:'none' }} onChange={e => handleFile(e.target.files[0])} />
         {data.passportImgURL ? (
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:8 }}>
             <img src={data.passportImgURL} alt="passport"
-              style={{ height:120, maxWidth:'100%', objectFit:'contain', borderRadius:8, border:'2px solid var(--green)', boxShadow:'0 2px 8px rgba(0,0,0,0.1)' }} />
-            <p style={{ fontSize:13, fontWeight:700, color:'var(--green)' }}>✓ Photo uploaded</p>
-            <p style={{ fontSize:11, color:'#9CA3AF' }}>Click to change</p>
+              style={{ height:120, maxWidth:'100%', objectFit:'contain', borderRadius:8, border:`2px solid ${uploading ? 'var(--blue)' : 'var(--green)'}`, boxShadow:'0 2px 8px rgba(0,0,0,0.1)', opacity: uploading ? 0.7 : 1 }} />
+            <p style={{ fontSize:13, fontWeight:700, color: uploading ? 'var(--blue)' : 'var(--green)' }}>
+              {uploading ? '⏳ Uploading…' : '✓ Photo uploaded'}
+            </p>
+            {!uploading && <p style={{ fontSize:11, color:'#9CA3AF' }}>Click to change</p>}
           </div>
         ) : (
           <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:6 }}>
@@ -121,9 +157,15 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
         )}
       </div>
 
+      {(uploadError || errors.passportImg) && (
+        <div style={{ marginTop:8, background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'8px 12px', fontSize:12, color:'#991B1B' }}>
+          {uploadError || errors.passportImg}
+        </div>
+      )}
+
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
         <button className="btn-secondary" onClick={onBack}>← Back</button>
-        <button className="btn-primary" onClick={handleNext}>
+        <button className="btn-primary" onClick={handleNext} disabled={uploading}>
           Continue to Trip details
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>

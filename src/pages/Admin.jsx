@@ -441,6 +441,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
   const status = ORDER_STATUSES[order.status]
   const actions = NEXT_ACTIONS[order.status] || []
   const visaDoc = (order.documents || []).find(d => d.kind === 'visa_result')
+  const submittedDocs = (order.documents || []).filter(d => d.kind !== 'visa_result')
 
   const handleConfirm = async () => {
     if (!confirmAction) return
@@ -540,6 +541,12 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                 ['Issuing country',  order.passport.issueCountry],
               ]} />
             </Section>
+
+            {submittedDocs.length > 0 && (
+              <Section title="📎 Submitted documents">
+                <SubmittedDocs docs={submittedDocs} />
+              </Section>
+            )}
 
             <Section title="✈️ Trip">
               <InfoGrid items={[
@@ -785,6 +792,44 @@ function Row({ label, val }) {
     <div style={{ display:'flex', justifyContent:'space-between' }}>
       <span style={{ color:'#6B7280' }}>{label}</span>
       <span style={{ fontWeight:600, color:'var(--navy)' }}>{val}</span>
+    </div>
+  )
+}
+
+const DOC_KIND_META = {
+  applicant_photo: { label: 'Applicant photo',   icon: '👤' },
+  passport_scan:   { label: 'Passport info page', icon: '📘' },
+  supporting:      { label: 'Supporting document', icon: '📎' },
+}
+
+function SubmittedDocs({ docs }) {
+  return (
+    <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill,minmax(160px,1fr))', gap:12 }}>
+      {docs.map(d => {
+        const meta = DOC_KIND_META[d.kind] || { label: d.kind, icon: '📄' }
+        const isImage = (d.mimeType || '').startsWith('image/')
+        return (
+          <a key={d.id} href={d.url} target="_blank" rel="noreferrer"
+            style={{ display:'block', border:'1px solid #E5E7EB', borderRadius:10, overflow:'hidden', background:'#F9FAFB', textDecoration:'none', color:'inherit', transition:'border-color .15s' }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--blue)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = '#E5E7EB'}
+          >
+            <div style={{ aspectRatio:'4/3', background:'white', display:'flex', alignItems:'center', justifyContent:'center', overflow:'hidden' }}>
+              {isImage ? (
+                <img src={d.url} alt={meta.label} style={{ width:'100%', height:'100%', objectFit:'contain' }} />
+              ) : (
+                <span style={{ fontSize:36 }}>📄</span>
+              )}
+            </div>
+            <div style={{ padding:'8px 10px', borderTop:'1px solid #F3F4F6' }}>
+              <div style={{ fontSize:12, fontWeight:700, color:'var(--navy)' }}>{meta.icon} {meta.label}</div>
+              <div style={{ fontSize:10, color:'#9CA3AF', marginTop:2 }}>
+                {(d.size / 1024).toFixed(0)} KB · click to open
+              </div>
+            </div>
+          </a>
+        )
+      })}
     </div>
   )
 }
