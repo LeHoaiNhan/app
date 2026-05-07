@@ -123,9 +123,9 @@ export default function Admin() {
       <Navbar />
 
       {/* ── ADMIN HERO ── */}
-      <section style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 55%,#0d2451 100%)', padding:'40px 20px', position:'relative', overflow:'hidden' }}>
+      <section className="admin-hero" style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 55%,#0d2451 100%)', padding:'40px 20px', position:'relative', overflow:'hidden' }}>
         <div style={{ position:'absolute', top:-60, right:-60, width:300, height:300, background:'radial-gradient(circle,rgba(245,166,35,0.20) 0%,transparent 70%)', pointerEvents:'none' }} />
-        <div style={{ maxWidth:1200, margin:'0 auto', position:'relative', display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, flexWrap:'wrap' }}>
+        <div className="admin-hero-row" style={{ maxWidth:1200, margin:'0 auto', position:'relative', display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, flexWrap:'wrap' }}>
           <div style={{ display:'flex', alignItems:'center', gap:14 }}>
             <div style={{ width:52, height:52, borderRadius:14, background:'var(--gold)', display:'flex', alignItems:'center', justifyContent:'center', fontSize:24, boxShadow:'0 12px 24px rgba(245,166,35,0.3)' }}>⚙️</div>
             <div>
@@ -136,7 +136,7 @@ export default function Admin() {
               <p style={{ color:'rgba(255,255,255,0.6)', fontSize:12, marginTop:2 }}>Manage visa orders and process customer applications</p>
             </div>
           </div>
-          <div style={{ display:'flex', gap:8 }}>
+          <div className="admin-hero-actions" style={{ display:'flex', gap:8 }}>
             {tab === 'orders' && (
               <button onClick={refresh} title="Reload orders from server"
                 style={{ fontSize:12, fontWeight:600, padding:'8px 14px', borderRadius:8, background:'rgba(255,255,255,0.1)', border:'1px solid rgba(255,255,255,0.15)', color:'rgba(255,255,255,0.8)', cursor:'pointer', fontFamily:'inherit', transition:'background .15s', backdropFilter:'blur(8px)' }}
@@ -153,7 +153,7 @@ export default function Admin() {
         </div>
 
         {/* ── TABS ── */}
-        <div style={{ maxWidth:1200, margin:'24px auto 0', position:'relative', display:'flex', gap:6, flexWrap:'wrap' }}>
+        <div className="admin-tabs" style={{ maxWidth:1200, margin:'24px auto 0', position:'relative', display:'flex', gap:6, flexWrap:'wrap' }}>
           {[
             { key:'orders',    label:'📋 Orders' },
             { key:'countries', label:'🌍 Countries' },
@@ -185,8 +185,8 @@ export default function Admin() {
       <>
 
       {/* ── STATS ── */}
-      <section style={{ background:'white', padding:'32px 20px', borderBottom:'1px solid #F3F4F6' }}>
-        <div style={{ maxWidth:1200, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:14 }}>
+      <section className="admin-stats-section" style={{ background:'white', padding:'32px 20px', borderBottom:'1px solid #F3F4F6' }}>
+        <div className="admin-stats-grid" style={{ maxWidth:1200, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(150px,1fr))', gap:14 }}>
           {[
             ['Total orders',     stats.total,      '📋', '#1B4FD8'],
             ['New',              stats.submitted,  '📝', '#6B7280'],
@@ -470,7 +470,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
       <Navbar />
 
       <div style={{ maxWidth:1200, margin:'0 auto', padding:'32px 20px' }}>
-        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18, gap:10, flexWrap:'wrap' }}>
+        <div className="admin-detail-header" style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18, gap:10, flexWrap:'wrap' }}>
           <button onClick={onBack}
             style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:600, color:'var(--blue)', background:'transparent', border:'none', cursor:'pointer', fontFamily:'inherit' }}
             onMouseEnter={e => e.currentTarget.style.textDecoration='underline'}
@@ -487,10 +487,10 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
         </div>
 
         <div style={{ background:'white', borderRadius:16, border:'1px solid #E5E7EB', overflow:'hidden', marginBottom:18 }}>
-          <div style={{ position:'relative', overflow:'hidden', padding:'28px 32px', background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 100%)' }}>
+          <div className="admin-detail-hero" style={{ position:'relative', overflow:'hidden', padding:'28px 32px', background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 100%)' }}>
             <div style={{ position:'absolute', top:-40, right:-40, width:200, height:200, background:'radial-gradient(circle,rgba(245,166,35,0.15) 0%,transparent 70%)', pointerEvents:'none' }} />
             <div style={{ position:'relative', display:'flex', alignItems:'flex-start', gap:18, flexWrap:'wrap' }}>
-              <div style={{ fontSize:54, lineHeight:1 }}>{order.flag}</div>
+              <div className="admin-detail-hero-flag" style={{ fontSize:54, lineHeight:1 }}>{order.flag}</div>
               <div style={{ flex:1, minWidth:240 }}>
                 <h1 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'white', lineHeight:1.1 }}>{order.destination}</h1>
                 <div style={{ fontFamily:'monospace', fontSize:14, color:'rgba(255,255,255,0.6)', marginTop:4 }}>{order.id}</div>
@@ -502,7 +502,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                   <span style={{ fontSize:11, fontWeight:600, padding:'4px 10px', borderRadius:50, color:'rgba(255,255,255,0.9)', background:'rgba(255,255,255,0.15)' }}>{TIER_LABEL[order.processing]}</span>
                 </div>
               </div>
-              <div style={{ textAlign:'right', flexShrink:0 }}>
+              <div className="admin-detail-hero-revenue" style={{ textAlign:'right', flexShrink:0 }}>
                 <div style={{ color:'rgba(255,255,255,0.6)', fontSize:11, textTransform:'uppercase', letterSpacing:'.06em' }}>Total revenue</div>
                 <div style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'white' }}>${order.fee.total}</div>
               </div>
@@ -578,7 +578,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
           </div>
 
           <div style={{ display:'flex', flexDirection:'column', gap:18, minWidth:0 }}>
-            <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18, position:'sticky', top:80 }}>
+            <div className="admin-update-card" style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, padding:18, position:'sticky', top:80 }}>
               <h3 style={{ fontWeight:700, fontSize:15, color:'var(--navy)', marginBottom:14 }}>⚡ Update status</h3>
               {actions.length > 0 ? (
                 <>

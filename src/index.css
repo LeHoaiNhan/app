@@ -395,6 +395,7 @@ textarea.field-input { resize: vertical; min-height: 80px; }
   section[style*="48px 20px"] { padding: 32px 16px !important; }
   section[style*="40px 20px"] { padding: 28px 16px !important; }
   section[style*="56px 0"]    { padding: 36px 16px !important; }
+  section[style*="32px 20px"] { padding: 22px 16px !important; }
   section[style*="padding:'64px"] { padding: 40px 16px !important; }
   /* Tighten container max-width padding on small viewports too */
   div[style*="padding:'0 20px'"] { padding-left: 16px !important; padding-right: 16px !important; }
@@ -591,4 +592,69 @@ textarea.field-input { resize: vertical; min-height: 80px; }
   .admin-filters-panel.open > input[type=date],
   .admin-filters-panel.open > select { flex: 1 1 140px; }
   .admin-filters-panel.open > button:last-child { margin-left: 0 !important; width: 100%; }
+}
+
+/* ── Admin: mobile polish ─────────────────────────────── */
+.admin-tabs { scrollbar-width: none; }
+.admin-tabs::-webkit-scrollbar { display: none; }
+
+@media (max-width: 768px) {
+  /* Hero: tighter padding, stack title-block + actions */
+  .admin-hero { padding: 22px 16px !important; }
+  .admin-hero-row { gap: 14px !important; }
+  .admin-hero-row > div:first-child { width: 100%; }
+  .admin-hero h1 { font-size: 20px !important; }
+  .admin-hero-row > div:first-child > div:first-child {
+    width: 44px !important; height: 44px !important; font-size: 20px !important;
+  }
+  .admin-hero-actions { width: 100%; }
+  .admin-hero-actions > button { flex: 1; justify-content: center; }
+
+  /* Tabs: horizontal scroll instead of wrapping */
+  .admin-tabs {
+    margin: 16px -16px 0 !important;
+    padding: 0 16px;
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+  .admin-tabs > button {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 10px 14px !important;
+    font-size: 12px !important;
+  }
+
+  /* Stats grid: 2 columns, condensed cards */
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  .admin-stats-grid > div { padding: 12px !important; }
+  .admin-stats-grid > div > div:last-child { font-size: 22px !important; }
+
+  /* Detail page: stack header so Send-message goes full-width below Back */
+  .admin-detail-header { gap: 8px !important; flex-direction: column !important; align-items: stretch !important; }
+  .admin-detail-header > button:first-child { align-self: flex-start; }
+  .admin-detail-header > button:last-child { width: 100%; justify-content: center; }
+
+  /* Detail hero: smaller flag/title, revenue moves to a left-aligned bar */
+  .admin-detail-hero { padding: 22px 18px !important; }
+  .admin-detail-hero h1 { font-size: 22px !important; line-height: 1.2 !important; }
+  .admin-detail-hero-flag { font-size: 38px !important; }
+  .admin-detail-hero-revenue {
+    text-align: left !important;
+    width: 100%;
+    display: flex !important;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .admin-detail-hero-revenue > div:last-child { font-size: 24px !important; }
+
+  /* Update-status panel: drop the sticky on mobile (covers form scroll) */
+  .admin-update-card { position: static !important; top: auto !important; }
 }
