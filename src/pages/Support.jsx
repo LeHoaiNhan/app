@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Seo from '../components/Seo'
+import OrderTracker from '../components/OrderTracker'
 
 const CHANNELS = [
   { icon:'💬', title:'Live Chat', desc:'Reply within 2 minutes',  avail:'24/7',                action:'Start chat',  color:'#EEF3FF', accent:'var(--blue)',  badge:'Online' },
@@ -39,38 +40,11 @@ const STATS = [
 export default function Support() {
   const [form, setForm]   = useState({ name:'', email:'', subject:'', message:'' })
   const [sent, setSent]   = useState(false)
-  const [orderCode, setOrderCode] = useState('')
-  const [trackResult, setTrackResult] = useState(null)
-  const [tracking, setTracking] = useState(false)
   const [chatOpen, setChatOpen] = useState(false)
 
   const handleSend = (e) => {
     e?.preventDefault()
     setSent(true)
-  }
-
-  const handleTrack = (e) => {
-    e?.preventDefault()
-    if (!orderCode.trim()) return
-    setTracking(true)
-    setTrackResult(null)
-    setTimeout(() => {
-      const code = orderCode.trim().toUpperCase()
-      if (!/^EV-[A-Z0-9]{6}$/.test(code)) {
-        setTrackResult({ found:false })
-      } else {
-        const hash = [...code].reduce((s, c) => s + c.charCodeAt(0), 0)
-        const currentStage = (hash % TIMELINE_STAGES.length)
-        setTrackResult({
-          found:true,
-          code,
-          country: ['Thailand','Japan','South Korea','Dubai','Singapore'][hash % 5],
-          submittedAt: '2026-04-28',
-          currentStage,
-        })
-      }
-      setTracking(false)
-    }, 1000)
   }
 
   return (
@@ -116,90 +90,7 @@ export default function Support() {
       {/* ── ORDER TRACKING ── */}
       <section style={{ background:'#F9FAFB', padding:'48px 20px' }}>
         <div style={{ maxWidth:1024, margin:'0 auto' }}>
-          <div style={{ background:'white', borderRadius:16, border:'1px solid #E5E7EB', overflow:'hidden' }}>
-            <div style={{ padding:'18px 24px', display:'flex', alignItems:'center', gap:14, background:'var(--blue-light)', borderBottom:'1px solid #F3F4F6' }}>
-              <div style={{ width:44, height:44, borderRadius:12, background:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:22 }}>🔎</div>
-              <div style={{ flex:1 }}>
-                <h2 style={{ fontFamily:'Fraunces,serif', fontSize:20, fontWeight:900, color:'var(--navy)' }}>Track your order</h2>
-                <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Enter your order code EV-XXXXXX to see real-time status</p>
-              </div>
-            </div>
-            <form onSubmit={handleTrack} style={{ padding:24 }}>
-              <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
-                <input
-                  style={{ flex:'1 1 240px', padding:'12px 16px', borderRadius:12, border:'2px solid #E5E7EB', fontSize:14, fontFamily:'monospace', textTransform:'uppercase', letterSpacing:'.05em', outline:'none' }}
-                  placeholder="EV-A47B92"
-                  value={orderCode}
-                  onChange={e => setOrderCode(e.target.value.toUpperCase())}
-                  maxLength={9}
-                />
-                <button type="submit" disabled={tracking} className="btn-primary" style={{ padding:'12px 28px', justifyContent:'center', opacity: tracking ? 0.7 : 1 }}>
-                  {tracking ? (
-                    <>
-                      <svg className="spin" width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="white" strokeWidth="3" strokeDasharray="31" strokeDashoffset="10"/>
-                      </svg>
-                      Searching
-                    </>
-                  ) : 'Track →'}
-                </button>
-              </div>
-
-              {trackResult && trackResult.found && (
-                <div className="fade-up" style={{ marginTop:24 }}>
-                  <div style={{ borderRadius:12, padding:16, marginBottom:20, display:'flex', alignItems:'center', justifyContent:'space-between', gap:14, flexWrap:'wrap', background:'var(--green-light)', border:'1px solid #BBF7D0' }}>
-                    <div>
-                      <div style={{ fontSize:11, fontWeight:700, color:'var(--green)', textTransform:'uppercase', letterSpacing:'.06em' }}>Order found</div>
-                      <div style={{ fontFamily:'monospace', fontWeight:900, fontSize:18, color:'var(--navy)', marginTop:2 }}>{trackResult.code}</div>
-                      <div style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Destination: <span style={{ fontWeight:600 }}>{trackResult.country}</span> · Submitted: {trackResult.submittedAt}</div>
-                    </div>
-                    <div style={{ textAlign:'right' }}>
-                      <div style={{ fontSize:11, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em' }}>Status</div>
-                      <div style={{ fontWeight:700, fontSize:14, color:'var(--blue)' }}>{TIMELINE_STAGES[trackResult.currentStage].label}</div>
-                    </div>
-                  </div>
-
-                  <div>
-                    {TIMELINE_STAGES.map((stage, i) => {
-                      const done = i <= trackResult.currentStage
-                      const current = i === trackResult.currentStage
-                      return (
-                        <div key={stage.id} style={{ display:'flex', gap:14 }}>
-                          <div style={{ display:'flex', flexDirection:'column', alignItems:'center', flexShrink:0 }}>
-                            <div style={{ width:38, height:38, borderRadius:'50%', display:'flex', alignItems:'center', justifyContent:'center', fontSize:14, background: done ? (current ? 'var(--blue)' : 'var(--green)') : '#E5E7EB', color: done ? 'white' : '#9CA3AF', boxShadow: current ? '0 0 0 4px rgba(27,79,216,0.15)' : 'none', transition:'all .2s' }}>
-                              {done && !current ? '✓' : stage.icon}
-                            </div>
-                            {i < TIMELINE_STAGES.length - 1 && (
-                              <div style={{ width:2, flex:1, marginTop:4, marginBottom:4, background: i < trackResult.currentStage ? 'var(--green)' : '#E5E7EB' }} />
-                            )}
-                          </div>
-                          <div style={{ flex:1, paddingBottom:18, opacity: current ? 1 : (done ? 0.9 : 0.5) }}>
-                            <div style={{ fontWeight:700, fontSize:14, color:'var(--navy)' }}>{stage.label}</div>
-                            <div style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>{stage.desc}</div>
-                            {current && (
-                              <span style={{ display:'inline-block', marginTop:6, fontSize:11, fontWeight:700, padding:'2px 10px', borderRadius:50, background:'var(--blue-light)', color:'var(--blue)' }}>
-                                In progress
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {trackResult && !trackResult.found && (
-                <div className="fade-up" style={{ marginTop:18, borderRadius:12, padding:14, display:'flex', gap:12, alignItems:'flex-start', background:'#FEF2F2', border:'1px solid #FECACA' }}>
-                  <span style={{ fontSize:22 }}>⚠️</span>
-                  <div>
-                    <div style={{ fontWeight:700, fontSize:14, color:'#991B1B' }}>No order found with that code</div>
-                    <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>Order codes follow the format <span style={{ fontFamily:'monospace', fontWeight:700 }}>EV-XXXXXX</span>. Check your confirmation email.</p>
-                  </div>
-                </div>
-              )}
-            </form>
-          </div>
+          <OrderTracker />
         </div>
       </section>
 

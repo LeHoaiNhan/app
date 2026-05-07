@@ -3,6 +3,7 @@ import Navbar from '../components/Navbar'
 import ApplicationForm from '../components/ApplicationForm'
 import Footer from '../components/Footer'
 import Seo from '../components/Seo'
+import OrderTracker from '../components/OrderTracker'
 
 const STATS = [
   { num:'99%',  label:'Approval rate' },
@@ -115,6 +116,21 @@ export default function Home() {
           ))}
         </div>
         <style>{`@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr!important}}`}</style>
+      </section>
+
+      {/* ── TRACK ORDER ── */}
+      <section style={{ background:'#F9FAFB', padding:'48px 20px' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:24 }}>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>
+              Already applied? Track your order
+            </h2>
+            <p style={{ color:'#6B7280', fontSize:15 }}>
+              Enter your order code from the confirmation email to see real-time status
+            </p>
+          </div>
+          <OrderTracker />
+        </div>
       </section>
 
       {/* ── HOW IT WORKS ── */}
