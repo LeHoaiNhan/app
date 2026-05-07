@@ -67,7 +67,7 @@ export default function ApplicationForm() {
             <h3 style={{ fontSize:16, fontWeight:700, color:'var(--navy)' }}>
               {STEPS[step-1].emoji} {TITLES[step-1]}
             </h3>
-            <span style={{ fontSize:12, fontWeight:600, color:'#6B7280', background:'white', padding:'4px 12px', borderRadius:20, border:'1px solid #E5E7EB' }}>
+            <span className="step-chip" style={{ fontSize:12, fontWeight:600, color:'#6B7280', background:'white', padding:'4px 12px', borderRadius:20, border:'1px solid #E5E7EB' }}>
               Step {step} of 4
             </span>
           </div>

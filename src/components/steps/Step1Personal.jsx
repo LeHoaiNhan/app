@@ -74,20 +74,20 @@ export default function Step1Personal({ data, onChange, onNext }) {
     }
   }
 
-  const s = { padding:'24px 28px' }
-
   return (
-    <div style={s}>
+    <div className="step-body">
       <div className="section-bar">Name & Gender</div>
       <div className="form-grid-2">
         <Field label="Last name" required error={errors.lastName}>
           <input className="field-input" type="text" placeholder="e.g. SMITH"
+            autoComplete="family-name" autoCapitalize="characters"
             data-error={!!errors.lastName}
             style={errors.lastName ? errorStyle : undefined}
             value={data.lastName} onChange={e => setField('lastName', e.target.value)} />
         </Field>
         <Field label="First & middle name" required error={errors.firstName}>
           <input className="field-input" type="text" placeholder="e.g. JOHN"
+            autoComplete="given-name" autoCapitalize="characters"
             data-error={!!errors.firstName}
             style={errors.firstName ? errorStyle : undefined}
             value={data.firstName} onChange={e => setField('firstName', e.target.value)} />
@@ -104,6 +104,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
         </Field>
         <Field label="Date of birth" required error={errors.dob}>
           <input className="field-input" type="date"
+            autoComplete="bday" max={new Date().toISOString().slice(0,10)}
             data-error={!!errors.dob}
             style={errors.dob ? errorStyle : undefined}
             value={data.dob} onChange={e => setField('dob', e.target.value)} />
@@ -116,24 +117,28 @@ export default function Step1Personal({ data, onChange, onNext }) {
       <div className="form-grid-2">
         <Field label="Email" required error={errors.email} hint="Your e-visa will be sent to this email">
           <input className="field-input" type="email" placeholder="email@example.com"
+            autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false}
             data-error={!!errors.email}
             style={errors.email ? errorStyle : undefined}
             value={data.email} onChange={e => setField('email', e.target.value)} />
         </Field>
         <Field label="Phone number" required error={errors.phone}>
           <input className="field-input" type="tel" placeholder="+1 555 123 4567"
+            autoComplete="tel" inputMode="tel"
             data-error={!!errors.phone}
             style={errors.phone ? errorStyle : undefined}
             value={data.phone} onChange={e => setField('phone', e.target.value)} />
         </Field>
         <Field label="Nationality" required error={errors.nationality}>
-          <select className="field-input" value={data.nationality} onChange={e => setField('nationality', e.target.value)}>
+          <select className="field-input" autoComplete="country-name"
+            value={data.nationality} onChange={e => setField('nationality', e.target.value)}>
             {['United States','United Kingdom','Australia','Canada','Germany','France','Japan','South Korea','Singapore'].map(n =>
               <option key={n}>{n}</option>)}
           </select>
         </Field>
         <Field label="Place of birth" required error={errors.birthPlace}>
           <input className="field-input" type="text" placeholder="New York, USA"
+            autoComplete="address-level2"
             data-error={!!errors.birthPlace}
             style={errors.birthPlace ? errorStyle : undefined}
             value={data.birthPlace} onChange={e => setField('birthPlace', e.target.value)} />
@@ -143,7 +148,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
 
       <div className="section-bar">Portrait photo <span className="req">*</span></div>
-      <div style={{ display:'flex', gap:16, alignItems:'flex-start', flexWrap:'wrap' }}>
+      <div className="photo-row">
         <div
           data-error={!!errors.photo}
           className={`upload-zone ${data.photoURL ? 'has-file' : ''}`}
@@ -186,7 +191,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
           </div>
         )}
 
-        <div style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:10, padding:'14px 16px', width:220, flexShrink:0 }}>
+        <div className="photo-tips" style={{ background:'#FFFBEB', border:'1px solid #FDE68A', borderRadius:10, padding:'14px 16px', width:220, flexShrink:0 }}>
           <p style={{ fontSize:13, fontWeight:700, color:'#92400E', marginBottom:8 }}>📋 Photo requirements</p>
           <ul style={{ fontSize:12, color:'#78350F', lineHeight:1.8, paddingLeft:0, listStyle:'none' }}>
             {['Plain white background','Face camera straight on','No hat, no glasses','Taken in last 6 months','At least 400 × 400px'].map(r => (

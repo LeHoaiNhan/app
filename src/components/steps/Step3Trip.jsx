@@ -30,7 +30,7 @@ export default function Step3Trip({ data, onChange, onNext, onBack }) {
   }
 
   return (
-    <div style={{ padding:'24px 28px' }}>
+    <div className="step-body">
       <div className="section-bar">Trip details</div>
       <div className="form-grid-2">
         <Field label="Destination country" required error={errors.destination}>
@@ -51,12 +51,14 @@ export default function Step3Trip({ data, onChange, onNext, onBack }) {
         </Field>
         <Field label="Entry date" required error={errors.entryDate}>
           <input className="field-input" type="date"
+            min={new Date().toISOString().slice(0,10)}
             data-error={!!errors.entryDate}
             style={errors.entryDate ? errorStyle : undefined}
             value={data.entryDate} onChange={e => setField('entryDate', e.target.value)} />
         </Field>
         <Field label="Exit date" required error={errors.exitDate}>
           <input className="field-input" type="date"
+            min={data.entryDate || new Date().toISOString().slice(0,10)}
             data-error={!!errors.exitDate}
             style={errors.exitDate ? errorStyle : undefined}
             value={data.exitDate} onChange={e => setField('exitDate', e.target.value)} />

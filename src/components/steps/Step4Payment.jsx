@@ -153,7 +153,7 @@ export default function Step4Payment({ formData, onBack }) {
   )
 
   return (
-    <div style={{ padding:'24px 28px' }}>
+    <div className="step-body">
       {/* Banner */}
       <div style={{ display:'flex', alignItems:'center', gap:12, background:'var(--green-light)', border:'1px solid #BBF7D0', borderRadius:10, padding:'12px 16px', marginBottom:20 }}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2">
@@ -205,31 +205,37 @@ export default function Step4Payment({ formData, onBack }) {
           <div style={{ gridColumn:'span 2' }}>
             <label className="field-label">Cardholder name <span className="req">*</span></label>
             <input className="field-input" placeholder="JOHN SMITH"
+              autoComplete="cc-name" autoCapitalize="characters" spellCheck={false}
               value={card.name} onChange={e => setCard({...card,name:e.target.value})} />
           </div>
           <div style={{ gridColumn:'span 2' }}>
             <label className="field-label">Card number <span className="req">*</span></label>
             <input className="field-input" placeholder="1234  5678  9012  3456" maxLength={19}
+              autoComplete="cc-number" inputMode="numeric"
               value={card.number}
               onChange={e => {
                 const v = e.target.value.replace(/\D/g,'').slice(0,16)
                 setCard({...card, number: v.replace(/(.{4})/g,'$1 ').trim()})
               }} />
           </div>
-          <div>
-            <label className="field-label">Expiry date <span className="req">*</span></label>
-            <input className="field-input" placeholder="MM/YY" maxLength={5}
-              value={card.expiry}
-              onChange={e => {
-                let v = e.target.value.replace(/\D/g,'')
-                if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2,4)
-                setCard({...card, expiry: v})
-              }} />
-          </div>
-          <div>
-            <label className="field-label">CVV <span className="req">*</span></label>
-            <input className="field-input" placeholder="123" maxLength={4} type="password"
-              value={card.cvv} onChange={e => setCard({...card, cvv:e.target.value.replace(/\D/g,'').slice(0,4)})} />
+          <div className="card-mini-grid">
+            <div>
+              <label className="field-label">Expiry date <span className="req">*</span></label>
+              <input className="field-input" placeholder="MM/YY" maxLength={5}
+                autoComplete="cc-exp" inputMode="numeric"
+                value={card.expiry}
+                onChange={e => {
+                  let v = e.target.value.replace(/\D/g,'')
+                  if (v.length >= 2) v = v.slice(0,2) + '/' + v.slice(2,4)
+                  setCard({...card, expiry: v})
+                }} />
+            </div>
+            <div>
+              <label className="field-label">CVV <span className="req">*</span></label>
+              <input className="field-input" placeholder="123" maxLength={4} type="password"
+                autoComplete="cc-csc" inputMode="numeric"
+                value={card.cvv} onChange={e => setCard({...card, cvv:e.target.value.replace(/\D/g,'').slice(0,4)})} />
+            </div>
           </div>
         </div>
       )}

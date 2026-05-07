@@ -41,11 +41,12 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
   }
 
   return (
-    <div style={{ padding:'24px 28px' }}>
+    <div className="step-body">
       <div className="section-bar">Passport details</div>
       <div className="form-grid-2">
         <Field label="Passport number" required error={errors.passportNo}>
           <input className="field-input" type="text" placeholder="B1234567"
+            autoComplete="off" autoCapitalize="characters" spellCheck={false}
             data-error={!!errors.passportNo}
             style={errors.passportNo ? errorStyle : undefined}
             value={data.passportNo} onChange={e => setField('passportNo', e.target.value)} />
@@ -59,6 +60,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
         </Field>
         <Field label="Issue date" required error={errors.issueDate}>
           <input className="field-input" type="date"
+            max={new Date().toISOString().slice(0,10)}
             data-error={!!errors.issueDate}
             style={errors.issueDate ? errorStyle : undefined}
             value={data.issueDate} onChange={e => setField('issueDate', e.target.value)} />
@@ -66,6 +68,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
         <Field label="Expiry date" required error={errors.expiryDate}
           hint="Must be valid for at least 6 months from your entry date">
           <input className="field-input" type="date"
+            min={new Date().toISOString().slice(0,10)}
             data-error={!!errors.expiryDate}
             style={errors.expiryDate ? errorStyle : undefined}
             value={data.expiryDate} onChange={e => setField('expiryDate', e.target.value)} />
