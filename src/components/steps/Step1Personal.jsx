@@ -80,7 +80,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
   return (
     <form className="step-body" onSubmit={(e) => { e.preventDefault(); if (!uploading) handleNext() }} noValidate>
       {errCount > 0 && <ErrorBanner count={errCount} />}
-      <div className="section-bar">Name & Gender</div>
+      <h3 className="section-bar">Name & Gender</h3>
       <div className="form-grid-2">
         <Field label="Last name" required error={errors.lastName}>
           <input className="field-input" type="text" placeholder="e.g. SMITH"
@@ -117,7 +117,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
 
-      <div className="section-bar">Contact information</div>
+      <h3 className="section-bar">Contact information</h3>
       <div className="form-grid-2">
         <Field label="Email" required error={errors.email} hint="Your e-visa will be sent to this email">
           <input className="field-input" type="email" placeholder="email@example.com"
@@ -151,7 +151,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
 
-      <div className="section-bar">Portrait photo <span className="req">*</span></div>
+      <h3 className="section-bar">Portrait photo <span className="req">*</span></h3>
       <div className="photo-row">
         <div
           role="button"

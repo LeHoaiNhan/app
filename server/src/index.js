@@ -9,6 +9,7 @@ import path from 'node:path'
 import { prisma } from './lib/prisma.js'
 import authRoutes from './routes/auth.js'
 import orderRoutes from './routes/orders.js'
+import draftOrderRoutes from './routes/draftOrders.js'
 import uploadRoutes from './routes/uploads.js'
 import countryRoutes from './routes/countries.js'
 import serviceTierRoutes from './routes/serviceTiers.js'
@@ -57,6 +58,7 @@ app.get('/health', async (_req, res) => {
 app.use('/auth', authRoutes)
 app.use('/track', trackRoutes)
 app.use('/orders', orderRoutes)
+app.use('/draft-orders', draftOrderRoutes)
 app.use('/uploads', uploadRoutes)
 app.use('/countries', countryRoutes)
 app.use('/service-tiers', serviceTierRoutes)

@@ -3,6 +3,7 @@ import Step1Personal from './steps/Step1Personal'
 import Step2Passport from './steps/Step2Passport'
 import Step3Trip     from './steps/Step3Trip'
 import Step4Payment  from './steps/Step4Payment'
+import { api, getToken } from '../lib/api'
 
 const STEPS = [
   { id:1, label:'Personal',  emoji:'👤' },
@@ -34,34 +35,76 @@ function loadDraft() {
         passport: { ...INIT.passport, ...parsed.data.passport, passportImg: null, passportImgURL: sanitizeUrl(parsed.data.passport.passportImgURL) },
         trip:     { ...INIT.trip,     ...parsed.data.trip },
       },
+      step: Math.min(Math.max(1, Number(parsed.step) || 1), 4),
       savedAt: Number(parsed.savedAt) || 0,
     }
   } catch { return null }
 }
 
-function saveDraft(data, step) {
+function cleanDraftData(data) {
+  return {
+    personal: { ...data.personal, photo: undefined },
+    passport: { ...data.passport, passportImg: undefined },
+    trip:     data.trip,
+  }
+}
+
+function saveDraftLocal(data, step) {
   try {
-    const clean = {
-      personal: { ...data.personal, photo: undefined },
-      passport: { ...data.passport, passportImg: undefined },
-      trip:     data.trip,
-    }
-    localStorage.setItem(DRAFT_KEY, JSON.stringify({ data: clean, step, savedAt: Date.now() }))
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ data: cleanDraftData(data), step, savedAt: Date.now() }))
   } catch {}
 }
 
-function clearDraft() {
+async function saveDraftServer(data, step) {
+  if (!getToken()) return
+  try { await api.put('/draft-orders/mine', { data: cleanDraftData(data), step }) } catch {}
+}
+
+function clearDraftLocal() {
   try { localStorage.removeItem(DRAFT_KEY) } catch {}
+}
+
+async function clearDraftServer() {
+  if (!getToken()) return
+  try { await api.delete('/draft-orders/mine') } catch {}
 }
 
 export default function ApplicationForm() {
   const initial = useRef(loadDraft())
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(initial.current?.step || 1)
   const [data, setData] = useState(() => initial.current?.data || INIT)
   const [savedAt, setSavedAt] = useState(initial.current?.savedAt || 0)
   const [hadDraft, setHadDraft] = useState(!!initial.current)
+  const [draftSource, setDraftSource] = useState(initial.current ? 'local' : null)
   const saveTimer = useRef(null)
   const dirty = useRef(false)
+
+  // On mount: if logged in and server has a newer draft, prefer it.
+  useEffect(() => {
+    if (!getToken()) return
+    let cancelled = false
+    api.get('/draft-orders/mine')
+      .then(({ data: res }) => {
+        if (cancelled || !res?.draft) return
+        const serverAt = new Date(res.draft.updatedAt).getTime()
+        const localAt = initial.current?.savedAt || 0
+        if (serverAt > localAt) {
+          const restored = res.draft.data
+          // Defensive merge — server payload might be from older form version.
+          setData(prev => ({
+            personal: { ...INIT.personal, ...(restored.personal || {}), photo: null },
+            passport: { ...INIT.passport, ...(restored.passport || {}), passportImg: null },
+            trip:     { ...INIT.trip,     ...(restored.trip || {}) },
+          }))
+          if (typeof res.draft.step === 'number') setStep(res.draft.step)
+          setSavedAt(serverAt)
+          setHadDraft(true)
+          setDraftSource('server')
+        }
+      })
+      .catch(() => { /* offline / unauth — fall back to local draft */ })
+    return () => { cancelled = true }
+  }, [])
 
   const update = (section) => (field, value) => {
     dirty.current = true
@@ -76,23 +119,29 @@ export default function ApplicationForm() {
     if (!dirty.current) return
     if (saveTimer.current) clearTimeout(saveTimer.current)
     saveTimer.current = setTimeout(() => {
-      saveDraft(data, step)
+      saveDraftLocal(data, step)
+      saveDraftServer(data, step)
       setSavedAt(Date.now())
+      if (!draftSource) setDraftSource('local')
     }, 500)
     return () => saveTimer.current && clearTimeout(saveTimer.current)
-  }, [data, step])
+  }, [data, step, draftSource])
 
   const handleSubmitted = () => {
-    clearDraft()
+    clearDraftLocal()
+    clearDraftServer()
     setHadDraft(false)
+    setDraftSource(null)
   }
 
   const startFresh = () => {
-    clearDraft()
+    clearDraftLocal()
+    clearDraftServer()
     setData(INIT)
     setStep(1)
     setSavedAt(0)
     setHadDraft(false)
+    setDraftSource(null)
     dirty.current = false
   }
 
@@ -111,12 +160,13 @@ export default function ApplicationForm() {
         </div>
 
         {/* Resumed-draft strip */}
-        {hadDraft && initial.current && (
+        {hadDraft && savedAt > 0 && (
           <div className="draft-resume">
             <div>
-              <strong>Welcome back!</strong> We restored your unsaved draft from {timeAgo(initial.current.savedAt)}.
+              <strong>Welcome back!</strong> We restored your draft from {timeAgo(savedAt)}
+              {draftSource === 'server' ? ' — synced from your account.' : '.'}
             </div>
-            <button className="draft-resume-btn" onClick={startFresh}>Start fresh</button>
+            <button type="button" className="draft-resume-btn" onClick={startFresh}>Start fresh</button>
           </div>
         )}
 

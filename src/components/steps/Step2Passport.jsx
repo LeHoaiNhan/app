@@ -78,7 +78,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
   return (
     <form className="step-body" onSubmit={(e) => { e.preventDefault(); if (!uploading) handleNext() }} noValidate>
       {errCount > 0 && <ErrorBanner count={errCount} />}
-      <div className="section-bar">Passport details</div>
+      <h3 className="section-bar">Passport details</h3>
       <div className="form-grid-2">
         <Field label="Passport number" required error={errors.passportNo}>
           <input className="field-input" type="text" placeholder="B1234567"
@@ -123,7 +123,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
       </div>
 
       <div style={{ height:1, background:'#F3F4F6', margin:'8px 0 20px' }} />
-      <div className="section-bar">Passport info-page photo <span className="req">*</span></div>
+      <h3 className="section-bar">Passport info-page photo <span className="req">*</span></h3>
 
       <div
         role="button"

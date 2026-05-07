@@ -162,7 +162,7 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
       </div>
 
       {/* Summary */}
-      <div className="section-bar">Order summary</div>
+      <h3 className="section-bar">Order summary</h3>
       <div className="summary-table" style={{ marginBottom:20 }}>
         <SummaryGroup label="Applicant" stepNum={1} goToStep={goToStep} rows={[
           ['Name',        fullName],
@@ -189,7 +189,7 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
       </div>
 
       {/* Payment method */}
-      <div className="section-bar">Payment method</div>
+      <h3 className="section-bar">Payment method</h3>
       <div style={{ display:'flex', alignItems:'center', gap:10, padding:'12px 14px', borderRadius:10, border:'1.5px solid var(--blue)', background:'var(--blue-light)', marginBottom:14 }}>
         <span style={{ fontSize:20 }}>🅿️</span>
         <div style={{ flex:1 }}>

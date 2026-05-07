@@ -82,7 +82,7 @@ export default function Step3Trip({ data, onChange, onNext, onBack, personal = {
         </div>
       )}
 
-      <div className="section-bar">Trip details</div>
+      <h3 className="section-bar">Trip details</h3>
       <div className="form-grid-2">
         <Field label="Destination country" required error={errors.destination}>
           <select className="field-input" value={data.destination} onChange={e => setField('destination', e.target.value)}>
@@ -156,7 +156,5 @@ export default function Step3Trip({ data, onChange, onNext, onBack, personal = {
       </div>
       <TrustStrip />
     </form>
-  )
-}
   )
 }
