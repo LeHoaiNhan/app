@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Redirecting…</title>
+    <meta name="robots" content="noindex" />
+    <script>
+      // GitHub Pages SPA redirect: stash the requested path in sessionStorage
+      // and bounce to /app/. index.html reads sessionStorage.redirect and replaces history.
+      sessionStorage.redirect = location.href;
+      location.replace('/app/');
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+</html>
