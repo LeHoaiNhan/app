@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useOrders } from '../../contexts/OrdersContext'
 import { useCountries } from '../../lib/useCountries'
 import { useServiceTiers } from '../../lib/useServiceTiers'
+import { findVariant } from '../../lib/visaRules'
 import { api } from '../../lib/api'
 import PaypalCheckout from '../PaypalCheckout'
 
@@ -20,8 +21,9 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
   const proc  = formData.trip?.processing || 'normal'
   const destination = formData.trip?.destination || 'Thailand'
   const country = countries.find(c => c.name === destination)
+  const variant = findVariant(country, formData.trip?.variantKey)
   const tier = tiers.find(t => t.key === proc) || tiers[0]
-  const govFee = country?.govFee ?? 0
+  const govFee = variant?.govFee ?? country?.govFee ?? 0
   const svcFee = tier?.fee ?? 0
   const total = govFee + svcFee
   const fullName = `${formData.personal?.lastName||''} ${formData.personal?.firstName||''}`.trim() || '—'
@@ -42,7 +44,7 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
     const order = await createOrder({
       destination,
       flag: country?.flag || '🌍',
-      visaType: country?.tag || formData.trip?.visaType || 'E-Visa',
+      visaType: variant?.label || formData.trip?.visaType || country?.tag || 'E-Visa',
       processing: proc,
       fee: { gov: govFee, service: svcFee, total, currency: 'USD' },
       payment: paymentInfo,
@@ -61,6 +63,7 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
         exitDate: formData.trip?.exitDate || '',
         accommodation: formData.trip?.accommodation || '',
         notes: formData.trip?.notes || '',
+        variantKey: formData.trip?.variantKey || '',
       },
     })
 

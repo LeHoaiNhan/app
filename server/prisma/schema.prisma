@@ -157,6 +157,8 @@ model Country {
   trending       Boolean  @default(false)
   active         Boolean  @default(true)
   sortOrder      Int      @default(0)
+  variants       Json?
+  rules          Json?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

@@ -26,6 +26,8 @@ const countrySchema = z.object({
   trending: z.boolean().optional().default(false),
   active: z.boolean().optional().default(true),
   sortOrder: z.number().int().optional().default(0),
+  variants: z.array(z.record(z.any())).nullable().optional(),
+  rules: z.record(z.any()).nullable().optional(),
 })
 
 router.get('/', async (req, res, next) => {

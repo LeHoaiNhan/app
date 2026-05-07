@@ -1,4 +1,6 @@
-export const SEED_COUNTRIES = [
+import { COUNTRY_RULES } from './lib/countryRules.js'
+
+const _ROWS = [
   { name:'Thailand',     flag:'🇹🇭', iso:'th', region:'Southeast Asia', city:'Bangkok',       tag:'E-Visa',          govFee:0,    processingTime:'3-5 days',  maxStay:'30 days',    entries:'Single',   validity:'3 months',  description:'Tropical paradise with affordable costs, diverse cuisine, and stunning beaches.', popular:true,  trending:true,  sortOrder:10 },
   { name:'Singapore',    flag:'🇸🇬', iso:'sg', region:'Southeast Asia', city:'Marina Bay',    tag:'E-Visa',          govFee:15,   processingTime:'2-3 days',  maxStay:'30 days',    entries:'Multiple', validity:'2 years',   description:'Modern city-state with world-class transport and services.', popular:false, trending:true,  sortOrder:20 },
   { name:'Indonesia',    flag:'🇮🇩', iso:'id', region:'Southeast Asia', city:'Bali',          tag:'Visa on Arrival', govFee:35,   processingTime:'3-5 days',  maxStay:'30 days',    entries:'Single',   validity:'30 days',   description:'Bali, Jakarta, and thousands of tropical islands waiting to be explored.', popular:false, trending:false, sortOrder:30 },
@@ -26,5 +28,26 @@ export const SEED_COUNTRIES = [
   { name:'Russia',       flag:'🇷🇺', iso:'ru', region:'Europe',         city:'Moscow',        tag:'E-Visa',          govFee:40,   processingTime:'5-7 days',  maxStay:'16 days',    entries:'Single',   validity:'60 days',   description:'Moscow, St. Petersburg, and the deep history of Russia.', popular:false, trending:false, sortOrder:250 },
   { name:'Albania',      flag:'🇦🇱', iso:'al', region:'Europe',         city:'Tirana',        tag:'E-Visa',          govFee:30,   processingTime:'3-5 days',  maxStay:'90 days',    entries:'Multiple', validity:'180 days',  description:'Beautiful Adriatic coast and unique Balkan culture.', popular:false, trending:false, sortOrder:260 },
   { name:'Egypt',        flag:'🇪🇬', iso:'eg', region:'Africa',         city:'Cairo',         tag:'E-Visa',          govFee:40,   processingTime:'5-7 days',  maxStay:'30 days',    entries:'Single',   validity:'3 months',  description:'Pyramids of Giza, the Nile, and ancient Egyptian civilization.', popular:false, trending:false, sortOrder:270 },
-  { name:'Kenya',        flag:'🇰🇪', iso:'ke', region:'Africa',         city:'Nairobi',       tag:'E-Visa',          govFee:40,   processingTime:'3-5 days',  maxStay:'90 days',    entries:'Single',   validity:'3 months',  description:'Maasai Mara safari and the famous great wildebeest migration.', popular:false, trending:false, sortOrder:280 },
+  { name:'Kenya',        flag:'🇰🇪', iso:'ke', region:'Africa',         city:'Nairobi',       tag:'eTA',             govFee:30,   processingTime:'3-5 days',  maxStay:'90 days',    entries:'Single',   validity:'3 months',  description:'Maasai Mara safari and the famous great wildebeest migration.', popular:false, trending:false, sortOrder:280 },
+  { name:'Madagascar',   flag:'🇲🇬', iso:'mg', region:'Africa',         city:'Antananarivo',  tag:'E-Visa',          govFee:35,   processingTime:'3-5 days',  maxStay:'15-60 days', entries:'Single',   validity:'60 days',   description:'Lemurs, baobabs, and the unique flora and fauna of the Indian Ocean.', popular:false, trending:false, sortOrder:290 },
 ]
+
+// Merge variants/rules from countryRules.js into the row whose `name` matches.
+// Anything not listed in COUNTRY_RULES gets a single auto-variant derived from
+// existing fields, so old destinations keep working until rules are filled in.
+export const SEED_COUNTRIES = _ROWS.map(row => {
+  const rule = COUNTRY_RULES[row.name]
+  if (rule) return { ...row, variants: rule.variants, rules: rule.rules }
+  return {
+    ...row,
+    variants: [{
+      key: 'default',
+      label: `${row.tag} — ${row.maxStay}`,
+      entries: /multi/i.test(row.entries) ? 'multiple' : 'single',
+      validity: { type:'days-from-issue', days: 90 },
+      stay: { type:'per-entry', days: parseInt(row.maxStay, 10) || 30 },
+      govFee: row.govFee ?? 0,
+    }],
+    rules: { passport: { minMonthsBeyondEntry: 6 }, requiredDocs: ['passport','photo'] },
+  }
+})

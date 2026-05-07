@@ -1,3 +1,38 @@
+import { cloneElement, isValidElement, useId } from 'react'
+
+export function Field({ label, required, error, hint, children }) {
+  const id = useId()
+  const errorId = error ? `${id}-err` : undefined
+  const hintId = hint && !error ? `${id}-hint` : undefined
+  const child = wrapChild(children, { id, errorId, hintId, error })
+  return (
+    <div>
+      <label htmlFor={id} className="field-label">
+        {label}{required && <span className="req"> *</span>}
+      </label>
+      {child}
+      {error ? (
+        <p id={errorId} role="alert" style={{ fontSize:11, color:'#B91C1C', marginTop:4, fontWeight:500 }}>{error}</p>
+      ) : hint ? (
+        <p id={hintId} className="field-hint">{hint}</p>
+      ) : null}
+    </div>
+  )
+}
+
+// Inject id/aria attributes onto a single child input/select/textarea or a
+// wrapper div containing one (so callers don't need to remember to pass props).
+function wrapChild(children, { id, errorId, hintId, error }) {
+  if (!isValidElement(children)) return children
+  return cloneElement(children, {
+    id: children.props.id || id,
+    'aria-invalid': error ? 'true' : children.props['aria-invalid'],
+    'aria-describedby': [errorId, hintId, children.props['aria-describedby']].filter(Boolean).join(' ') || undefined,
+  })
+}
+
+export const ERROR_STYLE = { borderColor: '#B91C1C', background: '#FEF2F2' }
+
 export function ErrorBanner({ count }) {
   if (!count) return null
   return (

@@ -17,6 +17,16 @@ const EMPTY = {
   processingTime:'3-5 days', maxStay:'30 days', entries:'Single', validity:'3 months',
   description:'',
   popular:false, trending:false, active:true, sortOrder:0,
+  variants: [], rules: {},
+}
+
+const EMPTY_VARIANT = {
+  key: '', label: '', entries: 'single',
+  validity: { type: 'days-from-issue', days: 90 },
+  stay:     { type: 'per-entry',       days: 30 },
+  govFee: 0,
+  purpose: [],
+  blockNationalities: [],
 }
 
 export default function AdminCountries() {
@@ -184,18 +194,34 @@ function CountryFormModal({ initial, isEdit, onClose, onSave }) {
     ...initial,
     govFee: initial.govFee == null ? '' : initial.govFee,
     sortOrder: initial.sortOrder ?? 0,
+    variants: Array.isArray(initial.variants) ? initial.variants : [],
+    rules: initial.rules && typeof initial.rules === 'object' ? initial.rules : {},
   }))
+  const [tab, setTab] = useState('basic')
+  const [rulesText, setRulesText] = useState(() => JSON.stringify(form.rules || {}, null, 2))
+  const [rulesError, setRulesError] = useState(null)
   const [saving, setSaving] = useState(false)
 
   const set = (k) => (v) => setForm(p => ({ ...p, [k]: v }))
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    let rulesParsed
+    try {
+      rulesParsed = rulesText.trim() ? JSON.parse(rulesText) : {}
+    } catch (err) {
+      setRulesError(err.message)
+      setTab('rules')
+      return
+    }
+    setRulesError(null)
     setSaving(true)
     const payload = {
       ...form,
       govFee: form.govFee === '' || form.govFee == null ? null : Number(form.govFee),
       sortOrder: Number(form.sortOrder) || 0,
+      variants: form.variants?.length ? form.variants : null,
+      rules: Object.keys(rulesParsed).length ? rulesParsed : null,
     }
     await onSave(payload)
     setSaving(false)
@@ -218,6 +244,15 @@ function CountryFormModal({ initial, isEdit, onClose, onSave }) {
           <button type="button" onClick={onClose} style={{ width:32, height:32, borderRadius:'50%', border:'none', background:'#F3F4F6', cursor:'pointer', fontSize:14, color:'#6B7280' }}>✕</button>
         </div>
 
+        <div style={{ display:'flex', gap:4, padding:'8px 28px 0', borderBottom:'1px solid #F3F4F6', background:'white', position:'sticky', top:73, zIndex:9 }}>
+          {[['basic','Basic info'],['variants',`Visa variants (${form.variants?.length || 0})`],['rules','Rules JSON']].map(([k,l]) => (
+            <button key={k} type="button" onClick={() => setTab(k)}
+              style={{ padding:'10px 14px', fontSize:13, fontWeight:700, border:'none', background:'none', borderBottom:`2px solid ${tab===k ? 'var(--blue)' : 'transparent'}`, color: tab===k ? 'var(--blue)' : '#6B7280', cursor:'pointer', fontFamily:'inherit' }}
+            >{l}</button>
+          ))}
+        </div>
+
+        {tab === 'basic' && (<>
         <div style={{ padding:'24px 28px', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(220px,1fr))', gap:14 }}>
           <Field label="Name" required>
             <input className="field-input" required value={form.name} onChange={e => set('name')(e.target.value)} placeholder="Thailand" />
@@ -278,6 +313,15 @@ function CountryFormModal({ initial, isEdit, onClose, onSave }) {
           <Toggle label="Trending" checked={form.trending} onChange={v => set('trending')(v)} />
           <Toggle label="Active" checked={form.active} onChange={v => set('active')(v)} />
         </div>
+        </>)}
+
+        {tab === 'variants' && (
+          <VariantsEditor variants={form.variants || []} onChange={v => set('variants')(v)} />
+        )}
+
+        {tab === 'rules' && (
+          <RulesEditor text={rulesText} onChange={setRulesText} error={rulesError} clearError={() => setRulesError(null)} />
+        )}
 
         <div style={{ padding:'16px 28px', borderTop:'1px solid #F3F4F6', display:'flex', gap:10, justifyContent:'flex-end', position:'sticky', bottom:0, background:'white' }}>
           <button type="button" onClick={onClose} className="btn-secondary" style={{ padding:'10px 22px' }}>Cancel</button>
@@ -308,5 +352,133 @@ function Toggle({ label, checked, onChange }) {
       <input type="checkbox" checked={checked} onChange={e => onChange(e.target.checked)} style={{ width:16, height:16, cursor:'pointer' }} />
       {label}
     </label>
+  )
+}
+
+function VariantsEditor({ variants, onChange }) {
+  const update = (i, patch) => onChange(variants.map((v, idx) => idx === i ? { ...v, ...patch } : v))
+  const remove = (i) => onChange(variants.filter((_, idx) => idx !== i))
+  const add = () => onChange([...variants, { ...EMPTY_VARIANT, key: `variant-${variants.length + 1}` }])
+
+  return (
+    <div style={{ padding:'20px 28px 24px' }}>
+      <p style={{ fontSize:12, color:'#6B7280', marginBottom:14 }}>
+        Each variant is one option in the customer’s “Visa type” dropdown. Stay/validity/fee drive the form &amp; cross-step validation.
+      </p>
+
+      {variants.length === 0 && (
+        <div style={{ padding:'24px', textAlign:'center', border:'1px dashed #E5E7EB', borderRadius:10, color:'#9CA3AF', fontSize:13 }}>
+          No variants yet — customers will see only the default fallback. Add at least one for proper rules.
+        </div>
+      )}
+
+      {variants.map((v, i) => (
+        <div key={i} style={{ border:'1px solid #E5E7EB', borderRadius:12, padding:16, marginBottom:12, background:'#FAFAFA' }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:10 }}>
+            <div style={{ fontSize:13, fontWeight:700, color:'var(--navy)' }}>Variant #{i + 1}</div>
+            <button type="button" onClick={() => remove(i)} style={{ padding:'4px 10px', fontSize:11, fontWeight:700, borderRadius:6, border:'1px solid #FECACA', background:'white', color:'#DC2626', cursor:'pointer', fontFamily:'inherit' }}>Remove</button>
+          </div>
+
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(180px,1fr))', gap:10 }}>
+            <MiniField label="Key (stable id)">
+              <input className="field-input" value={v.key} onChange={e => update(i, { key: e.target.value.trim() })} placeholder="tourist-30d" />
+            </MiniField>
+            <MiniField label="Label (shown to customer)">
+              <input className="field-input" value={v.label} onChange={e => update(i, { label: e.target.value })} placeholder="Tourist — 30 days" />
+            </MiniField>
+            <MiniField label="Entries">
+              <select className="field-input" value={v.entries} onChange={e => update(i, { entries: e.target.value })}>
+                <option value="single">Single</option>
+                <option value="double">Double</option>
+                <option value="multiple">Multiple</option>
+              </select>
+            </MiniField>
+            <MiniField label="Gov fee (USD)">
+              <input className="field-input" type="number" min={0} value={v.govFee ?? 0} onChange={e => update(i, { govFee: Number(e.target.value) })} />
+            </MiniField>
+
+            <MiniField label="Validity counted from">
+              <select className="field-input" value={v.validity?.type || 'days-from-issue'}
+                onChange={e => update(i, { validity: { ...v.validity, type: e.target.value } })}>
+                <option value="days-from-issue">Issue date</option>
+                <option value="days-from-arrival">Arrival date</option>
+              </select>
+            </MiniField>
+            <MiniField label="Validity (days)">
+              <input className="field-input" type="number" min={1} value={v.validity?.days ?? 90}
+                onChange={e => update(i, { validity: { ...v.validity, days: Number(e.target.value) } })} />
+            </MiniField>
+
+            <MiniField label="Stay type">
+              <select className="field-input" value={v.stay?.type || 'per-entry'}
+                onChange={e => update(i, { stay: { ...v.stay, type: e.target.value } })}>
+                <option value="per-entry">Per entry</option>
+                <option value="total-across-entries">Total across entries</option>
+              </select>
+            </MiniField>
+            <MiniField label="Stay (days)">
+              <input className="field-input" type="number" min={1} value={v.stay?.days ?? 30}
+                onChange={e => update(i, { stay: { ...v.stay, days: Number(e.target.value) } })} />
+            </MiniField>
+
+            <MiniField label="Allowed purposes (comma — empty = any)">
+              <input className="field-input" value={(v.purpose || []).join(', ')}
+                onChange={e => update(i, { purpose: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                placeholder="Tourism, Business / Work" />
+            </MiniField>
+            <MiniField label="Block nationalities (iso2 / name, comma)">
+              <input className="field-input" value={(v.blockNationalities || []).join(', ')}
+                onChange={e => update(i, { blockNationalities: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
+                placeholder="ca, pk" />
+            </MiniField>
+          </div>
+        </div>
+      ))}
+
+      <button type="button" onClick={add}
+        style={{ padding:'10px 16px', fontSize:13, fontWeight:700, borderRadius:8, border:'1.5px dashed var(--blue)', background:'white', color:'var(--blue)', cursor:'pointer', fontFamily:'inherit', width:'100%' }}>
+        + Add variant
+      </button>
+    </div>
+  )
+}
+
+function MiniField({ label, children }) {
+  return (
+    <div>
+      <label style={{ display:'block', fontSize:10, fontWeight:700, color:'#6B7280', textTransform:'uppercase', letterSpacing:'.06em', marginBottom:4 }}>{label}</label>
+      {children}
+    </div>
+  )
+}
+
+function RulesEditor({ text, onChange, error, clearError }) {
+  return (
+    <div style={{ padding:'20px 28px 24px' }}>
+      <p style={{ fontSize:12, color:'#6B7280', marginBottom:8 }}>
+        Country-wide policy as JSON. Common keys:
+      </p>
+      <ul style={{ fontSize:11, color:'#6B7280', marginBottom:14, paddingLeft:18, lineHeight:1.7 }}>
+        <li><code>passport</code>: <code>{'{ ordinaryOnly, surnameRequired, minMonthsBeyondEntry, allowTravelDocument }'}</code></li>
+        <li><code>blockOrigin</code> / <code>onlyNationalities</code>: iso2 or name list</li>
+        <li><code>requiredDocs</code>: <code>['passport','photo','hotel','ticket','host_letter','company_letter']</code></li>
+        <li><code>applyWindow</code>: <code>{'{ minDaysBefore, maxDaysBefore }'}</code></li>
+        <li><code>schengenIdAlt</code>, <code>childrenFreeUnder</code>, <code>minorRules</code>, <code>notes[]</code></li>
+      </ul>
+
+      {error && (
+        <div style={{ background:'#FEF2F2', border:'1px solid #FECACA', color:'#991B1B', padding:'8px 12px', borderRadius:8, fontSize:12, marginBottom:10 }}>
+          JSON parse error: {error}
+        </div>
+      )}
+
+      <textarea
+        value={text}
+        onChange={e => { onChange(e.target.value); if (error) clearError() }}
+        spellCheck={false}
+        rows={18}
+        style={{ width:'100%', padding:12, border:`1.5px solid ${error ? '#DC2626' : '#E5E7EB'}`, borderRadius:8, fontFamily:'ui-monospace, monospace', fontSize:12, lineHeight:1.6, outline:'none', resize:'vertical', background:'#FAFAFA' }}
+      />
+    </div>
   )
 }

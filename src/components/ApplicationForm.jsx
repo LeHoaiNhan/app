@@ -15,7 +15,7 @@ const TITLES = ['Personal information','Passport information','Trip details','Co
 const INIT = {
   personal: { lastName:'',firstName:'',gender:'Male',dob:'',email:'',phone:'',nationality:'United States',birthPlace:'',photo:null,photoURL:'' },
   passport: { passportNo:'',passportType:'Regular passport',issueDate:'',expiryDate:'',issuePlace:'',issueCountry:'United States',passportImg:null,passportImgURL:'' },
-  trip:     { destination:'Thailand',purpose:'Tourism',entryDate:'',exitDate:'',visaType:'E-Visa (electronic)',processing:'normal',accommodation:'',notes:'' },
+  trip:     { destination:'Thailand',purpose:'Tourism',entryDate:'',exitDate:'',visaType:'E-Visa (electronic)',variantKey:'',processing:'normal',accommodation:'',notes:'' },
 }
 
 const DRAFT_KEY = 'evisa-draft-v1'
@@ -155,7 +155,7 @@ export default function ApplicationForm() {
 
           {step===1 && <Step1Personal data={data.personal} onChange={update('personal')} onNext={next} />}
           {step===2 && <Step2Passport data={data.passport} onChange={update('passport')} onNext={next} onBack={back} />}
-          {step===3 && <Step3Trip     data={data.trip}     onChange={update('trip')}     onNext={next} onBack={back} />}
+          {step===3 && <Step3Trip     data={data.trip}     onChange={update('trip')}     onNext={next} onBack={back} personal={data.personal} passport={data.passport} />}
           {step===4 && <Step4Payment  formData={data}      onBack={back} goToStep={goToStep} onSubmitted={handleSubmitted} />}
         </div>
       </div>

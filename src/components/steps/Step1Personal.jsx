@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 import { api, getToken, apiError } from '../../lib/api'
-import { ErrorBanner, TrustStrip } from './_StepBits'
+import { ErrorBanner, TrustStrip, Field, ERROR_STYLE } from './_StepBits'
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -78,7 +78,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
   const errCount = Object.keys(errors).filter(k => errors[k]).length
 
   return (
-    <div className="step-body">
+    <form className="step-body" onSubmit={(e) => { e.preventDefault(); if (!uploading) handleNext() }} noValidate>
       {errCount > 0 && <ErrorBanner count={errCount} />}
       <div className="section-bar">Name & Gender</div>
       <div className="form-grid-2">
@@ -86,14 +86,14 @@ export default function Step1Personal({ data, onChange, onNext }) {
           <input className="field-input" type="text" placeholder="e.g. SMITH"
             autoComplete="family-name" autoCapitalize="characters"
             data-error={!!errors.lastName}
-            style={errors.lastName ? errorStyle : undefined}
+            style={errors.lastName ? ERROR_STYLE : undefined}
             value={data.lastName} onChange={e => setField('lastName', e.target.value)} />
         </Field>
         <Field label="First & middle name" required error={errors.firstName}>
           <input className="field-input" type="text" placeholder="e.g. JOHN"
             autoComplete="given-name" autoCapitalize="characters"
             data-error={!!errors.firstName}
-            style={errors.firstName ? errorStyle : undefined}
+            style={errors.firstName ? ERROR_STYLE : undefined}
             value={data.firstName} onChange={e => setField('firstName', e.target.value)} />
         </Field>
         <Field label="Gender" required error={errors.gender}>
@@ -110,7 +110,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
           <input className="field-input" type="date"
             autoComplete="bday" max={new Date().toISOString().slice(0,10)}
             data-error={!!errors.dob}
-            style={errors.dob ? errorStyle : undefined}
+            style={errors.dob ? ERROR_STYLE : undefined}
             value={data.dob} onChange={e => setField('dob', e.target.value)} />
         </Field>
       </div>
@@ -123,14 +123,14 @@ export default function Step1Personal({ data, onChange, onNext }) {
           <input className="field-input" type="email" placeholder="email@example.com"
             autoComplete="email" inputMode="email" autoCapitalize="none" spellCheck={false}
             data-error={!!errors.email}
-            style={errors.email ? errorStyle : undefined}
+            style={errors.email ? ERROR_STYLE : undefined}
             value={data.email} onChange={e => setField('email', e.target.value)} />
         </Field>
         <Field label="Phone number" required error={errors.phone}>
           <input className="field-input" type="tel" placeholder="+1 555 123 4567"
             autoComplete="tel" inputMode="tel"
             data-error={!!errors.phone}
-            style={errors.phone ? errorStyle : undefined}
+            style={errors.phone ? ERROR_STYLE : undefined}
             value={data.phone} onChange={e => setField('phone', e.target.value)} />
         </Field>
         <Field label="Nationality" required error={errors.nationality}>
@@ -144,7 +144,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
           <input className="field-input" type="text" placeholder="New York, USA"
             autoComplete="address-level2"
             data-error={!!errors.birthPlace}
-            style={errors.birthPlace ? errorStyle : undefined}
+            style={errors.birthPlace ? ERROR_STYLE : undefined}
             value={data.birthPlace} onChange={e => setField('birthPlace', e.target.value)} />
         </Field>
       </div>
@@ -154,10 +154,15 @@ export default function Step1Personal({ data, onChange, onNext }) {
       <div className="section-bar">Portrait photo <span className="req">*</span></div>
       <div className="photo-row">
         <div
+          role="button"
+          tabIndex={0}
+          aria-label={data.photoURL ? 'Replace portrait photo' : 'Upload portrait photo'}
+          aria-invalid={!!errors.photo}
           data-error={!!errors.photo}
           className={`upload-zone ${data.photoURL ? 'has-file' : ''}`}
-          style={{ flex:1, minWidth:200, ...(errors.photo ? { borderColor: '#DC2626', background: '#FEF2F2' } : {}) }}
+          style={{ flex:1, minWidth:200, ...(errors.photo ? ERROR_STYLE : {}) }}
           onClick={() => photoRef.current.click()}
+          onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); photoRef.current.click() } }}
           onDragOver={e => { e.preventDefault(); setDrag(true) }}
           onDragLeave={() => setDrag(false)}
           onDrop={e => { e.preventDefault(); setDrag(false); handleFile(e.dataTransfer.files[0]) }}
@@ -212,7 +217,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
           </svg>
           Encrypted with SSL 256-bit
         </div>
-        <button className="btn-primary" onClick={handleNext} disabled={uploading}>
+        <button type="submit" className="btn-primary" disabled={uploading}>
           Continue to Passport
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -220,25 +225,6 @@ export default function Step1Personal({ data, onChange, onNext }) {
         </button>
       </div>
       <TrustStrip />
-    </div>
-  )
-}
-
-
-const errorStyle = { borderColor: '#DC2626', background: '#FEF2F2' }
-
-function Field({ label, required, error, hint, children }) {
-  return (
-    <div>
-      <label className="field-label">
-        {label}{required && <span className="req"> *</span>}
-      </label>
-      {children}
-      {error ? (
-        <p style={{ fontSize:11, color:'#DC2626', marginTop:4, fontWeight:500 }}>{error}</p>
-      ) : hint ? (
-        <p className="field-hint">{hint}</p>
-      ) : null}
-    </div>
+    </form>
   )
 }

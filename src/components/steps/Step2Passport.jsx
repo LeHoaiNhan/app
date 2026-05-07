@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import { api, getToken, apiError } from '../../lib/api'
 import { useAuth } from '../../contexts/AuthContext'
-import { ErrorBanner, TrustStrip } from './_StepBits'
+import { ErrorBanner, TrustStrip, Field, ERROR_STYLE } from './_StepBits'
 
 function validateStep2(d) {
   const e = {}
@@ -76,7 +76,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
   const errCount = Object.keys(errors).filter(k => errors[k]).length
 
   return (
-    <div className="step-body">
+    <form className="step-body" onSubmit={(e) => { e.preventDefault(); if (!uploading) handleNext() }} noValidate>
       {errCount > 0 && <ErrorBanner count={errCount} />}
       <div className="section-bar">Passport details</div>
       <div className="form-grid-2">
@@ -84,7 +84,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
           <input className="field-input" type="text" placeholder="B1234567"
             autoComplete="off" autoCapitalize="characters" spellCheck={false}
             data-error={!!errors.passportNo}
-            style={errors.passportNo ? errorStyle : undefined}
+            style={errors.passportNo ? ERROR_STYLE : undefined}
             value={data.passportNo} onChange={e => setField('passportNo', e.target.value)} />
         </Field>
         <Field label="Passport type" required error={errors.passportType}>
@@ -98,7 +98,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
           <input className="field-input" type="date"
             max={new Date().toISOString().slice(0,10)}
             data-error={!!errors.issueDate}
-            style={errors.issueDate ? errorStyle : undefined}
+            style={errors.issueDate ? ERROR_STYLE : undefined}
             value={data.issueDate} onChange={e => setField('issueDate', e.target.value)} />
         </Field>
         <Field label="Expiry date" required error={errors.expiryDate}
@@ -106,13 +106,13 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
           <input className="field-input" type="date"
             min={new Date().toISOString().slice(0,10)}
             data-error={!!errors.expiryDate}
-            style={errors.expiryDate ? errorStyle : undefined}
+            style={errors.expiryDate ? ERROR_STYLE : undefined}
             value={data.expiryDate} onChange={e => setField('expiryDate', e.target.value)} />
         </Field>
         <Field label="Place of issue" required error={errors.issuePlace}>
           <input className="field-input" type="text" placeholder="New York Passport Agency"
             data-error={!!errors.issuePlace}
-            style={errors.issuePlace ? errorStyle : undefined}
+            style={errors.issuePlace ? ERROR_STYLE : undefined}
             value={data.issuePlace} onChange={e => setField('issuePlace', e.target.value)} />
         </Field>
         <Field label="Issuing country" required error={errors.issueCountry}>
@@ -126,10 +126,15 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
       <div className="section-bar">Passport info-page photo <span className="req">*</span></div>
 
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={data.passportImgURL ? 'Replace passport photo' : 'Upload passport info page'}
+        aria-invalid={!!errors.passportImg}
         data-error={!!errors.passportImg}
         className={`upload-zone ${data.passportImgURL ? 'has-file' : ''}`}
-        style={errors.passportImg ? { borderColor: '#DC2626', background: '#FEF2F2' } : undefined}
+        style={errors.passportImg ? ERROR_STYLE : undefined}
         onClick={() => fileRef.current.click()}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileRef.current.click() } }}
         onDrop={e => { e.preventDefault(); handleFile(e.dataTransfer.files[0]) }}
         onDragOver={e => e.preventDefault()}
       >
@@ -164,8 +169,8 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
       )}
 
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
-        <button className="btn-secondary" onClick={onBack}>← Back</button>
-        <button className="btn-primary" onClick={handleNext} disabled={uploading}>
+        <button type="button" className="btn-secondary" onClick={onBack}>← Back</button>
+        <button type="submit" className="btn-primary" disabled={uploading}>
           Continue to Trip details
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
@@ -173,24 +178,6 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
         </button>
       </div>
       <TrustStrip />
-    </div>
-  )
-}
-
-const errorStyle = { borderColor: '#DC2626', background: '#FEF2F2' }
-
-function Field({ label, required, error, hint, children }) {
-  return (
-    <div>
-      <label className="field-label">
-        {label}{required && <span className="req"> *</span>}
-      </label>
-      {children}
-      {error ? (
-        <p style={{ fontSize:11, color:'#DC2626', marginTop:4, fontWeight:500 }}>{error}</p>
-      ) : hint ? (
-        <p className="field-hint">{hint}</p>
-      ) : null}
-    </div>
+    </form>
   )
 }

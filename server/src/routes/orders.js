@@ -130,6 +130,7 @@ const createSchema = z.object({
     exitDate: z.string(),
     accommodation: z.string().optional().default(''),
     notes: z.string().optional().default(''),
+    variantKey: z.string().optional().default(''),
   }),
 })
 
