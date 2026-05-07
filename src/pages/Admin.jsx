@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
@@ -40,7 +40,12 @@ export default function Admin() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [dateFrom, setDateFrom] = useState('')
   const [dateTo, setDateTo] = useState('')
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [tab, setTab] = useState('orders')
+  const [page, setPage] = useState(1)
+  const PAGE_SIZE = 25
+
+  const activeFilterCount = (statusFilter !== 'all' ? 1 : 0) + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0)
 
   if (!user || user.role !== 'admin') {
     return <AdminAuthGate onLogin={loginAsAdmin} userIsCustomer={!!user} authError={authError} authLoading={authLoading} />
@@ -82,6 +87,13 @@ export default function Admin() {
     const matchDate = (!fromTs || created >= fromTs) && (!toTs || created <= toTs)
     return matchSearch && matchStatus && matchDate
   })
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages)
+  const pageStart = (safePage - 1) * PAGE_SIZE
+  const paged = filtered.slice(pageStart, pageStart + PAGE_SIZE)
+
+  useEffect(() => { setPage(1) }, [search, statusFilter, dateFrom, dateTo])
 
   const exportCsv = () => {
     const params = new URLSearchParams()
@@ -198,53 +210,73 @@ export default function Admin() {
       <section style={{ background:'#F9FAFB', padding:'32px 20px 64px' }}>
         <div style={{ maxWidth:1200, margin:'0 auto' }}>
           <div style={{ background:'white', border:'1px solid #E5E7EB', borderRadius:14, overflow:'hidden', marginBottom:14 }}>
-            <div style={{ padding:'14px 18px', borderBottom:'1px solid #F3F4F6', display:'flex', gap:10, flexWrap:'wrap' }}>
-              <div style={{ position:'relative', flex:'1 1 240px' }}>
-                <svg style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:'#9CA3AF' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                </svg>
-                <input
-                  style={{ width:'100%', padding:'10px 12px 10px 36px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, outline:'none', fontFamily:'inherit' }}
-                  placeholder="Search by order code, name, email, destination..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                />
+            <div style={{ padding:'14px 18px', borderBottom:'1px solid #F3F4F6' }}>
+              <div style={{ display:'flex', gap:10, alignItems:'center' }}>
+                <div style={{ position:'relative', flex:'1 1 240px', minWidth:0 }}>
+                  <svg style={{ position:'absolute', left:12, top:'50%', transform:'translateY(-50%)', color:'#9CA3AF' }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                  </svg>
+                  <input
+                    style={{ width:'100%', padding:'10px 12px 10px 36px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, outline:'none', fontFamily:'inherit' }}
+                    placeholder="Search code, name, email, destination..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                  />
+                </div>
+                <button
+                  onClick={() => setFiltersOpen(v => !v)}
+                  className="admin-filters-toggle"
+                  style={{ display:'none', alignItems:'center', gap:6, padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', background: filtersOpen ? 'var(--blue-light)' : 'white', color: filtersOpen ? 'var(--blue)' : '#374151', fontSize:13, fontWeight:600, cursor:'pointer', fontFamily:'inherit', whiteSpace:'nowrap', flexShrink:0 }}
+                  title="Show filters"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/>
+                  </svg>
+                  Filters
+                  {activeFilterCount > 0 && (
+                    <span style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', minWidth:18, height:18, padding:'0 5px', borderRadius:9, background:'var(--blue)', color:'white', fontSize:11, fontWeight:700 }}>{activeFilterCount}</span>
+                  )}
+                </button>
               </div>
-              <select
-                style={{ padding:'10px 14px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, background:'white', fontFamily:'inherit', outline:'none', cursor:'pointer', minWidth:160 }}
-                value={statusFilter}
-                onChange={e => setStatusFilter(e.target.value)}
-              >
-                <option value="all">All statuses</option>
-                {Object.entries(ORDER_STATUSES).map(([key, s]) => (
-                  <option key={key} value={key}>{s.icon} {s.label}</option>
-                ))}
-              </select>
-              <input type="date"
-                style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, fontFamily:'inherit', outline:'none' }}
-                value={dateFrom}
-                onChange={e => setDateFrom(e.target.value)}
-                title="Created from"
-              />
-              <input type="date"
-                style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, fontFamily:'inherit', outline:'none' }}
-                value={dateTo}
-                onChange={e => setDateTo(e.target.value)}
-                title="Created to"
-              />
-              {(dateFrom || dateTo) && (
-                <button onClick={() => { setDateFrom(''); setDateTo('') }}
-                  style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', background:'white', fontSize:12, color:'#6B7280', cursor:'pointer', fontFamily:'inherit' }}
-                >Clear dates</button>
-              )}
-              <button onClick={exportCsv}
-                style={{ padding:'10px 14px', borderRadius:8, border:'1px solid var(--blue)', background:'var(--blue)', color:'white', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit', whiteSpace:'nowrap' }}
-                title="Download filtered orders as CSV"
-              >⬇ Export CSV</button>
+
+              <div className={`admin-filters-panel ${filtersOpen ? 'open' : ''}`}
+                style={{ display:'flex', gap:10, marginTop:10, flexWrap:'wrap', alignItems:'center' }}>
+                <select
+                  style={{ padding:'10px 14px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, background:'white', fontFamily:'inherit', outline:'none', cursor:'pointer', minWidth:160 }}
+                  value={statusFilter}
+                  onChange={e => setStatusFilter(e.target.value)}
+                >
+                  <option value="all">All statuses</option>
+                  {Object.entries(ORDER_STATUSES).map(([key, s]) => (
+                    <option key={key} value={key}>{s.icon} {s.label}</option>
+                  ))}
+                </select>
+                <input type="date"
+                  style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, fontFamily:'inherit', outline:'none' }}
+                  value={dateFrom}
+                  onChange={e => setDateFrom(e.target.value)}
+                  title="Created from"
+                />
+                <input type="date"
+                  style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, fontFamily:'inherit', outline:'none' }}
+                  value={dateTo}
+                  onChange={e => setDateTo(e.target.value)}
+                  title="Created to"
+                />
+                {(dateFrom || dateTo || statusFilter !== 'all') && (
+                  <button onClick={() => { setDateFrom(''); setDateTo(''); setStatusFilter('all') }}
+                    style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', background:'white', fontSize:12, color:'#6B7280', cursor:'pointer', fontFamily:'inherit' }}
+                  >Clear all</button>
+                )}
+                <button onClick={exportCsv}
+                  style={{ padding:'10px 14px', borderRadius:8, border:'1px solid var(--blue)', background:'var(--blue)', color:'white', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit', whiteSpace:'nowrap', marginLeft:'auto' }}
+                  title="Download filtered orders as CSV"
+                >⬇ Export CSV</button>
+              </div>
             </div>
 
             <div style={{ overflowX:'auto' }}>
-              <table style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
+              <table className="orders-table" style={{ width:'100%', borderCollapse:'collapse', fontSize:14 }}>
                 <thead>
                   <tr style={{ background:'#F9FAFB', borderBottom:'1px solid #E5E7EB' }}>
                     {['Order','Customer','Destination','Status','Total','Updated',''].map((h, i) => (
@@ -253,7 +285,7 @@ export default function Admin() {
                   </tr>
                 </thead>
                 <tbody>
-                  {filtered.map(o => {
+                  {paged.map(o => {
                     const status = ORDER_STATUSES[o.status]
                     return (
                       <tr key={o.id} onClick={() => setSelectedId(o.id)}
@@ -300,10 +332,29 @@ export default function Admin() {
                 <p style={{ fontSize:14, color:'#6B7280' }}>No orders match your filter</p>
               </div>
             )}
+
+            {filtered.length > PAGE_SIZE && (
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', gap:10, padding:'14px 18px', borderTop:'1px solid #F3F4F6', flexWrap:'wrap' }}>
+                <div style={{ fontSize:12, color:'#6B7280' }}>
+                  Showing <strong style={{ color:'var(--navy)' }}>{pageStart + 1}–{Math.min(pageStart + PAGE_SIZE, filtered.length)}</strong> of <strong style={{ color:'var(--navy)' }}>{filtered.length}</strong>
+                </div>
+                <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                  <button onClick={() => setPage(p => Math.max(1, p - 1))} disabled={safePage <= 1}
+                    style={{ padding:'8px 12px', borderRadius:8, border:'1px solid #E5E7EB', background:'white', fontSize:13, fontWeight:600, color: safePage <= 1 ? '#D1D5DB' : '#374151', cursor: safePage <= 1 ? 'default' : 'pointer', fontFamily:'inherit' }}
+                  >← Prev</button>
+                  <span style={{ fontSize:12, color:'#6B7280', padding:'0 6px' }}>
+                    Page <strong style={{ color:'var(--navy)' }}>{safePage}</strong> / {totalPages}
+                  </span>
+                  <button onClick={() => setPage(p => Math.min(totalPages, p + 1))} disabled={safePage >= totalPages}
+                    style={{ padding:'8px 12px', borderRadius:8, border:'1px solid #E5E7EB', background:'white', fontSize:13, fontWeight:600, color: safePage >= totalPages ? '#D1D5DB' : '#374151', cursor: safePage >= totalPages ? 'default' : 'pointer', fontFamily:'inherit' }}
+                  >Next →</button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div style={{ fontSize:12, color:'#9CA3AF', textAlign:'center' }}>
-            {loading ? 'Loading…' : error ? `Error: ${error}` : `Showing ${filtered.length} of ${orders.length} orders`}
+            {loading ? 'Loading…' : error ? `Error: ${error}` : `Showing ${paged.length} of ${filtered.length} (filtered) · ${orders.length} total`}
           </div>
         </div>
       </section>

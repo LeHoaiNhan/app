@@ -1,16 +1,65 @@
-# React + Vite
+# eVisa
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Online visa application platform — React + Vite frontend, Express + Prisma + PostgreSQL backend.
 
-Currently, two official plugins are available:
+## Local development
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+**Backend** (`server/`):
+```bash
+cd server
+cp .env.example .env          # edit DATABASE_URL etc.
+npm install
+npx prisma migrate dev
+npm run db:seed
+npm run dev                   # http://localhost:4000
+```
 
-## React Compiler
+**Frontend** (root):
+```bash
+npm install
+npm run dev                   # http://localhost:5173
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Deploy
 
-## Expanding the ESLint configuration
+### Backend → Render (free tier)
+1. Push this repo to GitHub.
+2. https://dashboard.render.com/blueprints → **New Blueprint** → pick this repo.
+3. Render reads [`render.yaml`](render.yaml) and creates an `evisa-api` web service + `evisa-db` Postgres. It will prompt you for these env vars (others auto-generated):
+   - `ADMIN_EMAIL`, `ADMIN_PASSWORD`
+   - `GOOGLE_CLIENT_ID` (optional)
+   - `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET` (sandbox or live)
+4. After first deploy succeeds, open the **Shell** tab and run `npm run db:seed`.
+5. Copy your service URL (e.g. `https://evisa-api.onrender.com`).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Alternative: backend has a [`Dockerfile`](server/Dockerfile) that runs anywhere (Fly, Railway, Cloud Run, …).
+
+### Frontend → GitHub Pages
+The static frontend reads its API URL from `VITE_API_URL` **at build time**, so it must be set before `npm run build`.
+
+```bash
+cp .env.production.example .env.production
+# edit .env.production:
+#   VITE_API_URL=https://evisa-api.onrender.com
+#   VITE_PAYPAL_CLIENT_ID=...
+
+npm run deploy                # builds + pushes dist/ to gh-pages branch
+```
+
+The site lives at `https://lehoainhan.github.io/app/`.
+
+> ⚠️ If you see "Network Error" on the deployed site, you likely forgot to set `VITE_API_URL` before building — the bundle then falls back to `http://localhost:4000`, which the visitor's browser can't reach.
+
+## Project layout
+
+```
+app/
+├── src/                  React + Vite frontend (deployed on GitHub Pages)
+├── public/               sitemap.xml, robots.txt, 404.html
+├── server/               Express + Prisma backend (deploy separately)
+│   ├── prisma/schema.prisma
+│   ├── src/routes/       auth, orders, payments (PayPal), support, admin, …
+│   └── Dockerfile
+├── render.yaml           one-click Render deploy
+└── .env.production.example
+```

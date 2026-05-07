@@ -331,3 +331,38 @@ textarea.field-input { resize: vertical; min-height: 80px; }
   .btn-primary, .btn-secondary, .btn-green { min-height: 42px; }
   input, select, textarea { font-size: 16px; }
 }
+
+/* Orders table → card stack on mobile */
+@media (max-width: 720px) {
+  .orders-table, .orders-table tbody, .orders-table tr, .orders-table td { display: block; width: 100%; }
+  .orders-table thead { display: none; }
+  .orders-table tr {
+    background: white;
+    border: 1px solid #E5E7EB !important;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    position: relative;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  }
+  .orders-table tr:hover { background: #F9FAFB !important; }
+  .orders-table td { padding: 4px 0 !important; text-align: left !important; border: none !important; }
+  .orders-table td:nth-child(5) { /* total */
+    position: absolute; top: 14px; right: 16px;
+    font-size: 16px !important; font-weight: 800 !important;
+  }
+  .orders-table td:last-child { /* arrow icon */ display: none !important; }
+  .orders-table td:nth-child(6) { /* updated */
+    margin-top: 4px; font-size: 11px !important; color: #9CA3AF !important;
+  }
+}
+
+/* Admin filter drawer — desktop inline, mobile collapsible */
+@media (max-width: 720px) {
+  .admin-filters-toggle { display: inline-flex !important; }
+  .admin-filters-panel:not(.open) { display: none !important; }
+  .admin-filters-panel.open > * { flex: 1 1 auto; min-width: 0; }
+  .admin-filters-panel.open > input[type=date],
+  .admin-filters-panel.open > select { flex: 1 1 140px; }
+  .admin-filters-panel.open > button:last-child { margin-left: 0 !important; width: 100%; }
+}
