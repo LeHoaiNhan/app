@@ -7,6 +7,7 @@ const LINKS = [
   { to: '/visa-types',   label: 'Visa Types' },
   { to: '/pricing',      label: 'Pricing' },
   { to: '/guide',        label: 'Guide' },
+  { to: '/#track',       label: '🔎 Track' },
   { to: '/support',      label: 'Support' },
 ]
 

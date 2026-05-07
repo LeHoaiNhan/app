@@ -326,10 +326,18 @@ textarea.field-input { resize: vertical; min-height: 80px; }
   .r-grid-2col { grid-template-columns: 1fr !important; }
 }
 
-/* Touch-friendly tap targets + iOS no-zoom */
+/* Touch-friendly tap targets + iOS no-zoom on focus
+   16px is the magic number Mobile Safari uses to skip auto-zoom.
+   !important to override inline `style={{ fontSize: 13 }}` patterns. */
 @media (max-width: 600px) {
   .btn-primary, .btn-secondary, .btn-green { min-height: 42px; }
-  input, select, textarea { font-size: 16px; }
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  /* Date inputs need extra hint or iOS still tries to zoom the picker */
+  input[type="date"], input[type="time"], input[type="datetime-local"] {
+    min-height: 42px;
+  }
 }
 
 /* Orders table → card stack on mobile */

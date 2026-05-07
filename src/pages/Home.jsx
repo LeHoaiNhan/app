@@ -1,4 +1,5 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import ApplicationForm from '../components/ApplicationForm'
 import Footer from '../components/Footer'
@@ -21,6 +22,14 @@ const DESTINATIONS = ['🇹🇭 Thailand','🇯🇵 Japan','🇸🇬 Singapore',
 export default function Home() {
   const formRef = useRef()
   const scroll = () => formRef.current?.scrollIntoView({ behavior:'smooth', block:'start' })
+  const { hash } = useLocation()
+
+  useEffect(() => {
+    if (!hash) return
+    const id = hash.slice(1)
+    const el = document.getElementById(id)
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+  }, [hash])
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
@@ -64,10 +73,16 @@ export default function Home() {
               <button onClick={scroll} className="btn-primary" style={{ fontSize:15, padding:'13px 28px' }}>
                 Apply for visa →
               </button>
-              <a href="#how" style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', border:'1.5px solid rgba(255,255,255,0.25)', borderRadius:8, color:'rgba(255,255,255,0.8)', fontSize:15, fontWeight:600, textDecoration:'none', transition:'all .15s' }}
-                onMouseEnter={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.5)'}
-                onMouseLeave={e => e.currentTarget.style.borderColor='rgba(255,255,255,0.25)'}
-              >See how it works</a>
+              <a
+                href="#track"
+                onClick={(e) => {
+                  e.preventDefault()
+                  document.getElementById('track')?.scrollIntoView({ behavior:'smooth', block:'start' })
+                }}
+                style={{ display:'inline-flex', alignItems:'center', gap:6, padding:'13px 22px', border:'1.5px solid rgba(255,255,255,0.3)', borderRadius:8, color:'white', fontSize:15, fontWeight:600, textDecoration:'none', transition:'all .15s', background:'rgba(255,255,255,0.05)' }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.6)'; e.currentTarget.style.background='rgba(255,255,255,0.12)' }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor='rgba(255,255,255,0.3)'; e.currentTarget.style.background='rgba(255,255,255,0.05)' }}
+              >🔎 Track my order</a>
             </div>
           </div>
 
@@ -105,6 +120,21 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── TRACK ORDER (right after hero, prominent) ── */}
+      <section id="track" style={{ background:'#F9FAFB', padding:'40px 20px', borderBottom:'1px solid #F3F4F6' }}>
+        <div style={{ maxWidth:1024, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:20 }}>
+            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:28, fontWeight:900, color:'var(--navy)', marginBottom:6 }}>
+              Already applied? Track your order
+            </h2>
+            <p style={{ color:'#6B7280', fontSize:14 }}>
+              Enter your order code from the confirmation email to see real-time status
+            </p>
+          </div>
+          <OrderTracker />
+        </div>
+      </section>
+
       {/* ── STATS ── */}
       <section style={{ background:'white', padding:'40px 20px', borderBottom:'1px solid #F3F4F6' }}>
         <div className="r-grid-4" style={{ maxWidth:1024, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, textAlign:'center' }}>
@@ -114,22 +144,6 @@ export default function Home() {
               <div style={{ fontSize:14, color:'#6B7280', marginTop:6, fontWeight:500 }}>{s.label}</div>
             </div>
           ))}
-        </div>
-        <style>{`@media(max-width:600px){.stats-grid{grid-template-columns:1fr 1fr!important}}`}</style>
-      </section>
-
-      {/* ── TRACK ORDER ── */}
-      <section style={{ background:'#F9FAFB', padding:'48px 20px' }}>
-        <div style={{ maxWidth:1024, margin:'0 auto' }}>
-          <div style={{ textAlign:'center', marginBottom:24 }}>
-            <h2 style={{ fontFamily:'Fraunces,serif', fontSize:30, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>
-              Already applied? Track your order
-            </h2>
-            <p style={{ color:'#6B7280', fontSize:15 }}>
-              Enter your order code from the confirmation email to see real-time status
-            </p>
-          </div>
-          <OrderTracker />
         </div>
       </section>
 
