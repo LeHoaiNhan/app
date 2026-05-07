@@ -38,6 +38,8 @@ export default function Admin() {
   const [selectedId, setSelectedId] = useState(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
+  const [dateFrom, setDateFrom] = useState('')
+  const [dateTo, setDateTo] = useState('')
   const [tab, setTab] = useState('orders')
 
   if (!user || user.role !== 'admin') {
@@ -67,6 +69,8 @@ export default function Admin() {
     .reduce((s, o) => s + o.fee.total, 0)
 
   const term = search.trim().toLowerCase()
+  const fromTs = dateFrom ? new Date(dateFrom).getTime() : null
+  const toTs = dateTo ? new Date(dateTo + 'T23:59:59').getTime() : null
   const filtered = orders.filter(o => {
     const matchSearch = !term ||
       o.id.toLowerCase().includes(term) ||
@@ -74,8 +78,32 @@ export default function Admin() {
       o.applicant.email.toLowerCase().includes(term) ||
       o.destination.toLowerCase().includes(term)
     const matchStatus = statusFilter === 'all' || o.status === statusFilter
-    return matchSearch && matchStatus
+    const created = new Date(o.createdAt).getTime()
+    const matchDate = (!fromTs || created >= fromTs) && (!toTs || created <= toTs)
+    return matchSearch && matchStatus && matchDate
   })
+
+  const exportCsv = () => {
+    const params = new URLSearchParams()
+    if (statusFilter !== 'all') params.set('status', statusFilter)
+    if (dateFrom) params.set('from', dateFrom)
+    if (dateTo) params.set('to', dateTo)
+    const apiBase = import.meta.env.VITE_API_URL || ''
+    const token = localStorage.getItem('evisa_token_v1') || ''
+    fetch(`${apiBase}/admin/orders/export.csv?${params.toString()}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then(r => r.ok ? r.blob() : r.json().then(j => { throw new Error(j.error || 'Export failed') }))
+      .then(blob => {
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `orders-${Date.now()}.csv`
+        a.click()
+        URL.revokeObjectURL(url)
+      })
+      .catch(err => alert(err.message || 'Export failed'))
+  }
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
@@ -183,7 +211,7 @@ export default function Admin() {
                 />
               </div>
               <select
-                style={{ padding:'10px 14px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, background:'white', fontFamily:'inherit', outline:'none', cursor:'pointer', minWidth:180 }}
+                style={{ padding:'10px 14px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, background:'white', fontFamily:'inherit', outline:'none', cursor:'pointer', minWidth:160 }}
                 value={statusFilter}
                 onChange={e => setStatusFilter(e.target.value)}
               >
@@ -192,6 +220,27 @@ export default function Admin() {
                   <option key={key} value={key}>{s.icon} {s.label}</option>
                 ))}
               </select>
+              <input type="date"
+                style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, fontFamily:'inherit', outline:'none' }}
+                value={dateFrom}
+                onChange={e => setDateFrom(e.target.value)}
+                title="Created from"
+              />
+              <input type="date"
+                style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:13, fontFamily:'inherit', outline:'none' }}
+                value={dateTo}
+                onChange={e => setDateTo(e.target.value)}
+                title="Created to"
+              />
+              {(dateFrom || dateTo) && (
+                <button onClick={() => { setDateFrom(''); setDateTo('') }}
+                  style={{ padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', background:'white', fontSize:12, color:'#6B7280', cursor:'pointer', fontFamily:'inherit' }}
+                >Clear dates</button>
+              )}
+              <button onClick={exportCsv}
+                style={{ padding:'10px 14px', borderRadius:8, border:'1px solid var(--blue)', background:'var(--blue)', color:'white', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit', whiteSpace:'nowrap' }}
+                title="Download filtered orders as CSV"
+              >⬇ Export CSV</button>
             </div>
 
             <div style={{ overflowX:'auto' }}>
@@ -335,6 +384,9 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
   const { refresh } = useOrders()
   const [note, setNote] = useState('')
   const [confirmAction, setConfirmAction] = useState(null)
+  const [showNotify, setShowNotify] = useState(false)
+  const [notifyForm, setNotifyForm] = useState({ subject: '', message: '' })
+  const [notifyState, setNotifyState] = useState({ loading: false, sent: false, error: null })
   const status = ORDER_STATUSES[order.status]
   const actions = NEXT_ACTIONS[order.status] || []
   const visaDoc = (order.documents || []).find(d => d.kind === 'visa_result')
@@ -346,21 +398,42 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
     setConfirmAction(null)
   }
 
+  const sendNotify = async () => {
+    if (!notifyForm.subject.trim() || !notifyForm.message.trim()) return
+    setNotifyState({ loading: true, sent: false, error: null })
+    try {
+      const { data } = await api.post('/admin/notify', {
+        orderId: order.id,
+        subject: notifyForm.subject.trim(),
+        message: notifyForm.message.trim(),
+      })
+      setNotifyState({ loading: false, sent: true, error: data.skipped ? 'Email logged (SMTP not configured)' : null })
+      setNotifyForm({ subject: '', message: '' })
+    } catch (err) {
+      setNotifyState({ loading: false, sent: false, error: apiError(err, 'Failed to send') })
+    }
+  }
+
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
       <Navbar />
 
       <div style={{ maxWidth:1200, margin:'0 auto', padding:'32px 20px' }}>
-        <button onClick={onBack}
-          style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:600, color:'var(--blue)', marginBottom:18, background:'transparent', border:'none', cursor:'pointer', fontFamily:'inherit' }}
-          onMouseEnter={e => e.currentTarget.style.textDecoration='underline'}
-          onMouseLeave={e => e.currentTarget.style.textDecoration='none'}
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M15 19l-7-7 7-7"/>
-          </svg>
-          Back to list
-        </button>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:18, gap:10, flexWrap:'wrap' }}>
+          <button onClick={onBack}
+            style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:600, color:'var(--blue)', background:'transparent', border:'none', cursor:'pointer', fontFamily:'inherit' }}
+            onMouseEnter={e => e.currentTarget.style.textDecoration='underline'}
+            onMouseLeave={e => e.currentTarget.style.textDecoration='none'}
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M15 19l-7-7 7-7"/>
+            </svg>
+            Back to list
+          </button>
+          <button onClick={() => { setShowNotify(true); setNotifyState({ loading:false, sent:false, error:null }) }}
+            style={{ display:'inline-flex', alignItems:'center', gap:6, fontSize:13, fontWeight:700, padding:'8px 14px', borderRadius:8, border:'1px solid var(--blue)', background:'white', color:'var(--blue)', cursor:'pointer', fontFamily:'inherit' }}
+          >✉ Send message to customer</button>
+        </div>
 
         <div style={{ background:'white', borderRadius:16, border:'1px solid #E5E7EB', overflow:'hidden', marginBottom:18 }}>
           <div style={{ position:'relative', overflow:'hidden', padding:'28px 32px', background:'linear-gradient(135deg,var(--navy) 0%,#1a3060 100%)' }}>
@@ -386,7 +459,7 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
           </div>
         </div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'2fr 1fr', gap:18 }}>
+        <div className="admin-detail-grid r-grid-2col" style={{ display:'grid', gridTemplateColumns:'2fr 1fr', gap:18 }}>
           <div style={{ display:'flex', flexDirection:'column', gap:18, minWidth:0 }}>
             <Section title="👤 Applicant information">
               <div style={{ display:'flex', alignItems:'center', gap:12, marginBottom:14, paddingBottom:14, borderBottom:'1px solid #F3F4F6' }}>
@@ -559,6 +632,71 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
       </div>
 
       <style>{`@media(max-width:900px){.admin-detail-grid{grid-template-columns:1fr!important}}`}</style>
+
+      {showNotify && (
+        <div onClick={() => !notifyState.loading && setShowNotify(false)}
+          style={{ position:'fixed', inset:0, zIndex:200, background:'rgba(11,29,58,0.5)', display:'flex', alignItems:'center', justifyContent:'center', padding:20 }}
+        >
+          <div onClick={e => e.stopPropagation()}
+            style={{ background:'white', borderRadius:16, maxWidth:520, width:'100%', boxShadow:'0 24px 64px rgba(0,0,0,0.25)', overflow:'hidden' }}
+          >
+            <div style={{ padding:'18px 22px', borderBottom:'1px solid #F3F4F6', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
+              <div>
+                <h3 style={{ fontWeight:700, fontSize:16, color:'var(--navy)' }}>Send message to customer</h3>
+                <p style={{ fontSize:12, color:'#6B7280', marginTop:2 }}>To: {order.applicant?.email || '—'}</p>
+              </div>
+              <button onClick={() => !notifyState.loading && setShowNotify(false)}
+                style={{ width:30, height:30, borderRadius:'50%', background:'transparent', border:'none', cursor:'pointer', color:'#9CA3AF', fontSize:20 }}
+              >×</button>
+            </div>
+            <div style={{ padding:'20px 22px' }}>
+              {notifyState.sent ? (
+                <div style={{ textAlign:'center', padding:'8px 0' }}>
+                  <div style={{ fontSize:36, marginBottom:8 }}>✓</div>
+                  <div style={{ fontWeight:700, color:'var(--navy)', marginBottom:4 }}>Message sent</div>
+                  {notifyState.error && <div style={{ fontSize:12, color:'#92400E', marginTop:6 }}>{notifyState.error}</div>}
+                  <button onClick={() => setShowNotify(false)} className="btn-secondary" style={{ marginTop:14 }}>Close</button>
+                </div>
+              ) : (
+                <>
+                  <div style={{ marginBottom:14 }}>
+                    <label style={{ display:'block', fontSize:12, fontWeight:700, color:'#6B7280', marginBottom:6 }}>Subject</label>
+                    <input
+                      style={{ width:'100%', padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:14, fontFamily:'inherit', outline:'none' }}
+                      value={notifyForm.subject}
+                      onChange={e => setNotifyForm(p => ({ ...p, subject: e.target.value }))}
+                      placeholder={`Update on your ${order.destination} application`}
+                      maxLength={200}
+                    />
+                  </div>
+                  <div style={{ marginBottom:14 }}>
+                    <label style={{ display:'block', fontSize:12, fontWeight:700, color:'#6B7280', marginBottom:6 }}>Message</label>
+                    <textarea
+                      style={{ width:'100%', padding:'10px 12px', borderRadius:8, border:'1px solid #E5E7EB', fontSize:14, fontFamily:'inherit', outline:'none', resize:'vertical' }}
+                      rows={6}
+                      value={notifyForm.message}
+                      onChange={e => setNotifyForm(p => ({ ...p, message: e.target.value }))}
+                      maxLength={5000}
+                      placeholder="Hi…"
+                    />
+                  </div>
+                  {notifyState.error && (
+                    <div style={{ fontSize:12, color:'#991B1B', background:'#FEF2F2', border:'1px solid #FECACA', borderRadius:8, padding:'8px 12px', marginBottom:12 }}>
+                      {notifyState.error}
+                    </div>
+                  )}
+                  <div style={{ display:'flex', gap:8, justifyContent:'flex-end' }}>
+                    <button onClick={() => setShowNotify(false)} disabled={notifyState.loading} className="btn-secondary">Cancel</button>
+                    <button onClick={sendNotify} disabled={notifyState.loading || !notifyForm.subject.trim() || !notifyForm.message.trim()} className="btn-primary">
+                      {notifyState.loading ? 'Sending…' : 'Send'}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

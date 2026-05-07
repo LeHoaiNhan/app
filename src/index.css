@@ -311,3 +311,23 @@ textarea.field-input { resize: vertical; min-height: 80px; }
 /* ── Page fade in ──────────────────────────────────────── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
 .fade-up { animation: fadeUp 0.4s ease both; }
+
+/* ── Responsive grid utilities (work with inline styles) ── */
+.r-grid-4, .r-grid-3 { display: grid; gap: 16px; }
+@media (max-width: 768px) {
+  .r-grid-4, .r-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+}
+@media (max-width: 480px) {
+  .r-grid-4, .r-grid-3 { grid-template-columns: 1fr !important; }
+}
+
+.r-grid-2col { display: grid; gap: 18px; }
+@media (max-width: 900px) {
+  .r-grid-2col { grid-template-columns: 1fr !important; }
+}
+
+/* Touch-friendly tap targets + iOS no-zoom */
+@media (max-width: 600px) {
+  .btn-primary, .btn-secondary, .btn-green { min-height: 42px; }
+  input, select, textarea { font-size: 16px; }
+}

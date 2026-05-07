@@ -108,3 +108,38 @@ body {
   .container { padding: 0 16px; }
   .hide-mobile { display: none !important; }
 }
+
+/* Responsive grid utilities — work alongside existing inline styles via !important */
+.r-grid-4, .r-grid-3 {
+  display: grid;
+  gap: 16px;
+}
+@media (max-width: 768px) {
+  .r-grid-4, .r-grid-3 { grid-template-columns: repeat(2, 1fr) !important; }
+  .r-stack-md { display: flex !important; flex-direction: column !important; gap: 8px !important; }
+  .r-stack-md > * { width: 100% !important; min-width: 0 !important; }
+}
+@media (max-width: 480px) {
+  .r-grid-4, .r-grid-3 { grid-template-columns: 1fr !important; }
+}
+
+/* Side-by-side that collapses to single column under 900px */
+.r-grid-2col {
+  display: grid;
+  gap: 18px;
+}
+@media (max-width: 900px) {
+  .r-grid-2col { grid-template-columns: 1fr !important; }
+}
+
+/* Reduce hero padding on mobile */
+@media (max-width: 600px) {
+  .r-hero-mobile { padding: 36px 16px 44px !important; }
+  .r-section-mobile { padding: 24px 16px !important; }
+}
+
+/* Touch-friendly tap targets */
+@media (max-width: 600px) {
+  button:not(.no-min), .btn-primary, .btn-secondary, .btn-green { min-height: 40px; }
+  input, select, textarea { font-size: 16px; } /* avoid iOS auto-zoom on focus */
+}

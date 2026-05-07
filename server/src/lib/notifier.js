@@ -37,6 +37,16 @@ You can track it any time at /support — code: ${order.id}.
   return send({ to: email, subject, text })
 }
 
+export async function notifyCustomMessage({ to, subject, message, order }) {
+  if (!to) return
+  const text = `${message}
+
+${order ? `Order: ${order.id} — ${order.destination}` : ''}
+
+— eVisa Team`
+  return send({ to, subject, text })
+}
+
 export async function notifySupportReply(message) {
   if (!message.email || !message.reply) return
   const subject = `[eVisa] Re: ${message.subject || 'Your support request'}`

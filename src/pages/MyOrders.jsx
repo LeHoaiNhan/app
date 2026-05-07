@@ -88,7 +88,7 @@ export default function MyOrders() {
 
       {/* ── STATS ── */}
       <section style={{ background:'white', padding:'40px 20px', borderBottom:'1px solid #F3F4F6' }}>
-        <div style={{ maxWidth:1024, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, textAlign:'center' }}>
+        <div className="r-grid-3" style={{ maxWidth:1024, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:16, textAlign:'center' }}>
           {[
             ['Total orders', myOrders.length, 'var(--blue)'],
             ['In progress',  active.length,   '#F59E0B'],

@@ -103,7 +103,7 @@ export default function Support() {
 
       {/* ── STATS ── */}
       <section style={{ background:'white', padding:'40px 20px', borderBottom:'1px solid #F3F4F6' }}>
-        <div style={{ maxWidth:1024, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, textAlign:'center' }}>
+        <div className="r-grid-4" style={{ maxWidth:1024, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, textAlign:'center' }}>
           {STATS.map(s => (
             <div key={s.label}>
               <div style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--blue)', lineHeight:1 }}>{s.num}</div>

@@ -205,7 +205,7 @@ export default function VisaTypes() {
             </div>
 
             <div style={{ padding:'0 28px 28px' }}>
-              <div style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:18 }}>
+              <div className="r-grid-3" style={{ display:'grid', gridTemplateColumns:'repeat(3,1fr)', gap:10, marginBottom:18 }}>
                 {[
                   ['⏱','Time',activeType.info.time],
                   ['💰','Service fee',activeType.info.price],

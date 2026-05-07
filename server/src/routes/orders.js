@@ -8,6 +8,7 @@ import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { generateOrderId } from '../lib/orderId.js'
 import { recordAudit } from '../lib/audit.js'
 import { notifyOrderStatus } from '../lib/notifier.js'
+import { parseDateRange, parsePagination } from '../lib/dateFilter.js'
 
 const router = Router()
 
@@ -42,7 +43,7 @@ router.use(requireAuth)
 router.get('/', async (req, res, next) => {
   try {
     const { status, q } = req.query
-    const where = {}
+    const where = { ...parseDateRange(req.query, 'createdAt') }
     if (req.user.role !== 'admin') where.customerId = req.user.id
     if (status && ORDER_STATUSES.includes(status)) where.status = status
     if (q) {
@@ -51,15 +52,20 @@ router.get('/', async (req, res, next) => {
         { destination: { contains: String(q), mode: 'insensitive' } },
       ]
     }
-    const orders = await prisma.order.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      include: {
-        timeline: { orderBy: { at: 'asc' } },
-        documents: { orderBy: { createdAt: 'asc' } },
-      },
-    })
-    res.json({ orders })
+    const { take, skip } = parsePagination(req.query, { defaultLimit: 50, maxLimit: 200 })
+    const [orders, total] = await Promise.all([
+      prisma.order.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          timeline: { orderBy: { at: 'asc' } },
+          documents: { orderBy: { createdAt: 'asc' } },
+        },
+        take, skip,
+      }),
+      prisma.order.count({ where }),
+    ])
+    res.json({ orders, total, take, skip })
   } catch (err) { next(err) }
 })
 

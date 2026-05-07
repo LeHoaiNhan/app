@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { prisma } from '../lib/prisma.js'
 import { requireAuth, requireAdmin } from '../middleware/auth.js'
 import { recordAudit } from '../lib/audit.js'
+import { parseDateRange, parsePagination } from '../lib/dateFilter.js'
+import { notifyCustomMessage } from '../lib/notifier.js'
 
 const router = Router()
 router.use(requireAuth, requireAdmin)
@@ -106,33 +108,105 @@ router.patch('/users/:id', async (req, res, next) => {
 
 router.get('/login-logs', async (req, res, next) => {
   try {
-    const { event, provider, email, take } = req.query
-    const where = {}
+    const { event, provider, email } = req.query
+    const where = { ...parseDateRange(req.query, 'createdAt') }
     if (event) where.event = event
     if (provider) where.provider = provider
     if (email) where.email = { contains: String(email), mode: 'insensitive' }
-    const logs = await prisma.loginLog.findMany({
+    const { take, skip } = parsePagination(req.query, { defaultLimit: 100, maxLimit: 500 })
+    const [logs, total] = await Promise.all([
+      prisma.loginLog.findMany({ where, orderBy: { createdAt: 'desc' }, take, skip }),
+      prisma.loginLog.count({ where }),
+    ])
+    res.json({ logs, total, take, skip })
+  } catch (err) { next(err) }
+})
+
+router.get('/orders/export.csv', async (req, res, next) => {
+  try {
+    const where = { ...parseDateRange(req.query, 'createdAt') }
+    if (req.query.status) where.status = req.query.status
+    const orders = await prisma.order.findMany({
       where,
       orderBy: { createdAt: 'desc' },
-      take: Math.min(Number(take) || 100, 500),
+      include: { customer: { select: { email: true, name: true } } },
+      take: 5000,
     })
-    res.json({ logs })
+
+    const cols = [
+      'id', 'status', 'destination', 'visaType', 'processing',
+      'customerEmail', 'customerName',
+      'applicantName', 'applicantEmail', 'applicantNationality',
+      'passportNo', 'tripEntryDate', 'tripExitDate',
+      'feeGov', 'feeService', 'feeTotal', 'feeCurrency',
+      'paymentMethod', 'paymentStatus', 'paypalCaptureId',
+      'createdAt', 'updatedAt',
+    ]
+    const rows = orders.map(o => [
+      o.id, o.status, o.destination, o.visaType, o.processing,
+      o.customer?.email || '', o.customer?.name || '',
+      o.applicant?.fullName || '', o.applicant?.email || '', o.applicant?.nationality || '',
+      o.passport?.no || '', o.trip?.entryDate || '', o.trip?.exitDate || '',
+      o.fee?.gov ?? '', o.fee?.service ?? '', o.fee?.total ?? '', o.fee?.currency || 'USD',
+      o.payment?.method || '', o.payment?.status || '', o.payment?.paypalCaptureId || '',
+      o.createdAt.toISOString(), o.updatedAt.toISOString(),
+    ])
+
+    const escape = (v) => {
+      const s = String(v ?? '')
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+    }
+    const csv = [cols.join(','), ...rows.map(r => r.map(escape).join(','))].join('\n')
+
+    await recordAudit(req, { action: 'orders.export', resource: 'Order', payload: { count: orders.length, where } })
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8')
+    res.setHeader('Content-Disposition', `attachment; filename="orders-${Date.now()}.csv"`)
+    res.send(csv)
+  } catch (err) { next(err) }
+})
+
+const notifySchema = z.object({
+  orderId: z.string().min(1),
+  subject: z.string().min(1).max(200),
+  message: z.string().min(1).max(5000),
+})
+
+router.post('/notify', async (req, res, next) => {
+  try {
+    const { orderId, subject, message } = notifySchema.parse(req.body)
+    const order = await prisma.order.findUnique({ where: { id: orderId } })
+    if (!order) return res.status(404).json({ error: 'Order not found' })
+    const email = order.applicant?.email
+    if (!email) return res.status(400).json({ error: 'Order has no applicant email' })
+
+    const result = await notifyCustomMessage({ to: email, subject, message, order })
+
+    await recordAudit(req, {
+      action: 'order.notify',
+      resource: `Order:${order.id}`,
+      payload: { subject, to: email, sent: !result?.skipped },
+    })
+
+    res.json({ ok: true, skipped: !!result?.skipped, to: email })
   } catch (err) { next(err) }
 })
 
 router.get('/audits', async (req, res, next) => {
   try {
-    const { resource, action, take } = req.query
-    const where = {}
+    const { resource, action } = req.query
+    const where = { ...parseDateRange(req.query, 'createdAt') }
     if (resource) where.resource = { contains: String(resource), mode: 'insensitive' }
     if (action) where.action = String(action)
-    const audits = await prisma.adminAudit.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-      take: Math.min(Number(take) || 100, 500),
-      include: { actor: { select: { id: true, email: true, name: true } } },
-    })
-    res.json({ audits })
+    const { take, skip } = parsePagination(req.query, { defaultLimit: 100, maxLimit: 500 })
+    const [audits, total] = await Promise.all([
+      prisma.adminAudit.findMany({
+        where, orderBy: { createdAt: 'desc' }, take, skip,
+        include: { actor: { select: { id: true, email: true, name: true } } },
+      }),
+      prisma.adminAudit.count({ where }),
+    ])
+    res.json({ audits, total, take, skip })
   } catch (err) { next(err) }
 })
 
