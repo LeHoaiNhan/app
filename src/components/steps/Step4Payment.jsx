@@ -2,18 +2,15 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
 import { useOrders } from '../../contexts/OrdersContext'
+import { useCountries } from '../../lib/useCountries'
+import { useServiceTiers } from '../../lib/useServiceTiers'
 import { api } from '../../lib/api'
-
-const FEE_MAP = { normal: 49, fast: 69, express: 99 }
-
-const FLAG_MAP = {
-  'Thailand':'🇹🇭','Singapore':'🇸🇬','Indonesia':'🇮🇩','South Korea':'🇰🇷','Japan':'🇯🇵',
-  'Vietnam':'🇻🇳','Turkey':'🇹🇷','Australia':'🇦🇺','India':'🇮🇳','Egypt':'🇪🇬','Dubai (UAE)':'🇦🇪',
-}
 
 export default function Step4Payment({ formData, onBack }) {
   const { user, setShowLoginModal } = useAuth()
   const { createOrder } = useOrders()
+  const { countries } = useCountries()
+  const { tiers } = useServiceTiers()
   const [pay, setPay]         = useState('card')
   const [card, setCard]       = useState({ number:'', expiry:'', cvv:'', name:'' })
   const [loading, setLoading] = useState(false)
@@ -22,9 +19,12 @@ export default function Step4Payment({ formData, onBack }) {
   const [error, setError]     = useState(null)
 
   const proc  = formData.trip?.processing || 'normal'
-  const total = FEE_MAP[proc] || 49
-  const govFee  = 30
-  const svcFee  = total - govFee
+  const destination = formData.trip?.destination || 'Thailand'
+  const country = countries.find(c => c.name === destination)
+  const tier = tiers.find(t => t.key === proc) || tiers[0]
+  const govFee = country?.govFee ?? 0
+  const svcFee = tier?.fee ?? 0
+  const total = govFee + svcFee
   const fullName = `${formData.personal?.lastName||''} ${formData.personal?.firstName||''}`.trim() || '—'
 
   const handlePay = async () => {
@@ -34,7 +34,6 @@ export default function Step4Payment({ formData, onBack }) {
       return
     }
     setLoading(true)
-    const destination = formData.trip?.destination || 'Thailand'
     const photoURL = formData.personal?.photoURL || ''
     const applicant = {
       fullName,
@@ -49,8 +48,8 @@ export default function Step4Payment({ formData, onBack }) {
     try {
       const order = await createOrder({
         destination,
-        flag: FLAG_MAP[destination] || '🌍',
-        visaType: formData.trip?.visaType || 'E-Visa',
+        flag: country?.flag || '🌍',
+        visaType: country?.tag || formData.trip?.visaType || 'E-Visa',
         processing: proc,
         fee: { gov: govFee, service: svcFee, total, currency: 'USD' },
         payment: { method: pay, status: 'paid', paidAt: new Date().toISOString() },
@@ -144,7 +143,7 @@ export default function Step4Payment({ formData, onBack }) {
           ['Applicant',       fullName],
           ['Destination',     formData.trip?.destination || 'Thailand'],
           ['Visa type',       formData.trip?.visaType || 'E-Visa'],
-          ['Processing time', proc==='normal'?'5-7 days':proc==='fast'?'2-3 days':'24 hours'],
+          ['Processing time', tier?.processingTime || '—'],
         ].map(([l,v]) => (
           <div className="summary-row" key={l}>
             <span className="lbl">{l}</span>

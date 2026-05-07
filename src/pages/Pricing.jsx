@@ -3,35 +3,14 @@ import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import { useCountries } from '../lib/useCountries'
+import { useServiceTiers } from '../lib/useServiceTiers'
 
-const SERVICE_FEES = { normal: 19, fast: 39, express: 69 }
+const TIER_ICONS = { normal:'⏱', fast:'⚡', express:'🚀' }
 
-const TIERS = [
-  {
-    key:'normal', label:'Standard', icon:'⏱',
-    desc:'Plenty of time, best price',
-    fee: SERVICE_FEES.normal,
-    time:'5-7 business days',
-    features:['Expert file review','AI photo check','SSL 256-bit encryption','24/7 English support','Email status updates'],
-    accent:'#6B7280', bg:'#F9FAFB',
-  },
-  {
-    key:'fast', label:'Fast', icon:'⚡',
-    desc:'Our most popular plan',
-    fee: SERVICE_FEES.fast,
-    time:'2-3 business days',
-    features:['Everything in Standard','Priority processing','100% service fee refund if rejected','Priority live chat','SMS notifications'],
-    accent:'#1B4FD8', bg:'#EEF3FF', popular:true,
-  },
-  {
-    key:'express', label:'Express', icon:'🚀',
-    desc:'As fast as it gets',
-    fee: SERVICE_FEES.express,
-    time:'24 hours',
-    features:['Everything in Fast','24h SLA guarantee','Direct expert hotline','First in the queue','200% refund if we miss the deadline'],
-    accent:'#F59E0B', bg:'#FFF7ED',
-  },
-]
+function hexToBg(hex) {
+  if (!hex || !/^#[0-9a-f]{6}$/i.test(hex)) return '#F9FAFB'
+  return `${hex}11`
+}
 
 const TAG_COLORS = {
   'E-Visa':          { bg:'#EEF3FF', text:'#1B4FD8' },
@@ -62,22 +41,37 @@ export default function Pricing() {
   const [sort, setSort]     = useState('popular')
   const [openFaq, setOpenFaq] = useState(null)
   const { countries } = useCountries()
+  const { tiers: rawTiers } = useServiceTiers()
+
+  const TIERS = useMemo(() => rawTiers.map(t => ({
+    ...t,
+    icon: TIER_ICONS[t.key] || '⚙️',
+    desc: t.description,
+    time: t.processingTime,
+    bg: hexToBg(t.accent),
+    features: t.features || [],
+  })), [rawTiers])
+
+  const SERVICE_FEES = useMemo(() => Object.fromEntries(rawTiers.map(t => [t.key, t.fee])), [rawTiers])
+
+  const activeTier = TIERS.find(t => t.key === selectedTier) || TIERS[0]
 
   const rows = useMemo(() => {
+    const tierFee = SERVICE_FEES[selectedTier] ?? 0
     const PRICING = countries.map(c => ({ country: c.name, flag: c.flag, tag: c.tag, gov: c.govFee, popular: c.popular }))
     const term = search.trim().toLowerCase()
     let arr = PRICING.filter(p => !term || p.country.toLowerCase().includes(term))
     arr = [...arr].sort((a, b) => {
       if (sort === 'popular') return Number(b.popular) - Number(a.popular) || a.country.localeCompare(b.country)
       if (sort === 'name')    return a.country.localeCompare(b.country)
-      const at = (a.gov ?? 0) + SERVICE_FEES[selectedTier]
-      const bt = (b.gov ?? 0) + SERVICE_FEES[selectedTier]
+      const at = (a.gov ?? 0) + tierFee
+      const bt = (b.gov ?? 0) + tierFee
       if (sort === 'price-asc')  return at - bt
       if (sort === 'price-desc') return bt - at
       return 0
     })
     return arr
-  }, [countries, search, sort, selectedTier])
+  }, [countries, search, sort, selectedTier, SERVICE_FEES])
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
@@ -181,7 +175,7 @@ export default function Pricing() {
             <div style={{ fontSize:11, fontWeight:700, color:'var(--blue)', textTransform:'uppercase', letterSpacing:'.08em', marginBottom:6 }}>By country</div>
             <h2 style={{ fontFamily:'Fraunces,serif', fontSize:32, fontWeight:900, color:'var(--navy)', marginBottom:8 }}>Pricing by country</h2>
             <p style={{ fontSize:14, color:'#6B7280' }}>
-              Viewing the <span style={{ fontWeight:700, color:'var(--blue)' }}>{TIERS.find(t => t.key === selectedTier)?.label}</span> plan — switch above to update pricing
+              Viewing the <span style={{ fontWeight:700, color:'var(--blue)' }}>{activeTier?.label || '...'}</span> plan — switch above to update pricing
             </p>
           </div>
 
@@ -223,7 +217,8 @@ export default function Pricing() {
                   {rows.map(p => {
                     const tagColor = TAG_COLORS[p.tag] || { bg:'#F3F4F6', text:'#6B7280' }
                     const isFree = p.gov === null
-                    const total = isFree ? null : p.gov + SERVICE_FEES[selectedTier]
+                    const tierFee = SERVICE_FEES[selectedTier] ?? 0
+                    const total = isFree ? null : p.gov + tierFee
                     return (
                       <tr key={p.country} style={{ borderBottom:'1px solid #F3F4F6' }}>
                         <td style={{ padding:'14px 16px' }}>
@@ -239,7 +234,7 @@ export default function Pricing() {
                           <span style={{ fontSize:11, fontWeight:600, padding:'2px 10px', borderRadius:50, background:tagColor.bg, color:tagColor.text }}>{p.tag}</span>
                         </td>
                         <td style={{ padding:'14px 16px', textAlign:'right', color:'#6B7280' }}>{isFree ? '—' : `$${p.gov}`}</td>
-                        <td style={{ padding:'14px 16px', textAlign:'right', color:'#6B7280' }}>{isFree ? '—' : `$${SERVICE_FEES[selectedTier]}`}</td>
+                        <td style={{ padding:'14px 16px', textAlign:'right', color:'#6B7280' }}>{isFree ? '—' : `$${tierFee}`}</td>
                         <td style={{ padding:'14px 16px', textAlign:'right' }}>
                           {isFree ? (
                             <span style={{ fontSize:11, fontWeight:700, padding:'4px 10px', borderRadius:50, background:'#ECFDF5', color:'#059669' }}>Free</span>

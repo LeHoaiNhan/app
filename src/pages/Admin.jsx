@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useOrders, ORDER_STATUSES } from '../contexts/OrdersContext'
 import { api, apiError } from '../lib/api'
 import AdminCountries from './AdminCountries'
+import AdminServiceTiers from './AdminServiceTiers'
 
 const TIER_LABEL = { normal:'Standard', fast:'Fast', express:'Express' }
 
@@ -114,6 +115,7 @@ export default function Admin() {
           {[
             { key:'orders',    label:'📋 Orders' },
             { key:'countries', label:'🌍 Countries' },
+            { key:'tiers',     label:'💰 Service tiers' },
           ].map(t => {
             const active = tab === t.key
             return (
@@ -135,6 +137,8 @@ export default function Admin() {
 
       {tab === 'countries' ? (
         <AdminCountries />
+      ) : tab === 'tiers' ? (
+        <AdminServiceTiers />
       ) : (
       <>
 
