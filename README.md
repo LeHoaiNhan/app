@@ -29,7 +29,9 @@ npm run dev                   # http://localhost:5173
    - `ADMIN_EMAIL`, `ADMIN_PASSWORD`
    - `GOOGLE_CLIENT_ID` (optional)
    - `PAYPAL_CLIENT_ID`, `PAYPAL_SECRET` (sandbox or live)
-4. After first deploy succeeds, open the **Shell** tab and run `npm run db:seed`.
+4. After first deploy succeeds, open the **Shell** tab and run **one** of:
+   - `npm run db:seed:prod` — admin user + countries + service tiers (recommended for production)
+   - `npm run db:seed` — also includes 8 demo customers and 9 sample orders (good for showcasing the UI)
 5. Copy your service URL (e.g. `https://evisa-api.onrender.com`).
 
 Alternative: backend has a [`Dockerfile`](server/Dockerfile) that runs anywhere (Fly, Railway, Cloud Run, …).
@@ -49,6 +51,18 @@ npm run deploy                # builds + pushes dist/ to gh-pages branch
 The site lives at `https://lehoainhan.github.io/app/`.
 
 > ⚠️ If you see "Network Error" on the deployed site, you likely forgot to set `VITE_API_URL` before building — the bundle then falls back to `http://localhost:4000`, which the visitor's browser can't reach.
+
+## Adding real data
+
+Once deployed, log in as admin (`ADMIN_EMAIL` / `ADMIN_PASSWORD`) and use these tabs in the admin dashboard:
+
+- **🌍 Countries** — add, edit, hide destinations. Anything you add appears immediately on `/destinations` and `/pricing`.
+- **💰 Service tiers** — set the fee for normal/fast/express processing.
+- **📋 Orders** — review, approve, reject, send manual messages, export CSV.
+
+Customer accounts are created automatically when someone signs in with Google. Orders flow in from the public application form.
+
+If you ran `db:seed:prod` (admin + catalog only) the database starts clean with no fake users or orders.
 
 ## Project layout
 

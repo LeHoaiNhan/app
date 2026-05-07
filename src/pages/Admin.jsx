@@ -367,10 +367,18 @@ export default function Admin() {
 }
 
 function AdminAuthGate({ onLogin, userIsCustomer, authError, authLoading }) {
-  const [creds, setCreds] = useState({ email: 'admin@evisa.com', password: 'admin123' })
+  const DEMO_EMAIL = import.meta.env.VITE_ADMIN_DEMO_EMAIL || 'admin@evisa.com'
+  const DEMO_PASSWORD = import.meta.env.VITE_ADMIN_DEMO_PASSWORD || 'admin123'
+  const showQuickLogin = !import.meta.env.VITE_DISABLE_DEMO_LOGIN
+
+  const [creds, setCreds] = useState({ email: DEMO_EMAIL, password: DEMO_PASSWORD })
   const handleSubmit = (e) => {
     e.preventDefault()
     onLogin(creds).catch(() => { /* surfaced via authError */ })
+  }
+  const quickLogin = () => {
+    setCreds({ email: DEMO_EMAIL, password: DEMO_PASSWORD })
+    onLogin({ email: DEMO_EMAIL, password: DEMO_PASSWORD }).catch(() => {})
   }
   return (
     <div style={{ minHeight:'100vh', display:'flex', flexDirection:'column', background:'#F9FAFB' }}>
@@ -402,8 +410,27 @@ function AdminAuthGate({ onLogin, userIsCustomer, authError, authLoading }) {
               {authLoading ? 'Signing in…' : '🔑 Sign in as Admin'}
             </button>
           </form>
-          <p style={{ fontSize:11, color:'#9CA3AF', marginBottom:12 }}>Default dev credentials: admin@evisa.com / admin123</p>
-          <Link to="/" style={{ fontSize:13, fontWeight:600, color:'var(--blue)', textDecoration:'none' }}>← Back to home</Link>
+          {showQuickLogin && (
+            <>
+              <div style={{ display:'flex', alignItems:'center', gap:10, margin:'14px 0' }}>
+                <div style={{ flex:1, height:1, background:'#E5E7EB' }} />
+                <span style={{ fontSize:11, color:'#9CA3AF', textTransform:'uppercase', letterSpacing:'.06em' }}>or</span>
+                <div style={{ flex:1, height:1, background:'#E5E7EB' }} />
+              </div>
+              <button
+                type="button"
+                onClick={quickLogin}
+                disabled={authLoading}
+                style={{ width:'100%', padding:'10px 14px', borderRadius:8, border:'1px dashed var(--blue)', background:'var(--blue-light)', color:'var(--blue)', fontSize:13, fontWeight:700, cursor:'pointer', fontFamily:'inherit' }}
+              >
+                ⚡ One-click test login (demo admin)
+              </button>
+              <p style={{ fontSize:11, color:'#9CA3AF', marginTop:10 }}>
+                Demo: <code>{DEMO_EMAIL}</code> · Password set via <code>ADMIN_PASSWORD</code> env on the server.
+              </p>
+            </>
+          )}
+          <Link to="/" style={{ fontSize:13, fontWeight:600, color:'var(--blue)', textDecoration:'none', display:'inline-block', marginTop:12 }}>← Back to home</Link>
         </div>
       </div>
       <Footer />
