@@ -10,6 +10,7 @@ export default defineConfig({
       '/orders': 'http://localhost:4000',
       '/uploads': 'http://localhost:4000',
       '/countries': 'http://localhost:4000',
+      '/service-tiers': 'http://localhost:4000',
     }
   }
 })

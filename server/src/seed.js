@@ -2,6 +2,7 @@ import 'dotenv/config'
 import bcrypt from 'bcryptjs'
 import { prisma } from './lib/prisma.js'
 import { SEED_COUNTRIES } from './seedCountries.js'
+import { SEED_SERVICE_TIERS } from './seedServiceTiers.js'
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@evisa.com'
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123'
@@ -209,6 +210,15 @@ async function main() {
     })
   }
   console.log(`[seed] ${SEED_COUNTRIES.length} countries`)
+
+  for (const t of SEED_SERVICE_TIERS) {
+    await prisma.serviceTier.upsert({
+      where: { key: t.key },
+      update: t,
+      create: t,
+    })
+  }
+  console.log(`[seed] ${SEED_SERVICE_TIERS.length} service tiers`)
 
   console.log('[seed] done')
 }

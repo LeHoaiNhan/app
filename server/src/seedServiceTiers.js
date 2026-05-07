@@ -1,0 +1,47 @@
+export const SEED_SERVICE_TIERS = [
+  {
+    key: 'normal', label: 'Standard',
+    fee: 19, processingTime: '5-7 business days',
+    description: 'Plenty of time, best price',
+    features: [
+      'Expert file review',
+      'AI photo check',
+      'SSL 256-bit encryption',
+      '24/7 English support',
+      'Email status updates',
+    ],
+    accent: '#6B7280',
+    popular: false,
+    sortOrder: 10,
+  },
+  {
+    key: 'fast', label: 'Fast',
+    fee: 39, processingTime: '2-3 business days',
+    description: 'Our most popular plan',
+    features: [
+      'Everything in Standard',
+      'Priority processing',
+      '100% service fee refund if rejected',
+      'Priority live chat',
+      'SMS notifications',
+    ],
+    accent: '#1B4FD8',
+    popular: true,
+    sortOrder: 20,
+  },
+  {
+    key: 'express', label: 'Express',
+    fee: 69, processingTime: '24 hours',
+    description: 'As fast as it gets',
+    features: [
+      'Everything in Fast',
+      '24h SLA guarantee',
+      'Direct expert hotline',
+      'First in the queue',
+      '200% refund if we miss the deadline',
+    ],
+    accent: '#F59E0B',
+    popular: false,
+    sortOrder: 30,
+  },
+]
