@@ -49,7 +49,7 @@ export default function Home() {
       <Navbar onApplyClick={scroll} />
 
       {/* ── HERO ── */}
-      <section style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 55%,#0d2451 100%)', padding:'64px 20px 72px', position:'relative', overflow:'hidden' }}>
+      <section className="r-hero" style={{ background:'linear-gradient(135deg,#0B1D3A 0%,#1a3060 55%,#0d2451 100%)', padding:'64px 20px 72px', position:'relative', overflow:'hidden' }}>
         {/* Glow */}
         <div style={{ position:'absolute', top:-80, right:-80, width:440, height:440, background:'radial-gradient(circle,rgba(27,79,216,0.25) 0%,transparent 70%)', pointerEvents:'none' }} />
         <div style={{ position:'absolute', bottom:-60, left:'30%', width:320, height:320, background:'radial-gradient(circle,rgba(245,166,35,0.08) 0%,transparent 70%)', pointerEvents:'none' }} />
@@ -87,10 +87,10 @@ export default function Home() {
           </div>
 
           {/* Right: search card */}
-          <div style={{ flex:'0 0 auto', width:'100%', maxWidth:420 }}>
+          <div className="r-card-tight" style={{ flex:'0 0 auto', width:'100%', maxWidth:420 }}>
             <div style={{ background:'white', borderRadius:16, padding:'24px', boxShadow:'0 24px 64px rgba(0,0,0,0.3)' }}>
               <p style={{ fontSize:15, fontWeight:700, color:'var(--navy)', marginBottom:16 }}>🔍 Check your visa</p>
-              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
+              <div className="r-grid-2-stack" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12, marginBottom:12 }}>
                 <div>
                   <label className="field-label">Nationality</label>
                   <select className="field-input">
@@ -223,6 +223,23 @@ export default function Home() {
       </section>
 
       <Footer />
+
+      {/* Mobile-only sticky bottom CTA */}
+      <div className="sticky-cta">
+        <button onClick={scroll} className="btn-primary">
+          Apply for visa →
+        </button>
+        <a
+          href="#track"
+          onClick={(e) => {
+            e.preventDefault()
+            document.getElementById('track')?.scrollIntoView({ behavior:'smooth', block:'start' })
+          }}
+          aria-label="Track order"
+          style={{ display:'inline-flex', alignItems:'center', justifyContent:'center', width:44, height:44, borderRadius:8, border:'1px solid #E5E7EB', background:'white', color:'var(--navy)', textDecoration:'none', fontSize:18, flexShrink:0 }}
+        >🔎</a>
+      </div>
+      <div className="sticky-cta-spacer" aria-hidden />
     </div>
   )
 }

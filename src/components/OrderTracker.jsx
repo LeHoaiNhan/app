@@ -56,7 +56,7 @@ export default function OrderTracker({ compact = false, defaultCode = '' }) {
         </div>
       </div>
       <form onSubmit={handleTrack} style={{ padding: compact ? 18 : 24 }}>
-        <div style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
+        <div className="r-tracker-row" style={{ display:'flex', gap:10, flexWrap:'wrap' }}>
           <input
             style={{ flex:'1 1 200px', padding:'12px 16px', borderRadius:12, border:'2px solid #E5E7EB', fontSize:14, fontFamily:'monospace', textTransform:'uppercase', letterSpacing:'.05em', outline:'none', minWidth:0 }}
             placeholder="EV-A47B92"

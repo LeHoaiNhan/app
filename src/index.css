@@ -326,19 +326,75 @@ textarea.field-input { resize: vertical; min-height: 80px; }
   .r-grid-2col { grid-template-columns: 1fr !important; }
 }
 
-/* Touch-friendly tap targets + iOS no-zoom on focus
-   16px is the magic number Mobile Safari uses to skip auto-zoom.
-   !important to override inline `style={{ fontSize: 13 }}` patterns. */
+/* ── Global mobile polish (≤ 600px) ───────────────────────
+   - Reduce huge section paddings
+   - Smaller hero typography
+   - Stack flex containers that have minWidth children
+   - iOS no-zoom on inputs
+   - Touch-friendly tap targets */
 @media (max-width: 600px) {
-  .btn-primary, .btn-secondary, .btn-green { min-height: 42px; }
-  input, select, textarea {
-    font-size: 16px !important;
-  }
-  /* Date inputs need extra hint or iOS still tries to zoom the picker */
-  input[type="date"], input[type="time"], input[type="datetime-local"] {
-    min-height: 42px;
-  }
+  /* Touch-friendly buttons */
+  .btn-primary, .btn-secondary, .btn-green { min-height: 44px; padding: 11px 20px !important; }
+
+  /* iOS no-zoom on focus (16px is the magic number) */
+  input, select, textarea { font-size: 16px !important; }
+  input[type="date"], input[type="time"], input[type="datetime-local"] { min-height: 44px; }
+
+  /* Hero → smaller, tighter on mobile */
+  h1 { font-size: clamp(28px, 8vw, 38px) !important; line-height: 1.15 !important; }
+  h2 { font-size: clamp(22px, 6vw, 28px) !important; }
+
+  /* Generic section helper */
+  .r-section { padding: 36px 16px !important; }
+  .r-hero { padding: 36px 16px 48px !important; }
+  .r-card-tight { padding: 18px !important; }
+
+  /* When a flex row has minWidth children, force stack */
+  .r-stack-sm { flex-direction: column !important; align-items: stretch !important; }
+  .r-stack-sm > * { width: 100% !important; min-width: 0 !important; max-width: 100% !important; }
+
+  /* Order tracker: stack input row on small screens */
+  .r-tracker-row { flex-direction: column !important; }
+  .r-tracker-row > * { width: 100% !important; flex: 1 1 auto !important; }
+
+
+  /* Modals fit screen */
+  .r-modal { padding: 16px !important; }
 }
+
+/* Very-small screen: stack 1fr 1fr grids (≤380px) */
+@media (max-width: 380px) {
+  .r-grid-2-stack { grid-template-columns: 1fr !important; }
+}
+
+/* ── Auto-shrink huge inline section paddings on mobile ──
+   Catches the common 64px / 48px / 40px vertical paddings used across pages. */
+@media (max-width: 600px) {
+  section[style*="64px 20px"] { padding: 40px 16px !important; }
+  section[style*="48px 20px"] { padding: 32px 16px !important; }
+  section[style*="40px 20px"] { padding: 28px 16px !important; }
+  section[style*="56px 0"]    { padding: 36px 16px !important; }
+  section[style*="padding:'64px"] { padding: 40px 16px !important; }
+  /* Tighten container max-width padding on small viewports too */
+  div[style*="padding:'0 20px'"] { padding-left: 16px !important; padding-right: 16px !important; }
+}
+
+/* ── Sticky bottom CTA (mobile only) ───────────────── */
+.sticky-cta {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 40;
+  background: white;
+  border-top: 1px solid #E5E7EB;
+  padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+  display: none;
+  box-shadow: 0 -4px 16px rgba(11,29,58,0.08);
+}
+@media (max-width: 768px) {
+  .sticky-cta { display: flex; gap: 8px; align-items: center; }
+  .sticky-cta-spacer { height: 64px; }
+}
+.sticky-cta .btn-primary { flex: 1; justify-content: center; }
 
 /* Orders table → card stack on mobile */
 @media (max-width: 720px) {
