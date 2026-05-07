@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { ErrorBanner, TrustStrip } from './_StepBits'
 
 function validateStep2(d) {
   const e = {}
@@ -40,8 +41,11 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
     onChange('passportImgURL', URL.createObjectURL(file))
   }
 
+  const errCount = Object.keys(errors).filter(k => errors[k]).length
+
   return (
     <div className="step-body">
+      {errCount > 0 && <ErrorBanner count={errCount} />}
       <div className="section-bar">Passport details</div>
       <div className="form-grid-2">
         <Field label="Passport number" required error={errors.passportNo}>
@@ -117,15 +121,16 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
         )}
       </div>
 
-      <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:-24 }}>
+      <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
         <button className="btn-secondary" onClick={onBack}>← Back</button>
         <button className="btn-primary" onClick={handleNext}>
-          Next
+          Continue to Trip details
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>
       </div>
+      <TrustStrip />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ErrorBanner, TrustStrip } from './_StepBits'
 
 function validateStep3(d) {
   const e = {}
@@ -31,6 +32,9 @@ export default function Step3Trip({ data, onChange, onNext, onBack }) {
 
   return (
     <div className="step-body">
+      {Object.keys(errors).filter(k => errors[k]).length > 0 && (
+        <ErrorBanner count={Object.keys(errors).filter(k => errors[k]).length} />
+      )}
       <div className="section-bar">Trip details</div>
       <div className="form-grid-2">
         <Field label="Destination country" required error={errors.destination}>
@@ -91,7 +95,7 @@ export default function Step3Trip({ data, onChange, onNext, onBack }) {
         </div>
       </div>
 
-      <div className="form-actions" style={{ marginTop:8, marginLeft:-28, marginRight:-28, marginBottom:-24 }}>
+      <div className="form-actions" style={{ marginTop:8, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
         <button className="btn-secondary" onClick={onBack}>← Back</button>
         <button className="btn-primary" onClick={handleNext}>
           Review & Pay
@@ -100,6 +104,7 @@ export default function Step3Trip({ data, onChange, onNext, onBack }) {
           </svg>
         </button>
       </div>
+      <TrustStrip />
     </div>
   )
 }

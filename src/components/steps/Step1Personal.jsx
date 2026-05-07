@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { api, getToken, apiError } from '../../lib/api'
+import { ErrorBanner, TrustStrip } from './_StepBits'
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -74,8 +75,11 @@ export default function Step1Personal({ data, onChange, onNext }) {
     }
   }
 
+  const errCount = Object.keys(errors).filter(k => errors[k]).length
+
   return (
     <div className="step-body">
+      {errCount > 0 && <ErrorBanner count={errCount} />}
       <div className="section-bar">Name & Gender</div>
       <div className="form-grid-2">
         <Field label="Last name" required error={errors.lastName}>
@@ -201,7 +205,7 @@ export default function Step1Personal({ data, onChange, onNext }) {
         </div>
       </div>
 
-      <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:-24 }}>
+      <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
         <div className="secure-note">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
@@ -209,15 +213,17 @@ export default function Step1Personal({ data, onChange, onNext }) {
           Encrypted with SSL 256-bit
         </div>
         <button className="btn-primary" onClick={handleNext} disabled={uploading}>
-          Next
+          Continue to Passport
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>
         </button>
       </div>
+      <TrustStrip />
     </div>
   )
 }
+
 
 const errorStyle = { borderColor: '#DC2626', background: '#FEF2F2' }
 

@@ -7,7 +7,7 @@ import { useServiceTiers } from '../../lib/useServiceTiers'
 import { api } from '../../lib/api'
 import PaypalCheckout from '../PaypalCheckout'
 
-export default function Step4Payment({ formData, onBack }) {
+export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }) {
   const { user, setShowLoginModal } = useAuth()
   const { createOrder } = useOrders()
   const { countries } = useCountries()
@@ -75,6 +75,7 @@ export default function Step4Payment({ formData, onBack }) {
 
     setOrderCode(order.id)
     setDone(true)
+    onSubmitted?.()
     return order
   }
 
@@ -168,17 +169,22 @@ export default function Step4Payment({ formData, onBack }) {
       {/* Summary */}
       <div className="section-bar">Order summary</div>
       <div className="summary-table" style={{ marginBottom:20 }}>
-        {[
-          ['Applicant',       fullName],
-          ['Destination',     formData.trip?.destination || 'Thailand'],
-          ['Visa type',       formData.trip?.visaType || 'E-Visa'],
-          ['Processing time', tier?.processingTime || '—'],
-        ].map(([l,v]) => (
-          <div className="summary-row" key={l}>
-            <span className="lbl">{l}</span>
-            <span className="val">{v}</span>
-          </div>
-        ))}
+        <SummaryGroup label="Applicant" stepNum={1} goToStep={goToStep} rows={[
+          ['Name',        fullName],
+          ['Email',       formData.personal?.email || '—'],
+          ['Date of birth', formData.personal?.dob || '—'],
+          ['Nationality', formData.personal?.nationality || '—'],
+        ]} />
+        <SummaryGroup label="Passport" stepNum={2} goToStep={goToStep} rows={[
+          ['Number',  formData.passport?.passportNo || '—'],
+          ['Expires', formData.passport?.expiryDate || '—'],
+        ]} />
+        <SummaryGroup label="Trip" stepNum={3} goToStep={goToStep} rows={[
+          ['Destination',  `${country?.flag || '🌍'} ${formData.trip?.destination || 'Thailand'}`],
+          ['Visa type',    formData.trip?.visaType || 'E-Visa'],
+          ['Entry → Exit', `${formData.trip?.entryDate || '—'} → ${formData.trip?.exitDate || '—'}`],
+          ['Processing',   tier?.processingTime || '—'],
+        ]} />
         <div className="summary-row"><span className="lbl">Government fee</span><span className="val">${govFee}.00</span></div>
         <div className="summary-row"><span className="lbl">eVisa service fee</span><span className="val">${svcFee}.00</span></div>
         <div className="summary-row total">
@@ -306,5 +312,24 @@ export default function Step4Payment({ formData, onBack }) {
         )}
       </div>
     </div>
+  )
+}
+
+function SummaryGroup({ label, stepNum, goToStep, rows }) {
+  return (
+    <>
+      <div className="summary-row" style={{ background:'#F9FAFB' }}>
+        <span className="lbl" style={{ fontWeight:700, color:'#0B1D3A', fontSize:12, textTransform:'uppercase', letterSpacing:'0.4px' }}>{label}</span>
+        {goToStep && (
+          <button className="row-edit" onClick={() => goToStep(stepNum)} aria-label={`Edit ${label}`}>Edit</button>
+        )}
+      </div>
+      {rows.map(([l,v]) => (
+        <div className="summary-row" key={l}>
+          <span className="lbl">{l}</span>
+          <span className="val">{v}</span>
+        </div>
+      ))}
+    </>
   )
 }

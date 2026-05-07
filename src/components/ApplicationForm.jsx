@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Step1Personal from './steps/Step1Personal'
 import Step2Passport from './steps/Step2Passport'
 import Step3Trip     from './steps/Step3Trip'
@@ -18,15 +18,83 @@ const INIT = {
   trip:     { destination:'Thailand',purpose:'Tourism',entryDate:'',exitDate:'',visaType:'E-Visa (electronic)',processing:'normal',accommodation:'',notes:'' },
 }
 
-export default function ApplicationForm() {
-  const [step, setStep] = useState(1)
-  const [data, setData] = useState(INIT)
+const DRAFT_KEY = 'evisa-draft-v1'
 
-  const update = (section) => (field, value) =>
+function loadDraft() {
+  try {
+    const raw = localStorage.getItem(DRAFT_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw)
+    if (!parsed?.data?.personal || !parsed?.data?.passport || !parsed?.data?.trip) return null
+    // Drop blob: photo URLs that won't survive a refresh
+    const sanitizeUrl = (u) => (typeof u === 'string' && /^https?:\/\//.test(u)) ? u : ''
+    return {
+      data: {
+        personal: { ...INIT.personal, ...parsed.data.personal, photo: null, photoURL: sanitizeUrl(parsed.data.personal.photoURL) },
+        passport: { ...INIT.passport, ...parsed.data.passport, passportImg: null, passportImgURL: sanitizeUrl(parsed.data.passport.passportImgURL) },
+        trip:     { ...INIT.trip,     ...parsed.data.trip },
+      },
+      savedAt: Number(parsed.savedAt) || 0,
+    }
+  } catch { return null }
+}
+
+function saveDraft(data, step) {
+  try {
+    const clean = {
+      personal: { ...data.personal, photo: undefined },
+      passport: { ...data.passport, passportImg: undefined },
+      trip:     data.trip,
+    }
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({ data: clean, step, savedAt: Date.now() }))
+  } catch {}
+}
+
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY) } catch {}
+}
+
+export default function ApplicationForm() {
+  const initial = useRef(loadDraft())
+  const [step, setStep] = useState(1)
+  const [data, setData] = useState(() => initial.current?.data || INIT)
+  const [savedAt, setSavedAt] = useState(initial.current?.savedAt || 0)
+  const [hadDraft, setHadDraft] = useState(!!initial.current)
+  const saveTimer = useRef(null)
+  const dirty = useRef(false)
+
+  const update = (section) => (field, value) => {
+    dirty.current = true
     setData(p => ({ ...p, [section]: { ...p[section], [field]: value } }))
+  }
 
   const next = () => setStep(s => Math.min(s+1, 4))
   const back = () => setStep(s => Math.max(s-1, 1))
+  const goToStep = (n) => setStep(Math.min(Math.max(1, n), 4))
+
+  useEffect(() => {
+    if (!dirty.current) return
+    if (saveTimer.current) clearTimeout(saveTimer.current)
+    saveTimer.current = setTimeout(() => {
+      saveDraft(data, step)
+      setSavedAt(Date.now())
+    }, 500)
+    return () => saveTimer.current && clearTimeout(saveTimer.current)
+  }, [data, step])
+
+  const handleSubmitted = () => {
+    clearDraft()
+    setHadDraft(false)
+  }
+
+  const startFresh = () => {
+    clearDraft()
+    setData(INIT)
+    setStep(1)
+    setSavedAt(0)
+    setHadDraft(false)
+    dirty.current = false
+  }
 
   return (
     <section style={{ background:'#F3F4F6', padding:'56px 0' }}>
@@ -41,6 +109,16 @@ export default function ApplicationForm() {
             Fill out your details to start the application process
           </p>
         </div>
+
+        {/* Resumed-draft strip */}
+        {hadDraft && initial.current && (
+          <div className="draft-resume">
+            <div>
+              <strong>Welcome back!</strong> We restored your unsaved draft from {timeAgo(initial.current.savedAt)}.
+            </div>
+            <button className="draft-resume-btn" onClick={startFresh}>Start fresh</button>
+          </div>
+        )}
 
         {/* Step tabs */}
         <div className="step-tabs">
@@ -67,15 +145,18 @@ export default function ApplicationForm() {
             <h3 style={{ fontSize:16, fontWeight:700, color:'var(--navy)' }}>
               {STEPS[step-1].emoji} {TITLES[step-1]}
             </h3>
-            <span className="step-chip" style={{ fontSize:12, fontWeight:600, color:'#6B7280', background:'white', padding:'4px 12px', borderRadius:20, border:'1px solid #E5E7EB' }}>
-              Step {step} of 4
-            </span>
+            <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+              {savedAt > 0 && <span className="draft-saved" title={new Date(savedAt).toLocaleString()}>✓ Draft saved</span>}
+              <span className="step-chip" style={{ fontSize:12, fontWeight:600, color:'#6B7280', background:'white', padding:'4px 12px', borderRadius:20, border:'1px solid #E5E7EB' }}>
+                Step {step} of 4
+              </span>
+            </div>
           </div>
 
           {step===1 && <Step1Personal data={data.personal} onChange={update('personal')} onNext={next} />}
           {step===2 && <Step2Passport data={data.passport} onChange={update('passport')} onNext={next} onBack={back} />}
           {step===3 && <Step3Trip     data={data.trip}     onChange={update('trip')}     onNext={next} onBack={back} />}
-          {step===4 && <Step4Payment  formData={data}      onBack={back} />}
+          {step===4 && <Step4Payment  formData={data}      onBack={back} goToStep={goToStep} onSubmitted={handleSubmitted} />}
         </div>
       </div>
 
@@ -91,4 +172,14 @@ export default function ApplicationForm() {
       `}</style>
     </section>
   )
+}
+
+function timeAgo(ts) {
+  const s = Math.max(1, Math.round((Date.now() - ts) / 1000))
+  if (s < 60) return `${s}s ago`
+  const m = Math.round(s / 60)
+  if (m < 60) return `${m} min ago`
+  const h = Math.round(m / 60)
+  if (h < 24) return `${h}h ago`
+  return `${Math.round(h / 24)}d ago`
 }
