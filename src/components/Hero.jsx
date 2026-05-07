@@ -1,4 +1,5 @@
 import './Hero.css'
+import { Reveal } from '../lib/useReveal'
 
 const NATIONALITIES = ['Việt Nam','Mỹ','Nhật Bản','Hàn Quốc','Trung Quốc','Pháp','Đức','Anh','Úc']
 const DESTINATIONS = ['Thái Lan','Nhật Bản','Singapore','Indonesia','Hàn Quốc','Mỹ','Anh','Úc','Pháp']
@@ -8,7 +9,7 @@ export default function Hero({ onApplyClick }) {
     <section className="hero">
       <div className="hero-bg-glow" />
       <div className="container">
-        <div className="hero-content">
+        <Reveal className="hero-content">
           <div className="hero-badge">
             <span className="badge-dot" />
             Được tin dùng bởi 2 triệu+ người dùng
@@ -21,9 +22,9 @@ export default function Hero({ onApplyClick }) {
             Nộp đơn visa trực tuyến chỉ trong 10 phút.<br />
             Đội ngũ chuyên gia 24/7 hỗ trợ bạn từng bước.
           </p>
-        </div>
+        </Reveal>
 
-        <div className="search-card">
+        <Reveal className="search-card" delay={120}>
           <h2 className="search-card-title">Kiểm tra visa bạn cần</h2>
           <div className="search-row">
             <div className="form-group">
@@ -50,7 +51,7 @@ export default function Hero({ onApplyClick }) {
             <TrustItem icon="clock" text="Xét duyệt 24h" />
             <TrustItem icon="card" text="Hoàn tiền 100%" />
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   )

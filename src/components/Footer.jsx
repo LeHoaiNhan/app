@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
+import { Reveal } from '../lib/useReveal'
 
 export default function Footer() {
   return (
     <footer style={{ background:'var(--navy)', color:'rgba(255,255,255,0.5)', padding:'32px 20px' }}>
-      <div style={{ maxWidth:1024, margin:'0 auto', display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:16 }}>
+      <Reveal style={{ maxWidth:1024, margin:'0 auto', display:'flex', flexWrap:'wrap', alignItems:'center', justifyContent:'space-between', gap:16 }}>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           <div style={{ width:28, height:28, background:'var(--blue)', borderRadius:7, display:'flex', alignItems:'center', justifyContent:'center' }}>
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
@@ -21,7 +22,7 @@ export default function Footer() {
           ))}
         </div>
         <p style={{ fontSize:12 }}>© 2026 eVisa · support@evisa.com</p>
-      </div>
+      </Reveal>
     </footer>
   )
 }

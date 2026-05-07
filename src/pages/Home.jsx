@@ -5,6 +5,7 @@ import ApplicationForm from '../components/ApplicationForm'
 import Footer from '../components/Footer'
 import Seo from '../components/Seo'
 import OrderTracker from '../components/OrderTracker'
+import { Reveal, CountUp } from '../lib/useReveal'
 
 const STATS = [
   { num:'99%',  label:'Approval rate' },
@@ -138,12 +139,17 @@ export default function Home() {
       {/* ── STATS ── */}
       <section style={{ background:'white', padding:'40px 20px', borderBottom:'1px solid #F3F4F6' }}>
         <div className="r-grid-4" style={{ maxWidth:1024, margin:'0 auto', display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:16, textAlign:'center' }}>
-          {STATS.map(s => (
-            <div key={s.label}>
-              <div style={{ fontFamily:'Fraunces,serif', fontSize:38, fontWeight:900, color:'var(--blue)', lineHeight:1 }}>{s.num}</div>
-              <div style={{ fontSize:14, color:'#6B7280', marginTop:6, fontWeight:500 }}>{s.label}</div>
-            </div>
-          ))}
+          {STATS.map((s, i) => {
+            const m = s.num.match(/^(\d+)(.*)$/)
+            return (
+              <Reveal key={s.label} delay={i * 80}>
+                <div style={{ fontFamily:'Fraunces,serif', fontSize:38, fontWeight:900, color:'var(--blue)', lineHeight:1 }}>
+                  {m ? <CountUp end={Number(m[1])} suffix={m[2]} /> : s.num}
+                </div>
+                <div style={{ fontSize:14, color:'#6B7280', marginTop:6, fontWeight:500 }}>{s.label}</div>
+              </Reveal>
+            )
+          })}
         </div>
       </section>
 
@@ -182,15 +188,17 @@ export default function Home() {
             <p style={{ color:'#6B7280', fontSize:15 }}>We simplify the process so you can focus on your trip</p>
           </div>
           <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:18 }}>
-            {FEATURES.map(f => (
-              <div key={f.title} style={{ padding:22, border:'1px solid #E5E7EB', borderRadius:14, transition:'all .2s', cursor:'default' }}
-                onMouseEnter={e => { e.currentTarget.style.boxShadow='0 8px 24px rgba(27,79,216,0.1)'; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.borderColor='var(--blue)' }}
-                onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none'; e.currentTarget.style.borderColor='#E5E7EB' }}
-              >
-                <div style={{ width:46, height:46, background:f.bg, borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, marginBottom:14 }}>{f.icon}</div>
-                <h3 style={{ fontSize:16, fontWeight:700, color:'var(--navy)', marginBottom:7 }}>{f.title}</h3>
-                <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.65 }}>{f.desc}</p>
-              </div>
+            {FEATURES.map((f, i) => (
+              <Reveal key={f.title} delay={i * 120}>
+                <div style={{ padding:22, border:'1px solid #E5E7EB', borderRadius:14, transition:'all .2s', cursor:'default' }}
+                  onMouseEnter={e => { e.currentTarget.style.boxShadow='0 8px 24px rgba(27,79,216,0.1)'; e.currentTarget.style.transform='translateY(-2px)'; e.currentTarget.style.borderColor='var(--blue)' }}
+                  onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none'; e.currentTarget.style.borderColor='#E5E7EB' }}
+                >
+                  <div style={{ width:46, height:46, background:f.bg, borderRadius:12, display:'flex', alignItems:'center', justifyContent:'center', fontSize:22, marginBottom:14 }}>{f.icon}</div>
+                  <h3 style={{ fontSize:16, fontWeight:700, color:'var(--navy)', marginBottom:7 }}>{f.title}</h3>
+                  <p style={{ fontSize:14, color:'#6B7280', lineHeight:1.65 }}>{f.desc}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
