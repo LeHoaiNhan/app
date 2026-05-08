@@ -38,11 +38,20 @@ app.use(pinoHttp({
     return 'info'
   },
 }))
+const allowedOrigins = (process.env.CORS_ORIGIN || "").split(",");
 
 app.use(cors({
-  origin: (process.env.CORS_ORIGIN || 'http://localhost:5173').split(','),
-  credentials: true,
-}))
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    return callback(new Error("CORS blocked"));
+  },
+  credentials: true
+}));
 app.use(express.json({ limit: '1mb' }))
 app.use('/uploads', express.static(path.resolve('uploads')))
 
