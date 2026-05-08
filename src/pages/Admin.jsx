@@ -45,6 +45,8 @@ export default function Admin() {
   const [page, setPage] = useState(1)
   const PAGE_SIZE = 25
 
+  useEffect(() => { setPage(1) }, [search, statusFilter, dateFrom, dateTo])
+
   const activeFilterCount = (statusFilter !== 'all' ? 1 : 0) + (dateFrom ? 1 : 0) + (dateTo ? 1 : 0)
 
   if (!user || user.role !== 'admin') {
@@ -92,8 +94,6 @@ export default function Admin() {
   const safePage = Math.min(page, totalPages)
   const pageStart = (safePage - 1) * PAGE_SIZE
   const paged = filtered.slice(pageStart, pageStart + PAGE_SIZE)
-
-  useEffect(() => { setPage(1) }, [search, statusFilter, dateFrom, dateTo])
 
   const exportCsv = () => {
     const params = new URLSearchParams()

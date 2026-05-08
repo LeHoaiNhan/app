@@ -1,17 +1,19 @@
-# Render.com one-click deploy.
+# Render.com one-click deploy via Blueprint.
 # 1. Push this repo to GitHub.
-# 2. Go to https://dashboard.render.com/blueprints → New Blueprint → pick this repo.
-# 3. Render reads this file, creates the web service + Postgres, prompts you for the env vars below.
-# 4. After first deploy, open the Shell tab and run: npm run db:seed
+# 2. https://dashboard.render.com/blueprints -> New Blueprint -> pick this repo.
+# 3. Render reads this file, creates the web service + Postgres, asks for the env vars.
+# 4. After first deploy, open the Shell tab and run: npm run db:seed:prod
 services:
   - type: web
     name: evisa-api
     runtime: node
     rootDir: server
-    buildCommand: npm install && npx prisma generate && npx prisma migrate deploy
-    startCommand: npm start
     plan: free
     healthCheckPath: /health
+    # Build only installs deps + generates Prisma client (no DB needed at build time).
+    buildCommand: npm install && npx prisma generate
+    # Migrations run at startup with DATABASE_URL available; idempotent.
+    startCommand: npx prisma migrate deploy && node src/index.js
     envVars:
       - key: NODE_ENV
         value: production
