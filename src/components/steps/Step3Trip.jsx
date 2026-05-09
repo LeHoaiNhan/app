@@ -146,9 +146,18 @@ export default function Step3Trip({ data, onChange, onNext, onBack, personal = {
       </div>
 
       <div className="form-actions" style={{ marginTop:8, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
-        <button type="button" className="btn-secondary" onClick={onBack}>← Back</button>
+        {onBack ? (
+          <button type="button" className="btn-secondary" onClick={onBack}>← Back</button>
+        ) : (
+          <div className="secure-note">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Encrypted with SSL 256-bit
+          </div>
+        )}
         <button type="submit" className="btn-primary">
-          Review &amp; Pay
+          Continue to Personal info
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>

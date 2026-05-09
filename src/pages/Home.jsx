@@ -6,6 +6,7 @@ import Footer from '../components/Footer'
 import Seo from '../components/Seo'
 import OrderTracker from '../components/OrderTracker'
 import { Reveal, CountUp } from '../lib/useReveal'
+import { NATIONALITIES } from '../lib/nationalities'
 
 const STATS = [
   { num:'99%',  label:'Approval rate' },
@@ -23,7 +24,7 @@ const DESTINATIONS = ['🇹🇭 Thailand','🇯🇵 Japan','🇸🇬 Singapore',
 export default function Home() {
   const formRef = useRef()
   const scroll = () => formRef.current?.scrollIntoView({ behavior:'smooth', block:'start' })
-  const { hash } = useLocation()
+  const { hash, search } = useLocation()
 
   useEffect(() => {
     if (!hash) return
@@ -31,6 +32,12 @@ export default function Home() {
     const el = document.getElementById(id)
     if (el) setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
   }, [hash])
+
+  // ?destination=Canada → scroll to apply form (ApplicationForm reads the param itself).
+  useEffect(() => {
+    const params = new URLSearchParams(search)
+    if (params.get('destination')) setTimeout(() => scroll(), 100)
+  }, [search])
 
   return (
     <div style={{ minHeight:'100vh', background:'#F9FAFB' }}>
@@ -95,7 +102,7 @@ export default function Home() {
                 <div>
                   <label className="field-label">Nationality</label>
                   <select className="field-input">
-                    {['United States','United Kingdom','Australia','Canada','Germany','France'].map(n => <option key={n}>{n}</option>)}
+                    {NATIONALITIES.map(n => <option key={n.iso} value={n.name}>{n.name}</option>)}
                   </select>
                 </div>
                 <div>

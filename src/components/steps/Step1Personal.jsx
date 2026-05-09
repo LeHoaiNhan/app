@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { api, getToken, apiError } from '../../lib/api'
+import { NATIONALITIES, findNationalityByName } from '../../lib/nationalities'
 import { ErrorBanner, TrustStrip, Field, ERROR_STYLE } from './_StepBits'
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -15,12 +16,12 @@ function validateStep1(d) {
   else if (!EMAIL_RX.test(d.email)) e.email = 'Please enter a valid email'
   if (!d.phone?.trim())      e.phone      = 'Phone number is required'
   if (!d.nationality)        e.nationality= 'Nationality is required'
-  if (!d.birthPlace?.trim()) e.birthPlace = 'Place of birth is required'
+  if (!d.birthPlace?.trim()) e.birthPlace = 'Address is required'
   if (!d.photoURL)           e.photo      = 'Please upload your portrait photo'
   return e
 }
 
-export default function Step1Personal({ data, onChange, onNext }) {
+export default function Step1Personal({ data, onChange, onNext, onBack }) {
   const photoRef = useRef()
   const [drag, setDrag] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -135,14 +136,19 @@ export default function Step1Personal({ data, onChange, onNext }) {
         </Field>
         <Field label="Nationality" required error={errors.nationality}>
           <select className="field-input" autoComplete="country-name"
-            value={data.nationality} onChange={e => setField('nationality', e.target.value)}>
-            {['United States','United Kingdom','Australia','Canada','Germany','France','Japan','South Korea','Singapore'].map(n =>
-              <option key={n}>{n}</option>)}
+            value={data.nationality}
+            onChange={e => {
+              const name = e.target.value
+              setField('nationality', name)
+              const iso = findNationalityByName(name)?.iso || ''
+              onChange('nationalityIso', iso)
+            }}>
+            {NATIONALITIES.map(n => <option key={n.iso} value={n.name}>{n.name}</option>)}
           </select>
         </Field>
-        <Field label="Place of birth" required error={errors.birthPlace}>
-          <input className="field-input" type="text" placeholder="New York, USA"
-            autoComplete="address-level2"
+        <Field label="Address" required error={errors.birthPlace}>
+          <input className="field-input" type="text" placeholder="123 Main Street, City, Country"
+            autoComplete="street-address"
             data-error={!!errors.birthPlace}
             style={errors.birthPlace ? ERROR_STYLE : undefined}
             value={data.birthPlace} onChange={e => setField('birthPlace', e.target.value)} />
@@ -211,12 +217,16 @@ export default function Step1Personal({ data, onChange, onNext }) {
       </div>
 
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
-        <div className="secure-note">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-          </svg>
-          Encrypted with SSL 256-bit
-        </div>
+        {onBack ? (
+          <button type="button" className="btn-secondary" onClick={onBack}>← Back</button>
+        ) : (
+          <div className="secure-note">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--green)" strokeWidth="2">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            </svg>
+            Encrypted with SSL 256-bit
+          </div>
+        )}
         <button type="submit" className="btn-primary" disabled={uploading}>
           Continue to Passport
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">

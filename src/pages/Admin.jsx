@@ -537,7 +537,6 @@ function AdminOrderDetail({ order, onBack, onUpdateStatus }) {
                 ['Type',             order.passport.type],
                 ['Issue date',       fmtDate(order.passport.issueDate)],
                 ['Expiry date',      fmtDate(order.passport.expiryDate)],
-                ['Place of issue',   order.passport.issuePlace],
                 ['Issuing country',  order.passport.issueCountry],
               ]} />
             </Section>

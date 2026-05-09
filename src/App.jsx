@@ -12,6 +12,7 @@ import Pricing from './pages/Pricing'
 
 const MyOrders = lazy(() => import('./pages/MyOrders'))
 const Admin = lazy(() => import('./pages/Admin'))
+const CountryLanding = lazy(() => import('./pages/CountryLanding'))
 
 function AppInner() {
   const { showLoginModal } = useAuth()
@@ -28,6 +29,8 @@ function AppInner() {
           <Route path="/support" element={<Support />} />
           <Route path="/my-orders" element={<MyOrders />} />
           <Route path="/admin" element={<Admin />} />
+          {/* Catch-all for country slugs — must be the last route. */}
+          <Route path="/:slug" element={<CountryLanding />} />
         </Routes>
       </Suspense>
     </>

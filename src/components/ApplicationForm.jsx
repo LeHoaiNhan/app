@@ -6,16 +6,16 @@ import Step4Payment  from './steps/Step4Payment'
 import { api, getToken } from '../lib/api'
 
 const STEPS = [
-  { id:1, label:'Personal',  emoji:'👤' },
-  { id:2, label:'Passport',  emoji:'📘' },
-  { id:3, label:'Trip',      emoji:'✈️' },
+  { id:1, label:'Trip',      emoji:'✈️' },
+  { id:2, label:'Personal',  emoji:'👤' },
+  { id:3, label:'Passport',  emoji:'📘' },
   { id:4, label:'Payment',   emoji:'💳' },
 ]
-const TITLES = ['Personal information','Passport information','Trip details','Confirm & Pay']
+const TITLES = ['Trip details','Personal information','Passport information','Confirm & Pay']
 
 const INIT = {
-  personal: { lastName:'',firstName:'',gender:'Male',dob:'',email:'',phone:'',nationality:'United States',birthPlace:'',photo:null,photoURL:'' },
-  passport: { passportNo:'',passportType:'Regular passport',issueDate:'',expiryDate:'',issuePlace:'',issueCountry:'United States',passportImg:null,passportImgURL:'' },
+  personal: { lastName:'',firstName:'',gender:'Male',dob:'',email:'',phone:'',nationality:'United States',nationalityIso:'us',birthPlace:'',photo:null,photoURL:'' },
+  passport: { passportNo:'',passportType:'Ordinary passport',issueDate:'',expiryDate:'',issueCountry:'United States',passportImg:null,passportImgURL:'' },
   trip:     { destination:'Thailand',purpose:'Tourism',entryDate:'',exitDate:'',visaType:'E-Visa (electronic)',variantKey:'',processing:'normal',accommodation:'',notes:'' },
 }
 
@@ -69,10 +69,22 @@ async function clearDraftServer() {
   try { await api.delete('/draft-orders/mine') } catch {}
 }
 
+function readQueryDestination() {
+  if (typeof window === 'undefined') return null
+  const p = new URLSearchParams(window.location.search)
+  const dest = p.get('destination')
+  return dest ? decodeURIComponent(dest) : null
+}
+
 export default function ApplicationForm() {
   const initial = useRef(loadDraft())
   const [step, setStep] = useState(initial.current?.step || 1)
-  const [data, setData] = useState(() => initial.current?.data || INIT)
+  const [data, setData] = useState(() => {
+    const base = initial.current?.data || INIT
+    const queryDest = readQueryDestination()
+    if (queryDest) return { ...base, trip: { ...base.trip, destination: queryDest, variantKey: '' } }
+    return base
+  })
   const [savedAt, setSavedAt] = useState(initial.current?.savedAt || 0)
   const [hadDraft, setHadDraft] = useState(!!initial.current)
   const [draftSource, setDraftSource] = useState(initial.current ? 'local' : null)
@@ -146,7 +158,7 @@ export default function ApplicationForm() {
   }
 
   return (
-    <section style={{ background:'#F3F4F6', padding:'56px 0' }}>
+    <section id="apply" style={{ background:'#F3F4F6', padding:'56px 0' }}>
       <div style={{ maxWidth:780, margin:'0 auto', padding:'0 20px' }}>
 
         {/* Header */}
@@ -203,9 +215,9 @@ export default function ApplicationForm() {
             </div>
           </div>
 
-          {step===1 && <Step1Personal data={data.personal} onChange={update('personal')} onNext={next} />}
-          {step===2 && <Step2Passport data={data.passport} onChange={update('passport')} onNext={next} onBack={back} />}
-          {step===3 && <Step3Trip     data={data.trip}     onChange={update('trip')}     onNext={next} onBack={back} personal={data.personal} passport={data.passport} />}
+          {step===1 && <Step3Trip     data={data.trip}     onChange={update('trip')}     onNext={next}                personal={data.personal} passport={data.passport} />}
+          {step===2 && <Step1Personal data={data.personal} onChange={update('personal')} onNext={next} onBack={back} />}
+          {step===3 && <Step2Passport data={data.passport} onChange={update('passport')} onNext={next} onBack={back} />}
           {step===4 && <Step4Payment  formData={data}      onBack={back} goToStep={goToStep} onSubmitted={handleSubmitted} />}
         </div>
       </div>

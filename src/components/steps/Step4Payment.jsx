@@ -54,7 +54,6 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
         type: formData.passport?.passportType || '',
         issueDate: formData.passport?.issueDate || '',
         expiryDate: formData.passport?.expiryDate || '',
-        issuePlace: formData.passport?.issuePlace || '',
         issueCountry: formData.passport?.issueCountry || '',
       },
       trip: {
@@ -164,21 +163,21 @@ export default function Step4Payment({ formData, onBack, goToStep, onSubmitted }
       {/* Summary */}
       <h3 className="section-bar">Order summary</h3>
       <div className="summary-table" style={{ marginBottom:20 }}>
-        <SummaryGroup label="Applicant" stepNum={1} goToStep={goToStep} rows={[
+        <SummaryGroup label="Trip" stepNum={1} goToStep={goToStep} rows={[
+          ['Destination',  `${country?.flag || '🌍'} ${formData.trip?.destination || 'Thailand'}`],
+          ['Visa type',    formData.trip?.visaType || 'E-Visa'],
+          ['Entry → Exit', `${formData.trip?.entryDate || '—'} → ${formData.trip?.exitDate || '—'}`],
+          ['Processing',   tier?.processingTime || '—'],
+        ]} />
+        <SummaryGroup label="Applicant" stepNum={2} goToStep={goToStep} rows={[
           ['Name',        fullName],
           ['Email',       formData.personal?.email || '—'],
           ['Date of birth', formData.personal?.dob || '—'],
           ['Nationality', formData.personal?.nationality || '—'],
         ]} />
-        <SummaryGroup label="Passport" stepNum={2} goToStep={goToStep} rows={[
+        <SummaryGroup label="Passport" stepNum={3} goToStep={goToStep} rows={[
           ['Number',  formData.passport?.passportNo || '—'],
           ['Expires', formData.passport?.expiryDate || '—'],
-        ]} />
-        <SummaryGroup label="Trip" stepNum={3} goToStep={goToStep} rows={[
-          ['Destination',  `${country?.flag || '🌍'} ${formData.trip?.destination || 'Thailand'}`],
-          ['Visa type',    formData.trip?.visaType || 'E-Visa'],
-          ['Entry → Exit', `${formData.trip?.entryDate || '—'} → ${formData.trip?.exitDate || '—'}`],
-          ['Processing',   tier?.processingTime || '—'],
         ]} />
         <div className="summary-row"><span className="lbl">Government fee</span><span className="val">${govFee}.00</span></div>
         <div className="summary-row"><span className="lbl">eVisa service fee</span><span className="val">${svcFee}.00</span></div>

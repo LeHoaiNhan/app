@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 import { api, getToken, apiError } from '../../lib/api'
 import { useAuth } from '../../contexts/AuthContext'
+import { NATIONALITIES } from '../../lib/nationalities'
 import { ErrorBanner, TrustStrip, Field, ERROR_STYLE } from './_StepBits'
 
 function validateStep2(d) {
@@ -12,7 +13,6 @@ function validateStep2(d) {
   if (!d.expiryDate)               e.expiryDate  = 'Expiry date is required'
   else if (d.issueDate && new Date(d.expiryDate) <= new Date(d.issueDate)) e.expiryDate = 'Expiry must be after issue date'
   else if (new Date(d.expiryDate) <= new Date()) e.expiryDate = 'Passport has already expired'
-  if (!d.issuePlace?.trim())       e.issuePlace  = 'Place of issue is required'
   if (!d.issueCountry)             e.issueCountry= 'Issuing country is required'
   if (!d.passportImgURL)           e.passportImg = 'Please upload a photo of your passport info page'
   return e
@@ -89,9 +89,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
         </Field>
         <Field label="Passport type" required error={errors.passportType}>
           <select className="field-input" value={data.passportType} onChange={e => setField('passportType', e.target.value)}>
-            <option>Regular passport</option>
-            <option>Diplomatic passport</option>
-            <option>Official passport</option>
+            <option>Ordinary passport</option>
           </select>
         </Field>
         <Field label="Issue date" required error={errors.issueDate}>
@@ -109,15 +107,9 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
             style={errors.expiryDate ? ERROR_STYLE : undefined}
             value={data.expiryDate} onChange={e => setField('expiryDate', e.target.value)} />
         </Field>
-        <Field label="Place of issue" required error={errors.issuePlace}>
-          <input className="field-input" type="text" placeholder="New York Passport Agency"
-            data-error={!!errors.issuePlace}
-            style={errors.issuePlace ? ERROR_STYLE : undefined}
-            value={data.issuePlace} onChange={e => setField('issuePlace', e.target.value)} />
-        </Field>
         <Field label="Issuing country" required error={errors.issueCountry}>
           <select className="field-input" value={data.issueCountry} onChange={e => setField('issueCountry', e.target.value)}>
-            {['United States','United Kingdom','Australia','Canada','Germany','France','Japan'].map(c => <option key={c}>{c}</option>)}
+            {NATIONALITIES.map(n => <option key={n.iso} value={n.name}>{n.name}</option>)}
           </select>
         </Field>
       </div>
@@ -171,7 +163,7 @@ export default function Step2Passport({ data, onChange, onNext, onBack }) {
       <div className="form-actions" style={{ marginTop:24, marginLeft:-28, marginRight:-28, marginBottom:0 }}>
         <button type="button" className="btn-secondary" onClick={onBack}>← Back</button>
         <button type="submit" className="btn-primary" disabled={uploading}>
-          Continue to Trip details
+          Review &amp; Pay
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M5 12h14M12 5l7 7-7 7"/>
           </svg>

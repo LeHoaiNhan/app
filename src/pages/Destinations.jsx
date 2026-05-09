@@ -1,9 +1,10 @@
 import { useState, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Seo from '../components/Seo'
 import { useCountries } from '../lib/useCountries'
+import { slugify } from '../lib/slug'
 
 const SERVICE_FEE_DEFAULT = 19
 
@@ -79,9 +80,9 @@ export default function Destinations() {
   const trending = DESTINATIONS.filter(d => d.trending)
   const popular  = DESTINATIONS.filter(d => d.popular)
 
+  const navigate = useNavigate()
   const handleQuickPick = (name) => {
-    const dest = DESTINATIONS.find(d => d.name === name)
-    if (dest) setSelected(dest)
+    navigate(`/${slugify(name)}`)
   }
 
   return (
@@ -315,11 +316,11 @@ function CardCover({ d, big = false, hires = false }) {
   )
 }
 
-function DestCard({ d, onClick, highlight }) {
+function DestCard({ d, highlight }) {
   return (
-    <button
-      onClick={onClick}
-      style={{ position:'relative', background:'white', border:'1px solid #E5E7EB', borderRadius:14, overflow:'hidden', textAlign:'left', display:'flex', flexDirection:'column', cursor:'pointer', fontFamily:'inherit', padding:0, transition:'all .25s' }}
+    <Link
+      to={`/${slugify(d.name)}`}
+      style={{ position:'relative', background:'white', border:'1px solid #E5E7EB', borderRadius:14, overflow:'hidden', textAlign:'left', display:'flex', flexDirection:'column', cursor:'pointer', fontFamily:'inherit', padding:0, transition:'all .25s', textDecoration:'none', color:'inherit' }}
       onMouseEnter={e => { e.currentTarget.style.boxShadow='0 16px 32px rgba(11,29,58,0.12)'; e.currentTarget.style.transform='translateY(-3px)'; e.currentTarget.style.borderColor='var(--blue)' }}
       onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.transform='none'; e.currentTarget.style.borderColor='#E5E7EB' }}
     >
@@ -342,15 +343,16 @@ function DestCard({ d, onClick, highlight }) {
           <span style={{ fontWeight:900, fontSize:16, color:'var(--blue)' }}>{d.price}</span>
         </div>
       </div>
-    </button>
+    </Link>
   )
 }
 
-function FeaturedDestBanner({ d, onClick }) {
+function FeaturedDestBanner({ d }) {
   return (
-    <button
-      onClick={onClick}
-      style={{ position:'relative', background:'white', border:'1px solid #E5E7EB', borderRadius:18, overflow:'hidden', cursor:'pointer', fontFamily:'inherit', padding:0, textAlign:'left', display:'grid', gridTemplateColumns:'minmax(0,2fr) minmax(0,3fr)', width:'100%', transition:'all .3s' }}
+    <Link
+      data-featured
+      to={`/${slugify(d.name)}`}
+      style={{ position:'relative', background:'white', border:'1px solid #E5E7EB', borderRadius:18, overflow:'hidden', cursor:'pointer', fontFamily:'inherit', padding:0, textAlign:'left', display:'grid', gridTemplateColumns:'minmax(0,2fr) minmax(0,3fr)', width:'100%', transition:'all .3s', textDecoration:'none', color:'inherit' }}
       onMouseEnter={e => { e.currentTarget.style.boxShadow='0 24px 48px rgba(11,29,58,0.15)'; e.currentTarget.style.borderColor='var(--blue)' }}
       onMouseLeave={e => { e.currentTarget.style.boxShadow='none'; e.currentTarget.style.borderColor='#E5E7EB' }}
     >
@@ -382,8 +384,8 @@ function FeaturedDestBanner({ d, onClick }) {
           </span>
         </div>
       </div>
-      <style>{`@media(max-width:720px){button[data-featured]{grid-template-columns:1fr!important}}`}</style>
-    </button>
+      <style>{`@media(max-width:720px){a[data-featured]{grid-template-columns:1fr!important}}`}</style>
+    </Link>
   )
 }
 
